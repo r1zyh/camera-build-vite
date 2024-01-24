@@ -1,9 +1,13 @@
+import { Helmet } from 'react-helmet-async';
 import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 
 function Product(): JSX.Element {
   return (
     <div className="wrapper">
+      <Helmet>
+        <title>{'6 cities - Product'}</title>
+      </Helmet>
       <HeaderLayout />
       <main>
         <div className="page-content">

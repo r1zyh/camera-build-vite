@@ -2,10 +2,14 @@ import { Link } from 'react-router-dom';
 import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 import { AppRoute } from '../../const';
+import { Helmet } from 'react-helmet-async';
 
 function Basket(): JSX.Element {
   return (
     <div className="wrapper">
+      <Helmet>
+        <title>{'6 cities - Basket'}</title>
+      </Helmet>
       <HeaderLayout />
       <main>
         <div className="page-content">

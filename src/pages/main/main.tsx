@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import CardsCatalog from '../../components/cards-catalog/cards-catalog';
 import Filter from '../../components/filter/filter';
 import FooterLayout from '../../components/footer/footer';
@@ -7,6 +8,9 @@ import Sort from '../../components/sort/sort';
 function Main(): JSX.Element {
   return (
     <div className="wrapper">
+      <Helmet>
+        <title>{'6 cities - Catalog'}</title>
+      </Helmet>
       <HeaderLayout />
       <main>
         <div className="banner">
@@ -60,9 +64,9 @@ function Main(): JSX.Element {
             <div className="container">
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
-                <Filter/>
+                <Filter />
                 <div className="catalog__content">
-                  <Sort/>
+                  <Sort />
                   <CardsCatalog />
                   <div className="pagination">
                     <ul className="pagination__list">
