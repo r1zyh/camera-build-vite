@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
+
 function HeaderLayout(): JSX.Element {
   return (
     <header className="header" id="header">
@@ -14,9 +17,9 @@ function HeaderLayout(): JSX.Element {
         <nav className="main-nav header__main-nav">
           <ul className="main-nav__list">
             <li className="main-nav__item">
-              <a className="main-nav__link" href="catalog.html">
+              <Link className="main-nav__link" to={AppRoute.Main}>
                 Каталог
-              </a>
+              </Link>
             </li>
             <li className="main-nav__item">
               <a className="main-nav__link" href="#">
@@ -78,11 +81,11 @@ function HeaderLayout(): JSX.Element {
             <span className="visually-hidden">Сбросить поиск</span>
           </button>
         </div>
-        <a className="header__basket-link" href="#">
+        <Link className="header__basket-link" to={AppRoute.Basket}>
           <svg width={16} height={16} aria-hidden="true">
             <use xlinkHref="#icon-basket"></use>
           </svg>
-        </a>
+        </Link>
       </div>
     </header>
   );
