@@ -6,7 +6,7 @@ function Sort(): JSX.Element {
           <p className="title title--h5">Сортировать:</p>
           <div className="catalog-sort__type">
             <div className="catalog-sort__btn-text">
-              <input type="radio" id="sortPrice" name="sort" checked />
+              <input type="radio" id="sortPrice" name="sort" defaultChecked />
               <label htmlFor="sortPrice">по цене</label>
             </div>
             <div className="catalog-sort__btn-text">
@@ -20,7 +20,7 @@ function Sort(): JSX.Element {
                 type="radio"
                 id="up"
                 name="sort-icon"
-                checked
+                defaultChecked
                 aria-label="По возрастанию"
               />
               <label htmlFor="up">

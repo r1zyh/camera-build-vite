@@ -1,24 +1,8 @@
-export enum CameraTypes {
-  Collectible = 'Коллекционная',
-  Instant = 'Моментальная',
-  Digital = 'Цифровая',
-  Film = 'Плёночная',
-}
+import { CameraTypes, CategoryTypes, LevelTypes } from '../const';
 
-export enum CategoryTypes {
-  Camcorder = 'Видеокамера',
-  Camera = 'Фотоаппарат',
-}
-
-export enum LevelTypes {
-  Zero = 'Нулевой',
-  Amateur = 'Любительский',
-  Professional = 'Любительский',
-}
-
-type TCameraType = (typeof CameraTypes)[keyof typeof CameraTypes];
-type TCategory = (typeof CategoryTypes)[keyof typeof CategoryTypes];
-type TLevel = (typeof LevelTypes)[keyof typeof LevelTypes];
+export type TCameraType = (typeof CameraTypes)[keyof typeof CameraTypes];
+export type TCategory = (typeof CategoryTypes)[keyof typeof CategoryTypes];
+export type TLevel = (typeof LevelTypes)[keyof typeof LevelTypes];
 
 export type TProduct = {
   id: number;
