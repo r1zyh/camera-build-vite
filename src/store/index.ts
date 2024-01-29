@@ -4,7 +4,6 @@ import { rootReducer } from './root-reducer';
 
 export const api = createAPI();
 
-console.log('API', api);
 
 export const store = configureStore({
   reducer: rootReducer,

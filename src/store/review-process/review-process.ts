@@ -35,3 +35,5 @@ export const reviewProcessSlice = createSlice({
     },
   },
 });
+
+export const { setReviews } = reviewProcessSlice.actions;

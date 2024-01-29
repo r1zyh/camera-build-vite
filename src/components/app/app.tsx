@@ -7,7 +7,7 @@ import NotFoundPage from '../../pages/not-found/not-found';
 import { HelmetProvider } from 'react-helmet-async';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useEffect } from 'react';
-import { fetchProducts } from '../../store/api-actions';
+import { fetchProducts} from '../../store/api-actions';
 
 function App() {
   const dispatch = useAppDispatch();

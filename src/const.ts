@@ -31,4 +31,5 @@ export const NameSpace = {
 
 export enum APIRoute {
   Products = '/cameras',
+  Reviews = '/reviews',
 }

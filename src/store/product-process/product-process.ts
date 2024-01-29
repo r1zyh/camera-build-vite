@@ -3,8 +3,10 @@ import { NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
 
 type ProductProcessType = {
-  products: TProducts | null;
+  products: TProducts;
   product: TProduct | null;
+  activeId: string | null;
+  isOffersLoading: boolean;
   similarProducts: TProducts | null;
   price: number;
   rating: number;
@@ -18,6 +20,8 @@ type ProductProcessType = {
 const initialState: ProductProcessType = {
   products: [],
   similarProducts: [],
+  activeId: '',
+  isOffersLoading: true,
   product: null,
   price: 0,
   rating: 0,
@@ -35,13 +39,25 @@ export const productsProcessSlice = createSlice({
     setProducts: (state, action: PayloadAction<TProducts>) => {
       state.products = action.payload;
     },
+    setActiveId: (state, action: PayloadAction<string | null>) => {
+      state.activeId = action.payload;
+    },
     setProduct: (state, action: PayloadAction<TProduct | null>) => {
       state.product = action.payload;
     },
     setSimilarProducts: (state, action: PayloadAction<TProducts | null>) => {
       state.similarProducts = action.payload;
     },
+    setProductsLoadingStatus: (state, action: PayloadAction<boolean>) => {
+      state.isOffersLoading = action.payload;
+    },
   },
 });
 
-export const { setProducts, setProduct } = productsProcessSlice.actions;
+export const {
+  setProducts,
+  setProduct,
+  setActiveId,
+  setSimilarProducts,
+  setProductsLoadingStatus,
+} = productsProcessSlice.actions;

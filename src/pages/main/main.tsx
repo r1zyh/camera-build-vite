@@ -4,8 +4,12 @@ import Filter from '../../components/filter/filter';
 import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 import Sort from '../../components/sort/sort';
+import { useAppSelector } from '../../hooks/use-select';
+import { getProducts } from '../../store/product-process/selectors';
 
 function Main(): JSX.Element {
+
+  const products = useAppSelector(getProducts);
 
   return (
     <div className="wrapper">
@@ -68,7 +72,7 @@ function Main(): JSX.Element {
                 <Filter />
                 <div className="catalog__content">
                   <Sort />
-                  <CardsCatalog />
+                  <CardsCatalog products={products} />
                   <div className="pagination">
                     <ul className="pagination__list">
                       <li className="pagination__item">
