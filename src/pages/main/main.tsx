@@ -6,15 +6,27 @@ import HeaderLayout from '../../components/header/header';
 import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
 import { getProducts } from '../../store/product-process/selectors';
+import { useState } from 'react';
+import Pagination from '../../components/pagination/pagination';
 
 function Main(): JSX.Element {
-
   const products = useAppSelector(getProducts);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(9);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPageCount = Math.ceil(products.length / itemsPerPage);
+
+  const handlePageClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="wrapper">
       <Helmet>
-        <title>{'6 cities - Catalog'}</title>
+        <title>{'Camera-shop - Catalog'}</title>
       </Helmet>
       <HeaderLayout />
       <main>
@@ -72,36 +84,13 @@ function Main(): JSX.Element {
                 <Filter />
                 <div className="catalog__content">
                   <Sort />
-                  <CardsCatalog products={products} />
+                  <CardsCatalog products={currentProducts} />
                   <div className="pagination">
-                    <ul className="pagination__list">
-                      <li className="pagination__item">
-                        <a
-                          className="pagination__link pagination__link--active"
-                          href="1"
-                        >
-                          1
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a className="pagination__link" href="2">
-                          2
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a className="pagination__link" href="3">
-                          3
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a
-                          className="pagination__link pagination__link--text"
-                          href="2"
-                        >
-                          Далее
-                        </a>
-                      </li>
-                    </ul>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPageCount={totalPageCount}
+                      handlePageClick={handlePageClick}
+                    />
                   </div>
                 </div>
               </div>

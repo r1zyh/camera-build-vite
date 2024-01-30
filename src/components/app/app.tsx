@@ -7,7 +7,7 @@ import NotFoundPage from '../../pages/not-found/not-found';
 import { HelmetProvider } from 'react-helmet-async';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useEffect } from 'react';
-import { fetchProducts} from '../../store/api-actions';
+import { fetchProducts } from '../../store/api-actions';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ function App() {
         <Routes>
           <Route path={AppRoute.Main} element={<Main />}></Route>
           <Route path={AppRoute.Basket} element={<Basket />} />
-          <Route path={AppRoute.Product} element={<Product />} />
+          <Route path={`${AppRoute.Product}/:id`} element={<Product />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

@@ -8,7 +8,7 @@ function Basket(): JSX.Element {
   return (
     <div className="wrapper">
       <Helmet>
-        <title>{'6 cities - Basket'}</title>
+        <title>{'Camera-shop - Basket'}</title>
       </Helmet>
       <HeaderLayout />
       <main>

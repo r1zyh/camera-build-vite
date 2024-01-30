@@ -8,7 +8,7 @@ function Product(): JSX.Element {
   return (
     <div className="wrapper">
       <Helmet>
-        <title>{'6 cities - Product'}</title>
+        <title>{'Camera-shop - Product'}</title>
       </Helmet>
       <HeaderLayout />
       <main>
