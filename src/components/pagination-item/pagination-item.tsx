@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 type PaginationItemProps = {
   pageNumber: number;
   currentPage: number;
@@ -16,15 +18,15 @@ function PaginationItem({
         currentPage === pageNumber ? 'active' : ''
       }`}
     >
-      <a
+      <Link
         onClick={() => handlePageClick(pageNumber)}
         className={`pagination__link pagination__link--${
           currentPage === pageNumber ? 'active' : ''
         }`}
-        href="#"
+        to="#"
       >
         {pageNumber}
-      </a>
+      </Link>
     </li>
   );
 }

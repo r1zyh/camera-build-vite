@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import PaginationItem from '../pagination-item/pagination-item';
 
 type PaginationProps = {
@@ -33,21 +34,42 @@ function Pagination({
       />
     );
   });
+
+  const handlePrevClick = () => {
+    if (currentPage > 1) {
+      handlePageClick(currentPage - 1);
+    }
+  };
+
+  const handleNextClick = () => {
+    if (currentPage < totalPageCount) {
+      handlePageClick(currentPage + 1);
+    }
+  };
+
   return (
     <ul className="pagination__list">
       {currentPage >= maxPageCount && (
         <li className="pagination__item">
-          <a className="pagination__link pagination__link--text" href="#">
+          <Link
+            className="pagination__link pagination__link--text"
+            to="#"
+            onClick={handlePrevClick}
+          >
             Назад
-          </a>
+          </Link>
         </li>
       )}
       {paginationItems}
       {currentPage >= maxPageCount && currentPage !== totalPageCount && (
         <li className="pagination__item">
-          <a className="pagination__link pagination__link--text" href="#">
+          <Link
+            className="pagination__link pagination__link--text"
+            to="#"
+            onClick={handleNextClick}
+          >
             Далее
-          </a>
+          </Link>
         </li>
       )}
     </ul>
