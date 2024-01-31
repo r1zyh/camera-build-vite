@@ -6,22 +6,36 @@ import HeaderLayout from '../../components/header/header';
 import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
 import { getProducts } from '../../store/product-process/selectors';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Pagination from '../../components/pagination/pagination';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Main(): JSX.Element {
   const products = useAppSelector(getProducts);
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPageParam = parseInt(new URLSearchParams(location.search).get('page') || '1', 10);
+  const [currentPage, setCurrentPage] = useState(currentPageParam);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('page', currentPage.toString());
+    const newUrl = `${location.pathname}?${searchParams.toString()}`;
+    navigate(newUrl, { replace: true });
+  }, [currentPage, location, navigate]);
+
+  const handlePageClick = (pageNumber: number) => {
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
   const totalPageCount = Math.ceil(products.length / itemsPerPage);
 
-  const handlePageClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div className="wrapper">

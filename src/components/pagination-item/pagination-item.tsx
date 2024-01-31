@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 type PaginationItemProps = {
   pageNumber: number;
@@ -11,7 +11,6 @@ function PaginationItem({
   currentPage,
   handlePageClick,
 }: PaginationItemProps): JSX.Element | null {
-
   return (
     <li
       className={`pagination__item ${
