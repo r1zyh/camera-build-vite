@@ -33,7 +33,25 @@ function Pagination({
       />
     );
   });
-  return <ul className="pagination__list">{paginationItems}</ul>;
+  return (
+    <ul className="pagination__list">
+      {currentPage >= maxPageCount && (
+        <li className="pagination__item">
+          <a className="pagination__link pagination__link--text" href="#">
+            Назад
+          </a>
+        </li>
+      )}
+      {paginationItems}
+      {currentPage >= maxPageCount && currentPage !== totalPageCount && (
+        <li className="pagination__item">
+          <a className="pagination__link pagination__link--text" href="#">
+            Далее
+          </a>
+        </li>
+      )}
+    </ul>
+  );
 }
 
 export default Pagination;

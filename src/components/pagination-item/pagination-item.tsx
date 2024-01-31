@@ -18,7 +18,9 @@ function PaginationItem({
     >
       <a
         onClick={() => handlePageClick(pageNumber)}
-        className="pagination__link"
+        className={`pagination__link pagination__link--${
+          currentPage === pageNumber ? 'active' : ''
+        }`}
         href="#"
       >
         {pageNumber}
