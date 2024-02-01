@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { TProduct } from '../../types/products';
+import Modal from '../modal-add-item/modal-add-item';
 
 type ProductCardProps = {
   product: TProduct;
@@ -16,6 +18,12 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
     previewImgWebp,
     previewImgWebp2x,
   } = product;
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const openModalHandler = () => {
+    setModalOpen(true);
+  };
+
   return (
     <div className="product-card" key={product.id} id={id.toString()}>
       <div className="product-card__img">
@@ -63,13 +71,14 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
         </p>
       </div>
       <div className="product-card__buttons">
-        <button className="btn btn--purple product-card__btn" type="button">
+        <button className="btn btn--purple product-card__btn" type="button" onClick={openModalHandler}>
           Купить
         </button>
         <a className="btn btn--transparent" href="#">
           Подробнее
         </a>
       </div>
+      {isModalOpen && <Modal closeModal={() => setModalOpen(false)} />}
     </div>
   );
 }
