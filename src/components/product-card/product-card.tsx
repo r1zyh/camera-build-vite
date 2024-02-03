@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { TProduct } from '../../types/products';
 import Modal from '../modal/modal';
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 type ProductCardProps = {
   product: TProduct;
@@ -12,6 +14,9 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
     name,
     rating,
     price,
+    type,
+    vendorCode,
+    level,
     reviewCount,
     previewImg,
     previewImg2x,
@@ -32,29 +37,30 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
         <picture>
           <source
             type="image/webp"
-            srcSet="img/content/orlenok.webp, img/content/orlenok@2x.webp 2x"
+            srcSet={`${previewImgWebp}, ${previewImgWebp2x}`}
           />
           <img
-            src="img/content/orlenok.jpg"
-            srcSet="img/content/orlenok@2x.jpg 2x"
+            src={previewImg}
+            srcSet={previewImg2x}
             width="140"
             height="120"
-            alt="Фотоаппарат «Орлёнок»"
+            alt={name}
           />
         </picture>
       </div>
       <div className="basket-item__description">
-        <p className="basket-item__title">Орлёнок</p>
+        <p className="basket-item__title">{name}</p>
         <ul className="basket-item__list">
           <li className="basket-item__list-item">
             <span className="basket-item__article">Артикул:</span>{' '}
-            <span className="basket-item__number">O78DFGSD832</span>
+            <span className="basket-item__number">{vendorCode}</span>
           </li>
-          <li className="basket-item__list-item">Плёночная фотокамера</li>
-          <li className="basket-item__list-item">Любительский уровень</li>
+          <li className="basket-item__list-item">{type}</li>
+          <li className="basket-item__list-item">{level}</li>
         </ul>
         <p className="basket-item__price">
-          <span className="visually-hidden">Цена:</span>18 970 ₽
+          <span className="visually-hidden">Цена:</span>
+          {price} ₽
         </p>
       </div>
     </div>
@@ -126,9 +132,9 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
         >
           Купить
         </button>
-        <a className="btn btn--transparent" href="#">
+        <Link className="btn btn--transparent" to={`${AppRoute.Product}/${id}`}>
           Подробнее
-        </a>
+        </Link>
       </div>
       {isModalOpen && (
         <Modal

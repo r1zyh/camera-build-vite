@@ -43,7 +43,7 @@ export const fetchReviews = createAsyncThunk<
 
 export const fetchProduct = createAsyncThunk<
   void,
-  { id: string | undefined },
+  { id: number | undefined },
   thunkObjType
 >('data/fetchProduct', async ({ id }, { dispatch, extra: api }) => {
   dispatch(setProductsLoadingStatus(true));
@@ -51,7 +51,7 @@ export const fetchProduct = createAsyncThunk<
   try {
     const { data } = await api.get<TProduct>(url);
     dispatch(setProduct(data));
-    dispatch(fetchReviews({ id }));
+    dispatch(fetchReviews({ id: id !== undefined ? String(id) : undefined }));
     dispatch(setActiveId(id));
     dispatch(setProductsLoadingStatus(false));
   } catch {

@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import CardsCatalog from '../../components/cards-catalog/cards-catalog';
+import ProductCardList from '../../components/product-card-list/product-card-list';
 import Filter from '../../components/filter/filter';
 import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
@@ -105,7 +105,7 @@ function Main(): JSX.Element {
                 <Filter />
                 <div className="catalog__content">
                   <Sort />
-                  <CardsCatalog products={currentProducts} />
+                  <ProductCardList products={currentProducts} />
                   <div className="pagination">
                     <Pagination
                       currentPage={currentPage}
