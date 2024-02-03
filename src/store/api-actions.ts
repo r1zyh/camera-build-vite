@@ -43,11 +43,11 @@ export const fetchReviews = createAsyncThunk<
 
 export const fetchProduct = createAsyncThunk<
   void,
-  { id: string },
+  { id: string | undefined },
   thunkObjType
 >('data/fetchProduct', async ({ id }, { dispatch, extra: api }) => {
   dispatch(setProductsLoadingStatus(true));
-  const url = `${APIRoute.Products}/${id}`;
+  const url = id !== undefined ? `${APIRoute.Products}/${id}` : '';
   try {
     const { data } = await api.get<TProduct>(url);
     dispatch(setProduct(data));
@@ -59,4 +59,3 @@ export const fetchProduct = createAsyncThunk<
     dispatch(redirectToRoute(AppRoute.NotFound));
   }
 });
-

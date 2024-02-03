@@ -3,8 +3,23 @@ import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 import SimilarProducts from '../../components/similar-products/similar-products';
 import ReviewList from '../../components/review-list/review-list';
+import { useAppDispatch } from '../../hooks/use-dispatch';
+import { useParams } from 'react-router-dom';
+import { useAppSelector } from '../../hooks/use-select';
+import { getReviews } from '../../store/review-process/selectors';
+import { getProduct } from '../../store/product-process/selectors';
+import { fetchProduct } from '../../store/api-actions';
 
 function Product(): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const productId = useParams().id;
+  const reviews = useAppSelector(getReviews);
+  const product = useAppSelector(getProduct);
+  dispatch(fetchProduct({ id: productId }));
+  console.log('ID', productId);
+  console.log('reviews', reviews);
+  console.log('product', product);
   return (
     <div className="wrapper">
       <Helmet>

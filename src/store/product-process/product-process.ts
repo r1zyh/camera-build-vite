@@ -5,7 +5,7 @@ import { TProduct, TProducts } from '../../types/products';
 type ProductProcessType = {
   products: TProducts;
   product: TProduct | null;
-  activeId: string | null;
+  activeId: string | undefined;
   isOffersLoading: boolean;
   similarProducts: TProducts | null;
   price: number;
@@ -39,7 +39,7 @@ export const productsProcessSlice = createSlice({
     setProducts: (state, action: PayloadAction<TProducts>) => {
       state.products = action.payload;
     },
-    setActiveId: (state, action: PayloadAction<string | null>) => {
+    setActiveId: (state, action: PayloadAction<string | undefined>) => {
       state.activeId = action.payload;
     },
     setProduct: (state, action: PayloadAction<TProduct | null>) => {
