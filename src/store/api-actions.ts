@@ -8,10 +8,12 @@ import {
   setProduct,
   setProducts,
   setProductsLoadingStatus,
+  setPromos,
 } from './product-process/product-process';
 import { TReviews } from '../types/review';
 import { setReviews } from './review-process/review-process';
 import { redirectToRoute } from './actions';
+import { TPromos } from '../types/promo';
 
 type thunkObjType = {
   dispatch: AppDispatch;
@@ -27,7 +29,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
     } catch (error) {
-      dispatch(setProductsLoadingStatus(true));
+      dispatch(setProductsLoadingStatus(false));
     }
   }
 );
@@ -59,3 +61,15 @@ export const fetchProduct = createAsyncThunk<
     dispatch(redirectToRoute(AppRoute.NotFound));
   }
 });
+
+export const fetchPromo = createAsyncThunk<void, undefined, thunkObjType>(
+  'data/fetchPromo',
+  async (_arg, { dispatch, extra: api }) => {
+    try {
+      const { data } = await api.get<TPromos>(APIRoute.Promo);
+      dispatch(setPromos(data));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);

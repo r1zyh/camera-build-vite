@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
+import { TPromos } from '../../types/promo';
 
 type ProductProcessType = {
   products: TProducts;
   product: TProduct | null;
   activeId: number | undefined;
-  isOffersLoading: boolean;
+  promos: TPromos;
+  isProductLoading: boolean;
   similarProducts: TProducts | null;
   price: number;
   rating: number;
@@ -21,7 +23,8 @@ const initialState: ProductProcessType = {
   products: [],
   similarProducts: [],
   activeId: 0,
-  isOffersLoading: true,
+  promos: [],
+  isProductLoading: true,
   product: null,
   price: 0,
   rating: 0,
@@ -49,7 +52,10 @@ export const productsProcessSlice = createSlice({
       state.similarProducts = action.payload;
     },
     setProductsLoadingStatus: (state, action: PayloadAction<boolean>) => {
-      state.isOffersLoading = action.payload;
+      state.isProductLoading = action.payload;
+    },
+    setPromos: (state, action: PayloadAction<TPromos>) => {
+      state.promos = action.payload;
     },
   },
 });
@@ -57,6 +63,7 @@ export const productsProcessSlice = createSlice({
 export const {
   setProducts,
   setProduct,
+  setPromos,
   setActiveId,
   setSimilarProducts,
   setProductsLoadingStatus,

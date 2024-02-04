@@ -1,5 +1,6 @@
 import { NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
+import { TPromos } from '../../types/promo';
 import { State } from '../../types/state';
 
 export const getProducts = (state: State): TProducts =>
@@ -14,4 +15,7 @@ export const getActiveId = (state: State): number | undefined =>
   state[NameSpace.Products].activeId;
 
 export const getProductsLoadingStatus = (state: State): boolean =>
-  state[NameSpace.Products].isOffersLoading;
+  state[NameSpace.Products].isProductLoading;
+
+export const getPromos = (state: State): TPromos | null =>
+  state[NameSpace.Products].promos;

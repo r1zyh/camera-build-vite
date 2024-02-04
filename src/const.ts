@@ -32,6 +32,7 @@ export const NameSpace = {
 export enum APIRoute {
   Products = '/cameras',
   Reviews = '/reviews',
+  Promo = '/promo',
 }
 
 export const STAR_DIMENSIONS = {
