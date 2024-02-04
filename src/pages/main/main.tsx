@@ -5,7 +5,7 @@ import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
-import { getProducts } from '../../store/product-process/selectors';
+import { getProducts, getPromos } from '../../store/product-process/selectors';
 import { useState, useEffect, useCallback } from 'react';
 import Pagination from '../../components/pagination/pagination';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -13,6 +13,7 @@ import Banner from '../../components/banner/banner';
 
 function Main(): JSX.Element {
   const products = useAppSelector(getProducts);
+  const banners = useAppSelector(getPromos);
 
   const [itemsPerPage] = useState(9);
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ function Main(): JSX.Element {
       </Helmet>
       <HeaderLayout />
       <main>
-        <Banner />
+        <Banner banners={banners} />
         <div className="page-content">
           <div className="breadcrumbs">
             <div className="container">

@@ -85,11 +85,11 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
         <picture>
           <source
             type="image/webp"
-            srcSet={`${previewImgWebp}, ${previewImgWebp2x}`}
+            srcSet={`${previewImgWebp}, ${previewImgWebp2x} 2x`}
           />
           <img
             src={previewImg}
-            srcSet={previewImg2x}
+            srcSet={`${previewImg2x} 2x`}
             width={280}
             height={240}
             alt={name}
