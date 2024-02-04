@@ -10,6 +10,7 @@ import { getReviews } from '../../store/review-process/selectors';
 import { getProduct } from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
 import { useEffect } from 'react';
+import Rating from '../../components/rating/rating';
 
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -90,36 +91,19 @@ function Product(): JSX.Element {
                     <img
                       src={previewImg}
                       srcSet={previewImg2x}
-                      width="560"
-                      height="480"
+                      width={560}
+                      height={480}
                       alt={name}
                     />
                   </picture>
                 </div>
                 <div className="product__content">
                   <h1 className="title title--h3">{name}</h1>
-                  <div className="rate product__rate">
-                    <svg width="17" height="16" aria-hidden="true">
-                      <use xlinkHref="#icon-full-star"></use>
-                    </svg>
-                    <svg width="17" height="16" aria-hidden="true">
-                      <use xlinkHref="#icon-full-star"></use>
-                    </svg>
-                    <svg width="17" height="16" aria-hidden="true">
-                      <use xlinkHref="#icon-full-star"></use>
-                    </svg>
-                    <svg width="17" height="16" aria-hidden="true">
-                      <use xlinkHref="#icon-full-star"></use>
-                    </svg>
-                    <svg width="17" height="16" aria-hidden="true">
-                      <use xlinkHref="#icon-star"></use>
-                    </svg>
-                    <p className="visually-hidden">Рейтинг: {rating}</p>
-                    <p className="rate__count">
-                      <span className="visually-hidden">Всего оценок:</span>
-                      {reviewCount}
-                    </p>
-                  </div>
+                  <Rating
+                    rating={rating}
+                    reviewCount={reviewCount}
+                    className="product__rate"
+                  />
                   <p className="product__price">
                     <span className="visually-hidden">Цена:</span>
                     {price} ₽
