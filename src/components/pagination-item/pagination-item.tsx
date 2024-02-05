@@ -11,18 +11,20 @@ function PaginationItem({
   currentPage,
   handlePageClick,
 }: PaginationItemProps): JSX.Element | null {
+  const isActive = currentPage === pageNumber;
+
+  const handleClick = () => {
+    handlePageClick(pageNumber);
+  };
+
   return (
-    <li
-      className={`pagination__item ${
-        currentPage === pageNumber ? 'active' : ''
-      }`}
-    >
+    <li className={`pagination__item ${isActive ? 'active' : ''}`}>
       <Link
-        onClick={() => handlePageClick(pageNumber)}
-        className={`pagination__link pagination__link--${
-          currentPage === pageNumber ? 'active' : ''
-        }`}
         to="#"
+        onClick={handleClick}
+        className={`pagination__link pagination__link--${
+          isActive ? 'active' : ''
+        }`}
       >
         {pageNumber}
       </Link>

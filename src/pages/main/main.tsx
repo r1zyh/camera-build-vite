@@ -23,6 +23,7 @@ function Main(): JSX.Element {
     10
   );
   const [currentPage, setCurrentPage] = useState(currentPageParam);
+  const maxPageCount = 3;
 
   const updateUrl = useCallback(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -84,6 +85,7 @@ function Main(): JSX.Element {
                   <ProductCardList products={currentProducts} />
                   <div className="pagination">
                     <Pagination
+                      maxPageCount={maxPageCount}
                       currentPage={currentPage}
                       totalPageCount={totalPageCount}
                       handlePageClick={handlePageClick}

@@ -5,14 +5,15 @@ type PaginationProps = {
   currentPage: number;
   totalPageCount: number;
   handlePageClick: (pageNumber: number) => void;
+  maxPageCount: number;
 };
 
 function Pagination({
   currentPage,
   totalPageCount,
   handlePageClick,
+  maxPageCount = 3,
 }: PaginationProps): JSX.Element {
-  const maxPageCount = 3;
   const pagesToShow = Math.min(maxPageCount, totalPageCount);
 
   const startPage =
@@ -23,55 +24,50 @@ function Pagination({
         totalPageCount - pagesToShow + 1
       );
 
-  const paginationItems = Array.from({ length: pagesToShow }, (_, index) => {
-    const pageNumber = startPage + index;
-    return (
-      <PaginationItem
-        key={pageNumber}
-        pageNumber={pageNumber}
-        currentPage={currentPage}
-        handlePageClick={handlePageClick}
-      />
+  const renderPaginationItems = () =>
+    Array.from({ length: pagesToShow }, (_, index) => {
+      const pageNumber = startPage + index;
+      return (
+        <PaginationItem
+          key={pageNumber}
+          pageNumber={pageNumber}
+          currentPage={currentPage}
+          handlePageClick={handlePageClick}
+        />
+      );
+    });
+
+  const renderPrevButton = () =>
+    currentPage >= maxPageCount && (
+      <li className="pagination__item">
+        <Link
+          className="pagination__link pagination__link--text"
+          to="#"
+          onClick={() => handlePageClick(currentPage - 1)}
+        >
+          Назад
+        </Link>
+      </li>
     );
-  });
 
-  const handlePrevClick = () => {
-    if (currentPage > 1) {
-      handlePageClick(currentPage - 1);
-    }
-  };
-
-  const handleNextClick = () => {
-    if (currentPage < totalPageCount) {
-      handlePageClick(currentPage + 1);
-    }
-  };
+  const renderNextButton = () =>
+    currentPage !== totalPageCount && (
+      <li className="pagination__item">
+        <Link
+          className="pagination__link pagination__link--text"
+          to="#"
+          onClick={() => handlePageClick(currentPage + 1)}
+        >
+          Далее
+        </Link>
+      </li>
+    );
 
   return (
     <ul className="pagination__list">
-      {currentPage >= maxPageCount && (
-        <li className="pagination__item">
-          <Link
-            className="pagination__link pagination__link--text"
-            to="#"
-            onClick={handlePrevClick}
-          >
-            Назад
-          </Link>
-        </li>
-      )}
-      {paginationItems}
-      {currentPage >= maxPageCount && currentPage !== totalPageCount && (
-        <li className="pagination__item">
-          <Link
-            className="pagination__link pagination__link--text"
-            to="#"
-            onClick={handleNextClick}
-          >
-            Далее
-          </Link>
-        </li>
-      )}
+      {renderPrevButton()}
+      {renderPaginationItems()}
+      {renderNextButton()}
     </ul>
   );
 }
