@@ -44,6 +44,10 @@ function Product(): JSX.Element {
     );
   }
 
+  const scrollHandler = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (product === null || reviews === null) {
     return <div></div>;
   }
@@ -179,11 +183,11 @@ function Product(): JSX.Element {
           <ReviewList reviews={reviews} />
         </div>
       </main>
-      <a className="up-btn" href="#header">
+      <Link className="up-btn" to="#header" onClick={scrollHandler}>
         <svg width="12" height="18" aria-hidden="true">
           <use xlinkHref="#icon-arrow2"></use>
         </svg>
-      </a>
+      </Link>
       <FooterLayout />
     </div>
   );
