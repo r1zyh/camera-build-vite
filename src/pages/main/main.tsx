@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Pagination from '../../components/pagination/pagination';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
+import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 
 function Main(): JSX.Element {
   const products = useAppSelector(getProducts);
@@ -56,25 +57,7 @@ function Main(): JSX.Element {
       <main>
         <Banner banners={banners} />
         <div className="page-content">
-          <div className="breadcrumbs">
-            <div className="container">
-              <ul className="breadcrumbs__list">
-                <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link" href="index.html">
-                    Главная
-                    <svg width={5} height={8} aria-hidden="true">
-                      <use xlinkHref="#icon-arrow-mini"></use>
-                    </svg>
-                  </a>
-                </li>
-                <li className="breadcrumbs__item">
-                  <span className="breadcrumbs__link breadcrumbs__link--active">
-                    Каталог
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <Breadcrumbs />
           <section className="catalog">
             <div className="container">
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
