@@ -4,13 +4,14 @@ import HeaderLayout from '../../components/header/header';
 import SimilarProducts from '../../components/similar-products/similar-products';
 import ReviewList from '../../components/review-list/review-list';
 import { useAppDispatch } from '../../hooks/use-dispatch';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/use-select';
 import { getReviews } from '../../store/review-process/selectors';
 import { getProduct } from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Rating from '../../components/rating/rating';
+import { AppRoute } from '../../const';
 
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -18,11 +19,30 @@ function Product(): JSX.Element {
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   useEffect(() => {
-    if (productId !== undefined) {
-      dispatch(fetchProduct({ id: productId }));
-    }
+    const fetchData = async () => {
+      try {
+        if (productId !== undefined) {
+          await dispatch(fetchProduct({ id: productId }));
+        }
+      } catch (error) {
+        setFetchError('Ошибка при загрузке продукта');
+      }
+    };
+
+    fetchData();
   }, [productId, dispatch]);
+
+  if (fetchError) {
+    //вынести error в отдельный компонент
+    return (
+      <div className="error-message">
+        <p>{fetchError}</p>
+      </div>
+    );
+  }
 
   if (product === null || reviews === null) {
     return <div></div>;
@@ -64,12 +84,12 @@ function Product(): JSX.Element {
                   </a>
                 </li>
                 <li className="breadcrumbs__item">
-                  <a className="breadcrumbs__link" href="catalog.html">
+                  <Link className="breadcrumbs__link" to={AppRoute.Main}>
                     Каталог
                     <svg width="5" height="8" aria-hidden="true">
                       <use xlinkHref="#icon-arrow-mini"></use>
                     </svg>
-                  </a>
+                  </Link>
                 </li>
                 <li className="breadcrumbs__item">
                   <span className="breadcrumbs__link breadcrumbs__link--active">
