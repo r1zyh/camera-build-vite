@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-
+import 'dayjs/locale/ru';
 export function humanizeReviewDate(date: string) {
-  return date ? dayjs(date).format('DD MMMM') : '';
+  const formattedDate = dayjs(date).locale('ru').format('DD MMMM');
+  return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1);
 }

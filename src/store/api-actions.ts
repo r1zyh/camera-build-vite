@@ -9,6 +9,7 @@ import {
   setProducts,
   setProductsLoadingStatus,
   setPromos,
+  setSimilarProducts,
 } from './product-process/product-process';
 import { TReviews } from '../types/review';
 import { setReviews } from './review-process/review-process';
@@ -43,6 +44,18 @@ export const fetchReviews = createAsyncThunk<
   dispatch(setReviews(data));
 });
 
+export const fetchSimilarProducts = createAsyncThunk<
+  void,
+  { id: number | undefined },
+  thunkObjType
+>('data/fetchSimilarProducts', async ({ id }, { dispatch, extra: api }) => {
+  dispatch(setProductsLoadingStatus(true));
+  const url = id !== undefined ? `${APIRoute.Products}/${id}/similar` : '';
+  const { data } = await api.get<TProducts>(url);
+  dispatch(setProductsLoadingStatus(false));
+  dispatch(setSimilarProducts(data));
+});
+
 export const fetchProduct = createAsyncThunk<
   void,
   { id: number | undefined },
@@ -54,6 +67,7 @@ export const fetchProduct = createAsyncThunk<
     const { data } = await api.get<TProduct>(url);
     dispatch(setProduct(data));
     dispatch(fetchReviews({ id: id !== undefined ? String(id) : undefined }));
+    dispatch(fetchSimilarProducts({ id }));
     dispatch(setActiveId(id));
     dispatch(setProductsLoadingStatus(false));
   } catch {

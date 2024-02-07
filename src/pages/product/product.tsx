@@ -7,7 +7,10 @@ import { useAppDispatch } from '../../hooks/use-dispatch';
 import { Link, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/use-select';
 import { getReviews } from '../../store/review-process/selectors';
-import { getProduct } from '../../store/product-process/selectors';
+import {
+  getProduct,
+  getSimilarProducts,
+} from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
 import { useEffect, useState } from 'react';
 import Rating from '../../components/rating/rating';
@@ -18,6 +21,7 @@ function Product(): JSX.Element {
   const productId = Number(useParams().id);
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
+  const similarProducts = useAppSelector(getSimilarProducts);
 
   const [fetchError, setFetchError] = useState<string | null>(null);
 
@@ -48,7 +52,7 @@ function Product(): JSX.Element {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (product === null || reviews === null) {
+  if (product === null || reviews === null || similarProducts === null) {
     return <div></div>;
   }
 
@@ -179,7 +183,7 @@ function Product(): JSX.Element {
               </div>
             </section>
           </div>
-          <SimilarProducts />
+          <SimilarProducts similarProducts={similarProducts} />
           <ReviewList reviews={reviews} />
         </div>
       </main>
