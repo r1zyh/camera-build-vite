@@ -6,7 +6,10 @@ type SimilarProductCardProps = {
   isActive: boolean;
 };
 
-function SimilarProductCard({ similarProduct, isActive }: SimilarProductCardProps) {
+function SimilarProductCard({
+  similarProduct,
+  isActive,
+}: SimilarProductCardProps) {
   const {
     id,
     name,

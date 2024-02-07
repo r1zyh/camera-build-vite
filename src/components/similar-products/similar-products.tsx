@@ -5,27 +5,22 @@ import SimilarProductCard from '../similar-product-card/similar-product-card';
 type SimilarProductsProps = {
   similarProducts: TProducts;
 };
+
+const ITEMS_PER_PAGE = 3;
+
 function SimilarProducts({
   similarProducts,
 }: SimilarProductsProps): JSX.Element {
-  const INITIAL_VISIBLE_PRODUCTS = 3;
-  const [currentPosition, setCurrentPosition] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  if (similarProducts === null) {
-    return <div></div>;
-  }
+  const totalPages = Math.ceil(similarProducts.length / ITEMS_PER_PAGE);
 
-  const totalProducts = similarProducts.length;
-  const maxPosition = totalProducts - INITIAL_VISIBLE_PRODUCTS;
-
-  const handleNextSlide = () => {
-    const newPosition = Math.min(currentPosition + 1, maxPosition);
-    setCurrentPosition(newPosition);
+  const handleNextClick = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages - 1));
   };
 
-  const handlePrevSlide = () => {
-    const newPosition = Math.max(currentPosition - 1, 0);
-    setCurrentPosition(newPosition);
+  const handlePrevClick = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
   };
 
   return (
@@ -37,23 +32,23 @@ function SimilarProducts({
             <div className="product-similar__slider-list">
               {similarProducts
                 .slice(
-                  currentPosition,
-                  currentPosition + INITIAL_VISIBLE_PRODUCTS
+                  currentPage * ITEMS_PER_PAGE,
+                  (currentPage + 1) * ITEMS_PER_PAGE
                 )
-                .map((product, index) => (
+                .map((product) => (
                   <SimilarProductCard
                     key={product.id}
                     similarProduct={product}
-                    isActive={index >= currentPosition && index < currentPosition + INITIAL_VISIBLE_PRODUCTS}
+                    isActive={currentPage < ITEMS_PER_PAGE}
                   />
                 ))}
             </div>
             <button
               className="slider-controls slider-controls--prev"
               type="button"
-              aria-label="Предыдущий слайд"
-              onClick={handlePrevSlide}
-              disabled={currentPosition === 0}
+              aria-label="Предыдущая страница"
+              onClick={handlePrevClick}
+              disabled={currentPage === 0}
             >
               <svg width="7" height="12" aria-hidden="true">
                 <use xlinkHref="#icon-arrow"></use>
@@ -62,9 +57,9 @@ function SimilarProducts({
             <button
               className="slider-controls slider-controls--next"
               type="button"
-              aria-label="Следующий слайд"
-              onClick={handleNextSlide}
-              disabled={currentPosition === maxPosition}
+              aria-label="Следующая страница"
+              onClick={handleNextClick}
+              disabled={currentPage === totalPages - 1}
             >
               <svg width="7" height="12" aria-hidden="true">
                 <use xlinkHref="#icon-arrow"></use>
