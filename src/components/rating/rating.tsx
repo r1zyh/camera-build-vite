@@ -2,7 +2,7 @@ import { STAR_COUNTS, STAR_DIMENSIONS, STAR_ICONS } from '../../const';
 
 type RatingProps = {
   rating: number;
-  reviewCount: number;
+  reviewCount?: number;
   className: string;
 };
 

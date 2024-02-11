@@ -11,7 +11,6 @@ const REVIEWS_PER_LOAD = 3;
 
 function ReviewList({ reviews }: ReviewsProps): JSX.Element {
   const [visibleReviews, setVisibleReviews] = useState(INITIAL_VISIBLE_REVIEWS);
-
   const sortedReviews = [...reviews].sort(
     (a, b) => dayjs(b.createAt).unix() - dayjs(a.createAt).unix()
   );
@@ -21,6 +20,7 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
       Math.min(prevVisibleReviews + REVIEWS_PER_LOAD, sortedReviews.length)
     );
   };
+
 
   return (
     <div className="page-content__section">

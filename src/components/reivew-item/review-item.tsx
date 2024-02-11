@@ -1,5 +1,6 @@
 import { TReview } from '../../types/review';
 import { humanizeReviewDate } from '../../util';
+import Rating from '../rating/rating';
 
 type ReviewItemProps = {
   review: TReview;
@@ -16,31 +17,14 @@ function ReviewItem({ review }: ReviewItemProps): JSX.Element {
     rating,
   } = review;
   return (
-    <li className="review-card" key={id} >
+    <li className="review-card" key={id}>
       <div className="review-card__head">
         <p className="title title--h4">{userName}</p>
         <time className="review-card__data" dateTime={createAt}>
           {humanizeReviewDate(createAt)}
         </time>
       </div>
-      <div className="rate review-card__rate">
-        <svg width={17} height={16} aria-hidden="true">
-          <use xlinkHref="#icon-full-star"></use>
-        </svg>
-        <svg width={17} height={16} aria-hidden="true">
-          <use xlinkHref="#icon-full-star"></use>
-        </svg>
-        <svg width={17} height={16} aria-hidden="true">
-          <use xlinkHref="#icon-full-star"></use>
-        </svg>
-        <svg width={17} height={16} aria-hidden="true">
-          <use xlinkHref="#icon-full-star"></use>
-        </svg>
-        <svg width={17} height={16} aria-hidden="true">
-          <use xlinkHref="#icon-full-star"></use>
-        </svg>
-        <p className="visually-hidden">Оценка: {rating}</p>
-      </div>
+      <Rating className={'rate review-card__rate'} rating={rating} />
       <ul className="review-card__list">
         <li className="item-list">
           <span className="item-list__title">Достоинства:</span>
