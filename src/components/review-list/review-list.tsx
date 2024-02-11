@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TReviews } from '../../types/review';
 import ReviewItem from '../reivew-item/review-item';
 import dayjs from 'dayjs';
+import ReviewForm from '../review-form/review-form';
 type ReviewsProps = {
   reviews: TReviews;
 };
@@ -21,6 +22,14 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
     );
   };
 
+  const [isFormOpen, setFormOpen] = useState(false);
+  const openFormHandler = () => {
+    setFormOpen(true);
+  };
+
+  const closeFormHandler = () => {
+    setFormOpen(false);
+  };
 
   return (
     <div className="page-content__section">
@@ -28,7 +37,7 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
         <div className="container">
           <div className="page-content__headed">
             <h2 className="title title--h3">Отзывы</h2>
-            <button className="btn" type="button">
+            <button className="btn" type="button" onClick={openFormHandler}>
               Оставить свой отзыв
             </button>
           </div>
@@ -56,6 +65,7 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
           )}
         </div>
       </section>
+      {isFormOpen && <ReviewForm closeForm={closeFormHandler} />}
     </div>
   );
 }

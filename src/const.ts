@@ -51,3 +51,21 @@ export const STAR_COUNTS = {
   halfThreshold: 0.5,
   total: 5,
 };
+
+export enum ReviewLength {
+  Min = 10,
+  Max = 160,
+}
+
+export enum NameLength {
+  Min = 2,
+  Max = 15,
+}
+
+export const ratingMap = {
+  '5': 'Отлично',
+  '4': 'Хорошо',
+  '3': 'Нормально',
+  '2': 'Плохо',
+  '1': 'Ужасно',
+};

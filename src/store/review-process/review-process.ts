@@ -1,29 +1,15 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
-import { TReviews } from '../../types/review';
+import { TReview, TReviews } from '../../types/review';
 
 type ReviewProcessType = {
-  id: string;
   reviews: TReviews;
-  createAt: string;
-  cameraId: number;
-  userName: string;
-  advantage: string;
-  disadvantage: string;
-  review: string;
-  rating: number;
+  isReviewPosting: boolean;
 };
 
 const initialState: ReviewProcessType = {
-  id: '',
   reviews: [],
-  createAt: '',
-  cameraId: 0,
-  userName: '',
-  advantage: '',
-  disadvantage: '',
-  review: '',
-  rating: 0,
+  isReviewPosting: false,
 };
 
 export const reviewProcessSlice = createSlice({
@@ -33,7 +19,13 @@ export const reviewProcessSlice = createSlice({
     setReviews: (state, action: PayloadAction<TReviews>) => {
       state.reviews = action.payload;
     },
+    updateReviews: (state, action: PayloadAction<TReview>) => {
+      state.reviews = [...state.reviews, action.payload] as TReviews;
+    },
+    setReviewPostStatus: (state, action: PayloadAction<boolean>) => {
+      state.isReviewPosting = action.payload;
+    },
   },
 });
 
-export const { setReviews } = reviewProcessSlice.actions;
+export const { setReviews, setReviewPostStatus, updateReviews } = reviewProcessSlice.actions;

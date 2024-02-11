@@ -10,13 +10,6 @@ type ProductProcessType = {
   promos: TPromos;
   isProductLoading: boolean;
   similarProducts: TProducts | null;
-  price: number;
-  rating: number;
-  reviewCount: number;
-  previewImg: string;
-  previewImg2x: string;
-  previewImgWebp: string;
-  previewImgWebp2x: string;
 };
 
 const initialState: ProductProcessType = {
@@ -26,13 +19,7 @@ const initialState: ProductProcessType = {
   promos: [],
   isProductLoading: true,
   product: null,
-  price: 0,
-  rating: 0,
-  reviewCount: 0,
-  previewImg: '',
-  previewImg2x: '',
-  previewImgWebp: '',
-  previewImgWebp2x: '',
+
 };
 
 export const productsProcessSlice = createSlice({

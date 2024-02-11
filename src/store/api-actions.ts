@@ -11,8 +11,12 @@ import {
   setPromos,
   setSimilarProducts,
 } from './product-process/product-process';
-import { TReviews } from '../types/review';
-import { setReviews } from './review-process/review-process';
+import { TAddReview, TReview, TReviews } from '../types/review';
+import {
+  setReviewPostStatus,
+  setReviews,
+  updateReviews,
+} from './review-process/review-process';
 import { redirectToRoute } from './actions';
 import { TPromos } from '../types/promo';
 
@@ -87,3 +91,25 @@ export const fetchPromo = createAsyncThunk<void, undefined, thunkObjType>(
     }
   }
 );
+
+export const postReview = createAsyncThunk<
+  void,
+  TAddReview & { resetForm: () => void },
+  thunkObjType
+    >(
+    'user/review',
+    async ({ review, rating, resetForm }, { dispatch, extra: api }) => {
+      dispatch(setReviewPostStatus(true));
+      localStorage.setItem('review', review);
+      localStorage.setItem('rating', String(rating));
+      try {
+        const url = `${APIRoute.Reviews}`;
+        const { data } = await api.post<TReview>(url, { review, rating });
+        dispatch(updateReviews(data));
+        dispatch(setReviewPostStatus(false));
+        resetForm();
+      } catch {
+        dispatch(setReviewPostStatus(false));
+      }
+    }
+    );

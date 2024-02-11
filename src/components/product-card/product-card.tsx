@@ -30,6 +30,10 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
     setModalOpen(true);
   };
 
+  const closeModalHandler = () => {
+    setModalOpen(false);
+  };
+
   const title = 'Добавить товар в корзину';
 
   const content = (
@@ -43,8 +47,8 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
           <img
             src={previewImg}
             srcSet={previewImg2x}
-            width="140"
-            height="120"
+            width={140}
+            height={120}
             alt={name}
           />
         </picture>
@@ -125,7 +129,7 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
           title={title}
           content={content}
           buttons={buttons}
-          closeModal={() => setModalOpen(false)}
+          closeModal={closeModalHandler}
         />
       )}
     </div>
