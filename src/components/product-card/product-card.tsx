@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TProduct } from '../../types/products';
 import Modal from '../modal/modal';
 import { Link } from 'react-router-dom';
@@ -26,6 +26,7 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
   } = product;
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
   const openModalHandler = () => {
     setModalOpen(true);
   };
@@ -33,6 +34,31 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
   const closeModalHandler = () => {
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeModalHandler();
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        closeModalHandler();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const title = 'Добавить товар в корзину';
 

@@ -98,13 +98,17 @@ export const postReview = createAsyncThunk<
   thunkObjType
     >(
     'user/review',
-    async ({ review, rating, resetForm }, { dispatch, extra: api }) => {
+    async ({ review, rating, cameraId, userName, advantage, disadvantage, resetForm }, { dispatch, extra: api }) => {
       dispatch(setReviewPostStatus(true));
       localStorage.setItem('review', review);
       localStorage.setItem('rating', String(rating));
+      localStorage.setItem('userName', userName);
+      localStorage.setItem('cameraId', String(cameraId));
+      localStorage.setItem('advantage', advantage);
+      localStorage.setItem('disadvantage', disadvantage);
       try {
         const url = `${APIRoute.Reviews}`;
-        const { data } = await api.post<TReview>(url, { review, rating });
+        const { data } = await api.post<TReview>(url, { review, rating, cameraId, userName, advantage, disadvantage });
         dispatch(updateReviews(data));
         dispatch(setReviewPostStatus(false));
         resetForm();

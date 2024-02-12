@@ -9,6 +9,7 @@ import { useAppSelector } from '../../hooks/use-select';
 import { getReviews } from '../../store/review-process/selectors';
 import {
   getProduct,
+  getProducts,
   getSimilarProducts,
 } from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
@@ -19,6 +20,7 @@ import { AppRoute } from '../../const';
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
   const productId = Number(useParams().id);
+  const products = useAppSelector(getProducts);
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
   const similarProducts = useAppSelector(getSimilarProducts);
@@ -52,8 +54,13 @@ function Product(): JSX.Element {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (product === null || reviews === null || similarProducts === null) {
-    return <div></div>;
+  if (
+    products === null ||
+    reviews === null ||
+    product === null ||
+    similarProducts === null
+  ) {
+    return <div><p>Loading Screen Template</p></div>;
   }
 
   const {

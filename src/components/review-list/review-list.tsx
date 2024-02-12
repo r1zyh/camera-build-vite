@@ -3,6 +3,7 @@ import { TReviews } from '../../types/review';
 import ReviewItem from '../reivew-item/review-item';
 import dayjs from 'dayjs';
 import ReviewForm from '../review-form/review-form';
+import { useParams } from 'react-router-dom';
 type ReviewsProps = {
   reviews: TReviews;
 };
@@ -12,6 +13,8 @@ const REVIEWS_PER_LOAD = 3;
 
 function ReviewList({ reviews }: ReviewsProps): JSX.Element {
   const [visibleReviews, setVisibleReviews] = useState(INITIAL_VISIBLE_REVIEWS);
+  const [isFormOpen, setFormOpen] = useState(false);
+  const { id } = useParams();
   const sortedReviews = [...reviews].sort(
     (a, b) => dayjs(b.createAt).unix() - dayjs(a.createAt).unix()
   );
@@ -22,7 +25,6 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
     );
   };
 
-  const [isFormOpen, setFormOpen] = useState(false);
   const openFormHandler = () => {
     setFormOpen(true);
   };
@@ -65,7 +67,9 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
           )}
         </div>
       </section>
-      {isFormOpen && <ReviewForm closeForm={closeFormHandler} />}
+      {isFormOpen && (
+        <ReviewForm cameraId={id} closeForm={closeFormHandler} />
+      )}
     </div>
   );
 }

@@ -1,0 +1,25 @@
+.errorPage {
+    min-height: 100vh;
+  }
+  
+  .title {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+  }
+  
+  .text {
+    text-align: center;
+    font-size: 1.5em;
+  }
+  
+  .link {
+    color: #4481c3;
+    cursor: pointer; 
+    text-decoration: underline; 
+  }
+  
+  .link:hover {
+    color: #2165b9;
+    text-decoration: underline;
+  }

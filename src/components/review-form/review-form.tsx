@@ -1,18 +1,33 @@
-import { ChangeEvent, Fragment, useState } from 'react';
+import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
 import { ReviewLength, NameLength, ratingMap } from '../../const';
+import { useAppDispatch } from '../../hooks/use-dispatch';
+import { postReview } from '../../store/api-actions';
+import { useAppSelector } from '../../hooks/use-select';
+import { getActiveId } from '../../store/product-process/selectors';
+import { getReviewPostStatus } from '../../store/review-process/selectors';
 
 type ReviewFormProps = {
-  closeModal: () => void;
+  cameraId: string | undefined;
+  closeForm: () => void;
 };
 
-function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
-  const [review, setComment] = useState(localStorage.getItem('review') || '');
+function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const productId = useAppSelector(getActiveId);
+  const isReviewPosting = useAppSelector(getReviewPostStatus);
+
+  const [review, setReview] = useState(localStorage.getItem('review') || '');
   const [userName, setUserName] = useState(
     localStorage.getItem('userName') || ''
   );
-  const [advantage, setAdvantage] = useState('');
+  const [advantage, setAdvantage] = useState(
+    localStorage.getItem('advantage') || ''
+  );
+  const [disadvantage, setDisadvantage] = useState(
+    localStorage.getItem('disadvantage') || ''
+  );
+
   const [rating, setRating] = useState(localStorage.getItem('rating') || '');
-  const [isFormOpen, setFormOpen] = useState(false);
 
   const isValid =
     review.length >= ReviewLength.Min &&
@@ -21,36 +36,68 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
     userName.length <= NameLength.Max;
 
   const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(e.target.value);
+    setReview(e.target.value);
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setRating(e.target.value);
-  };
-
-  const handleFormClick = () => {
-    setFormOpen(false);
+    const { name, value } = e.target;
+    switch (name) {
+      case 'rate':
+        setRating(value);
+        break;
+      case 'user-name':
+        setUserName(value);
+        break;
+      case 'user-plus':
+        setAdvantage(value);
+        break;
+      case 'user-minus':
+        setDisadvantage(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const resetForm = () => {
-    setComment('');
+    setReview('');
     setRating('0');
     setUserName('');
+    setAdvantage('');
+    setDisadvantage('');
     localStorage.removeItem('review');
     localStorage.removeItem('rating');
     localStorage.removeItem('userName');
+    localStorage.removeItem('advantage');
+    localStorage.removeItem('disadvantage');
   };
 
-  const activeClass = isFormOpen ? 'is-active' : '';
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (productId !== null && isValid) {
+      dispatch(
+        postReview({
+          cameraId: Number(cameraId),
+          userName: userName,
+          advantage: advantage,
+          disadvantage: disadvantage,
+          review: review,
+          rating: Number(rating),
+          resetForm: resetForm,
+        })
+      );
+    }
+  };
 
   return (
-    <div className={`modal ${activeClass}`}>
+    <div className="modal is-active">
       <div className="modal__wrapper">
         <div className="modal__overlay"></div>
         <div className="modal__content">
           <p className="title title--h4">Оставить отзыв</p>
           <div className="form-review">
-            <form method="post">
+            <form method="post" onSubmit={handleFormSubmit}>
               <div className="form-review__rate">
                 <fieldset className="rate form-review__item">
                   <legend className="rate__caption">
@@ -78,7 +125,8 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
                               className="rate__label"
                               htmlFor={`star-${score}`}
                               title={title}
-                            ></label>
+                            >
+                            </label>
                           </Fragment>
                         ))}
                     </div>
@@ -103,6 +151,7 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
                       placeholder="Введите ваше имя"
                       minLength={2}
                       maxLength={15}
+                      onChange={handleInputChange}
                       required
                     />
                   </label>
@@ -122,6 +171,7 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
                       minLength={10}
                       maxLength={160}
                       placeholder="Основные преимущества товара"
+                      onChange={handleInputChange}
                       required
                     />
                   </label>
@@ -143,6 +193,7 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
                       minLength={10}
                       maxLength={160}
                       placeholder="Главные недостатки товара"
+                      onChange={handleInputChange}
                       required
                     />
                   </label>
@@ -164,7 +215,8 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
                       maxLength={160}
                       placeholder="Поделитесь своим опытом покупки"
                       onChange={handleTextareaChange}
-                    ></textarea>
+                    >
+                    </textarea>
                   </label>
                   <div className="custom-textarea__error">
                     Нужно добавить комментарий
@@ -174,9 +226,9 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
               <button
                 className="btn btn--purple form-review__btn"
                 type="submit"
-                disabled={!isValid}
+                disabled={isReviewPosting}
               >
-                Отправить отзыв
+                {isReviewPosting ? 'Отзыв отправляется...' : 'Отправить отзыв'}
               </button>
             </form>
           </div>
@@ -184,7 +236,7 @@ function ReviewForm({closeModal}: ReviewFormProps): JSX.Element {
             className="cross-btn"
             type="button"
             aria-label="Закрыть попап"
-            onClick={closeModal}
+            onClick={closeForm}
           >
             <svg width="10" height="10" aria-hidden="true">
               <use xlinkHref="#icon-close"></use>

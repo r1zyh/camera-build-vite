@@ -10,6 +10,7 @@ function ReviewItem({ review }: ReviewItemProps): JSX.Element {
   const {
     id,
     createAt,
+    cameraId,
     userName,
     advantage,
     disadvantage,
@@ -17,7 +18,7 @@ function ReviewItem({ review }: ReviewItemProps): JSX.Element {
     rating,
   } = review;
   return (
-    <li className="review-card" key={id}>
+    <li className="review-card" key={id} id={String(cameraId)}>
       <div className="review-card__head">
         <p className="title title--h4">{userName}</p>
         <time className="review-card__data" dateTime={createAt}>
