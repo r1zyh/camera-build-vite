@@ -29,10 +29,11 @@ type thunkObjType = {
 export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
   'data/fetchProducts',
   async (_arg, { dispatch, extra: api }) => {
+    dispatch(setProductsLoadingStatus(true));
     try {
-      dispatch(setProductsLoadingStatus(true));
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
+      dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
     }
@@ -50,27 +51,41 @@ export const fetchReviews = createAsyncThunk<
 
 export const fetchSimilarProducts = createAsyncThunk<
   void,
-  { id: number | undefined },
+  { id: string | undefined },
   thunkObjType
 >('data/fetchSimilarProducts', async ({ id }, { dispatch, extra: api }) => {
   dispatch(setProductsLoadingStatus(true));
   const url = id !== undefined ? `${APIRoute.Products}/${id}/similar` : '';
   const { data } = await api.get<TProducts>(url);
+  const newData: TProducts = data.map((item) => ({
+    ...item,
+    previewImg: `/${item.previewImg}`,
+    previewImg2x: `/${item.previewImg2x}`,
+    previewImgWebp: `/${item.previewImgWebp}`,
+    previewImgWebp2x: `/${item.previewImgWebp2x}`,
+  }));
   dispatch(setProductsLoadingStatus(false));
-  dispatch(setSimilarProducts(data));
+  dispatch(setSimilarProducts(newData));
 });
 
 export const fetchProduct = createAsyncThunk<
   void,
-  { id: number | undefined },
+  { id: string | undefined },
   thunkObjType
 >('data/fetchProduct', async ({ id }, { dispatch, extra: api }) => {
   dispatch(setProductsLoadingStatus(true));
   const url = id !== undefined ? `${APIRoute.Products}/${id}` : '';
   try {
     const { data } = await api.get<TProduct>(url);
-    dispatch(setProduct(data));
-    dispatch(fetchReviews({ id: id !== undefined ? String(id) : undefined }));
+    const newData = {
+      ...data,
+      previewImg: `/${data.previewImg}`,
+      previewImg2x: `/${data.previewImg2x}`,
+      previewImgWebp: `/${data.previewImgWebp}`,
+      previewImgWebp2x: `/${data.previewImgWebp2x}`,
+    };
+    dispatch(setProduct(newData));
+    dispatch(fetchReviews({ id }));
     dispatch(fetchSimilarProducts({ id }));
     dispatch(setActiveId(id));
     dispatch(setProductsLoadingStatus(false));
@@ -98,7 +113,10 @@ export const postReview = createAsyncThunk<
   thunkObjType
     >(
     'user/review',
-    async ({ review, rating, cameraId, userName, advantage, disadvantage, resetForm }, { dispatch, extra: api }) => {
+    async (
+      { review, rating, cameraId, userName, advantage, disadvantage, resetForm },
+      { dispatch, extra: api }
+    ) => {
       dispatch(setReviewPostStatus(true));
       localStorage.setItem('review', review);
       localStorage.setItem('rating', String(rating));
@@ -108,7 +126,14 @@ export const postReview = createAsyncThunk<
       localStorage.setItem('disadvantage', disadvantage);
       try {
         const url = `${APIRoute.Reviews}`;
-        const { data } = await api.post<TReview>(url, { review, rating, cameraId, userName, advantage, disadvantage });
+        const { data } = await api.post<TReview>(url, {
+          review,
+          rating,
+          cameraId,
+          userName,
+          advantage,
+          disadvantage,
+        });
         dispatch(updateReviews(data));
         dispatch(setReviewPostStatus(false));
         resetForm();

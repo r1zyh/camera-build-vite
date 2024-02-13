@@ -11,7 +11,7 @@ export const getProduct = (state: State): TProduct | null =>
 export const getSimilarProducts = (state: State): TProducts | null =>
   state[NameSpace.Products].similarProducts;
 
-export const getActiveId = (state: State): number | undefined =>
+export const getActiveId = (state: State): string | undefined =>
   state[NameSpace.Products].activeId;
 
 export const getProductsLoadingStatus = (state: State): boolean =>

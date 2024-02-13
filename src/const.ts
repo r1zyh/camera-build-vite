@@ -52,7 +52,7 @@ export const STAR_COUNTS = {
   total: 5,
 };
 
-export enum ReviewLength {
+export enum TextLength {
   Min = 10,
   Max = 160,
 }

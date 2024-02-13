@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import { TProduct } from '../../types/products';
 import Rating from '../rating/rating';
+import { AppRoute } from '../../const';
 
 type SimilarProductCardProps = {
   similarProduct: TProduct;
@@ -57,9 +59,9 @@ function SimilarProductCard({
         <button className="btn btn--purple product-card__btn" type="button">
           Купить
         </button>
-        <a className="btn btn--transparent" href="#">
+        <Link className="btn btn--transparent" to={`${AppRoute.Product}/${id}`}>
           Подробнее
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -19,13 +19,14 @@ import { AppRoute } from '../../const';
 
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
-  const productId = Number(useParams().id);
+  const productId = useParams().id;
   const products = useAppSelector(getProducts);
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
   const similarProducts = useAppSelector(getSimilarProducts);
 
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,9 +50,16 @@ function Product(): JSX.Element {
       </div>
     );
   }
+  const smoothScrollToTop = () => {
+    const c = document.documentElement.scrollTop || document.body.scrollTop;
+    if (c > 0) {
+      window.requestAnimationFrame(smoothScrollToTop);
+      window.scrollTo(0, c - c / 8);
+    }
+  };
 
   const scrollHandler = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    smoothScrollToTop();
   };
 
   if (
@@ -60,8 +68,16 @@ function Product(): JSX.Element {
     product === null ||
     similarProducts === null
   ) {
-    return <div><p>Loading Screen Template</p></div>;
+    return (
+      <div>
+        <p>Loading Screen Template</p>
+      </div>
+    );
   }
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   const {
     name,
@@ -151,19 +167,35 @@ function Product(): JSX.Element {
                   </button>
                   <div className="tabs product__tabs">
                     <div className="tabs__controls product__tabs-controls">
-                      <button className="tabs__control" type="button">
+                      <button
+                        className={`tabs__control ${
+                          activeTab === 'characteristics' ? 'is-active' : ''
+                        }`}
+                        type="button"
+                        onClick={() => handleTabClick('characteristics')}
+                      >
                         Характеристики
                       </button>
-                      <button className="tabs__control is-active" type="button">
+                      <button
+                        className={`tabs__control ${
+                          activeTab === 'description' ? 'is-active' : ''
+                        }`}
+                        type="button"
+                        onClick={() => handleTabClick('description')}
+                      >
                         Описание
                       </button>
                     </div>
                     <div className="tabs__content">
-                      <div className="tabs__element">
+                      <div
+                        className={`tabs__element ${
+                          activeTab === 'characteristics' ? 'is-active' : ''
+                        }`}
+                      >
                         <ul className="product__tabs-list">
                           <li className="item-list">
                             <span className="item-list__title">Артикул:</span>
-                            <p className="item-list__text"> {vendorCode}</p>
+                            <p className="item-list__text">{vendorCode}</p>
                           </li>
                           <li className="item-list">
                             <span className="item-list__title">Категория:</span>
@@ -181,7 +213,11 @@ function Product(): JSX.Element {
                           </li>
                         </ul>
                       </div>
-                      <div className="tabs__element is-active">
+                      <div
+                        className={`tabs__element ${
+                          activeTab === 'description' ? 'is-active' : ''
+                        }`}
+                      >
                         <div className="product__tabs-text">{description}</div>
                       </div>
                     </div>

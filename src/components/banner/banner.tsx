@@ -13,8 +13,7 @@ interface BannerProps {
 
 function Banner({ banners }: BannerProps): JSX.Element {
   if (!banners || banners.length === 0) {
-    return null; 
-    'some error template'
+    return <div></div>;
   }
 
   return (

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
-import { ReviewLength, NameLength, ratingMap } from '../../const';
+import { NameLength, TextLength, ratingMap } from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { postReview } from '../../store/api-actions';
 import { useAppSelector } from '../../hooks/use-select';
@@ -29,11 +29,14 @@ function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
 
   const [rating, setRating] = useState(localStorage.getItem('rating') || '');
 
-  const isValid =
-    review.length >= ReviewLength.Min &&
-    review.length <= ReviewLength.Max &&
-    userName.length >= NameLength.Min &&
-    userName.length <= NameLength.Max;
+  const isValid = (text: string) =>
+    text.length >= TextLength.Min && text.length <= TextLength.Max;
+
+  const isValidReview = () =>
+    isValid(review) &&
+    isValid(advantage) &&
+    isValid(disadvantage) &&
+    userName.length >= NameLength.Min && userName.length <= NameLength.Max;
 
   const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setReview(e.target.value);
@@ -75,7 +78,7 @@ function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (productId !== null && isValid) {
+    if (productId !== null && isValidReview()) {
       dispatch(
         postReview({
           cameraId: Number(cameraId),
@@ -226,7 +229,7 @@ function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
               <button
                 className="btn btn--purple form-review__btn"
                 type="submit"
-                disabled={isReviewPosting}
+                disabled={isReviewPosting && !isValidReview()}
               >
                 {isReviewPosting ? 'Отзыв отправляется...' : 'Отправить отзыв'}
               </button>
