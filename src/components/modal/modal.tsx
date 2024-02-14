@@ -18,6 +18,7 @@ function Modal({
   }, [closeModal]);
 
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         handleCloseModal();
@@ -37,6 +38,7 @@ function Modal({
     document.addEventListener('click', handleClickOutside);
 
     return () => {
+      document.body.style.overflow = '';
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('click', handleClickOutside);
     };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TReviews } from '../../types/review';
 import ReviewItem from '../reivew-item/review-item';
 import dayjs from 'dayjs';
@@ -24,6 +24,28 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
     (a, b) => dayjs(b.createAt).unix() - dayjs(a.createAt).unix()
   );
 
+  const [isScrollLocked, setScrollLocked] = useState(false);
+
+  useEffect(() => {
+    const disableScroll = () => {
+      document.body.style.overflow = 'hidden';
+    };
+
+    const enableScroll = () => {
+      document.body.style.overflow = 'auto';
+    };
+
+    if (isScrollLocked) {
+      disableScroll();
+    } else {
+      enableScroll();
+    }
+
+    return () => {
+      enableScroll();
+    };
+  }, [isScrollLocked]);
+
   const showMoreReviews = () => {
     setVisibleReviews((prevVisibleReviews) =>
       Math.min(prevVisibleReviews + REVIEWS_PER_LOAD, sortedReviews.length)
@@ -32,10 +54,12 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
 
   const openFormHandler = () => {
     setFormOpen(true);
+    setScrollLocked(true);
   };
 
   const closeFormHandler = () => {
     setFormOpen(false);
+    setScrollLocked(false);
   };
 
   const reviewSubmitHandler = () => {

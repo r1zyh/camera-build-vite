@@ -6,13 +6,15 @@ type SimilarProductsProps = {
   similarProducts: TProducts;
 };
 
-const ITEMS_PER_PAGE = 3;
-
 function SimilarProducts({
   similarProducts,
 }: SimilarProductsProps): JSX.Element {
   const [currentPage, setCurrentPage] = useState(0);
 
+  const ITEMS_PER_PAGE = 3;
+
+  const startIdx = currentPage * ITEMS_PER_PAGE;
+  const endIdx = (currentPage + 1) * ITEMS_PER_PAGE;
   const totalPages = Math.ceil(similarProducts.length / ITEMS_PER_PAGE);
 
   const handleNextClick = () => {
@@ -30,18 +32,13 @@ function SimilarProducts({
           <h2 className="title title--h3">Похожие товары</h2>
           <div className="product-similar__slider">
             <div className="product-similar__slider-list">
-              {similarProducts
-                .slice(
-                  currentPage * ITEMS_PER_PAGE,
-                  (currentPage + 1) * ITEMS_PER_PAGE
-                )
-                .map((product) => (
-                  <SimilarProductCard
-                    key={product.id}
-                    similarProduct={product}
-                    isActive={currentPage < ITEMS_PER_PAGE}
-                  />
-                ))}
+              {similarProducts.map((product, index) => (
+                <SimilarProductCard
+                  key={product.id}
+                  similarProduct={product}
+                  isActive={index >= startIdx && index < endIdx}
+                />
+              ))}
             </div>
             <button
               className="slider-controls slider-controls--prev"
