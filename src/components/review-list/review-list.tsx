@@ -3,7 +3,10 @@ import { TReviews } from '../../types/review';
 import ReviewItem from '../reivew-item/review-item';
 import dayjs from 'dayjs';
 import ReviewForm from '../review-form/review-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Modal from '../modal/modal';
+import { AppRoute } from '../../const';
+
 type ReviewsProps = {
   reviews: TReviews;
 };
@@ -14,7 +17,9 @@ const REVIEWS_PER_LOAD = 3;
 function ReviewList({ reviews }: ReviewsProps): JSX.Element {
   const [visibleReviews, setVisibleReviews] = useState(INITIAL_VISIBLE_REVIEWS);
   const [isFormOpen, setFormOpen] = useState(false);
+  const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
   const sortedReviews = [...reviews].sort(
     (a, b) => dayjs(b.createAt).unix() - dayjs(a.createAt).unix()
   );
@@ -33,8 +38,46 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
     setFormOpen(false);
   };
 
+  const reviewSubmitHandler = () => {
+    setIsReviewSubmitted(true);
+  };
+
+  const closeReviewHandler = () => {
+    setIsReviewSubmitted(false);
+  };
+
+  const navigationHandler = () => {
+    closeReviewHandler();
+    navigate(`${AppRoute.Product}/${id as string}`);
+  };
+
+  const titleModal = 'Спасибо за отзыв';
+  const content = (
+    <svg className="modal__icon" width="80" height="78" aria-hidden="true">
+      <use xlinkHref="#icon-review-success"></use>
+    </svg>
+  );
+
+  const buttons = (
+    <button
+      className="btn btn--purple modal__btn modal__btn--fit-width"
+      type="button"
+      onClick={navigationHandler}
+    >
+      Вернуться к покупкам
+    </button>
+  );
+
   return (
     <div className="page-content__section">
+      {isReviewSubmitted && (
+        <Modal
+          title={titleModal}
+          content={content}
+          buttons={buttons}
+          closeModal={closeReviewHandler}
+        />
+      )}
       <section className="review-block">
         <div className="container">
           <div className="page-content__headed">
@@ -68,7 +111,11 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
         </div>
       </section>
       {isFormOpen && (
-        <ReviewForm cameraId={id} closeForm={closeFormHandler} />
+        <ReviewForm
+          cameraId={id}
+          closeForm={closeFormHandler}
+          reviewSubmit={reviewSubmitHandler}
+        />
       )}
     </div>
   );

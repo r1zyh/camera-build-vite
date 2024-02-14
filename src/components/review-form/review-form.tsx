@@ -9,9 +9,14 @@ import { getReviewPostStatus } from '../../store/review-process/selectors';
 type ReviewFormProps = {
   cameraId: string | undefined;
   closeForm: () => void;
+  reviewSubmit: () => void;
 };
 
-function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
+function ReviewForm({
+  closeForm,
+  cameraId,
+  reviewSubmit,
+}: ReviewFormProps): JSX.Element {
   const dispatch = useAppDispatch();
   const productId = useAppSelector(getActiveId);
   const isReviewPosting = useAppSelector(getReviewPostStatus);
@@ -36,7 +41,8 @@ function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
     isValid(review) &&
     isValid(advantage) &&
     isValid(disadvantage) &&
-    userName.length >= NameLength.Min && userName.length <= NameLength.Max;
+    userName.length >= NameLength.Min &&
+    userName.length <= NameLength.Max;
 
   const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setReview(e.target.value);
@@ -89,7 +95,16 @@ function ReviewForm({ closeForm, cameraId }: ReviewFormProps): JSX.Element {
           rating: Number(rating),
           resetForm: resetForm,
         })
-      );
+      )
+        .then(() => {
+          closeForm();
+          reviewSubmit();
+        })
+        .catch((error) => {
+          <div>
+            <p>{error}</p>
+          </div>;
+        });
     }
   };
 

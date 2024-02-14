@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { TProduct } from '../../types/products';
 import Modal from '../modal/modal';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,7 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
   } = product;
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+
   const openModalHandler = () => {
     setModalOpen(true);
   };
@@ -35,30 +35,10 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
     setModalOpen(false);
   };
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeModalHandler();
-      }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        closeModalHandler();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
+  const buyButtonClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    openModalHandler();
+  };
 
   const title = 'Добавить товар в корзину';
 
@@ -101,6 +81,7 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
     <button
       className="btn btn--purple modal__btn modal__btn--fit-width"
       type="button"
+      onClick={buyButtonClickHandler}
     >
       <svg width="24" height="16" aria-hidden="true">
         <use xlinkHref="#icon-add-basket"></use>
@@ -142,7 +123,7 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
         <button
           className="btn btn--purple product-card__btn"
           type="button"
-          onClick={openModalHandler}
+          onClick={buyButtonClickHandler}
         >
           Купить
         </button>

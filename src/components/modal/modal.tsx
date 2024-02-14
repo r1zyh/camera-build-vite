@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 
 type ModalProps = {
   title: string;
@@ -13,10 +13,34 @@ function Modal({
   buttons,
   closeModal,
 }: ModalProps): JSX.Element {
-
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     closeModal();
-  };
+  }, [closeModal]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleCloseModal();
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        event.target instanceof HTMLElement &&
+        !event.target.closest('.modal__content')
+      ) {
+        handleCloseModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [closeModal, handleCloseModal]);
 
   return (
     <div className="modal is-active">
