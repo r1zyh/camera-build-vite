@@ -94,7 +94,6 @@ function SimilarProductCard({
     </button>
   );
 
-
   const cardClass = isActive ? 'product-card is-active' : 'product-card';
 
   return (
@@ -127,7 +126,11 @@ function SimilarProductCard({
         </p>
       </div>
       <div className="product-card__buttons">
-        <button className="btn btn--purple product-card__btn" type="button" onClick={buyButtonClickHandler}>
+        <button
+          className="btn btn--purple product-card__btn"
+          type="button"
+          onClick={buyButtonClickHandler}
+        >
           Купить
         </button>
         <Link className="btn btn--transparent" to={`${AppRoute.Product}/${id}`}>

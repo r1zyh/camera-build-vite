@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TProducts } from '../../types/products';
 import SimilarProductCard from '../similar-product-card/similar-product-card';
 
+
 type SimilarProductsProps = {
   similarProducts: TProducts;
 };
@@ -9,21 +10,22 @@ type SimilarProductsProps = {
 function SimilarProducts({
   similarProducts,
 }: SimilarProductsProps): JSX.Element {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const ITEMS_PER_PAGE = 3;
-
-  const startIdx = currentPage * ITEMS_PER_PAGE;
-  const endIdx = (currentPage + 1) * ITEMS_PER_PAGE;
-  const totalPages = Math.ceil(similarProducts.length / ITEMS_PER_PAGE);
-
-  const handleNextClick = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages - 1));
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(similarProducts.length / itemsPerPage);
 
   const handlePrevClick = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
+    setCurrentPage(currentPage - 1);
   };
+
+  const handleNextClick = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const visibleProducts = similarProducts.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <div className="page-content__section">
@@ -32,11 +34,13 @@ function SimilarProducts({
           <h2 className="title title--h3">Похожие товары</h2>
           <div className="product-similar__slider">
             <div className="product-similar__slider-list">
-              {similarProducts.map((product, index) => (
+              {similarProducts.map((product) => (
                 <SimilarProductCard
                   key={product.id}
                   similarProduct={product}
-                  isActive={index >= startIdx && index < endIdx}
+                  isActive={visibleProducts.some(
+                    (visibleProduct) => visibleProduct.id === product.id
+                  )}
                 />
               ))}
             </div>
