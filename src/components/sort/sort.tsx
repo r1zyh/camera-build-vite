@@ -22,6 +22,7 @@ function Sort(): JSX.Element {
                 name="sort-icon"
                 defaultChecked
                 aria-label="По возрастанию"
+                data-testid="up"
               />
               <label htmlFor="up">
                 <svg width={16} height={14} aria-hidden="true">
@@ -35,6 +36,7 @@ function Sort(): JSX.Element {
                 id="down"
                 name="sort-icon"
                 aria-label="По убыванию"
+                data-testid="down"
               />
               <label htmlFor="down">
                 <svg width={16} height={14} aria-hidden="true">
