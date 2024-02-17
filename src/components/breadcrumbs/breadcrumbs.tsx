@@ -6,7 +6,7 @@ function Breadcrumbs(): JSX.Element {
           <li className="breadcrumbs__item">
             <a className="breadcrumbs__link" href="index.html">
               Главная
-              <svg width={5} height={8} aria-hidden="true">
+              <svg width={5} height={8} aria-hidden="true" data-testid='arrow-icon'>
                 <use xlinkHref="#icon-arrow-mini"></use>
               </svg>
             </a>
