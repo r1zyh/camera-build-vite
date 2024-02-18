@@ -1,15 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import HeaderLayout from './header';
+import { withHistory } from '../../store/mock-components/mock-components';
 
 describe('HeaderLayout component', () => {
   it('should render correctly', () => {
-    render(
-      <MemoryRouter>
-        <HeaderLayout />
-      </MemoryRouter>
-    );
+    render(withHistory(<HeaderLayout />));
 
     expect(screen.getByLabelText('Переход на главную')).toBeInTheDocument();
 

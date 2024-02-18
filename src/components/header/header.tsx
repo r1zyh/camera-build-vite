@@ -17,7 +17,7 @@ function HeaderLayout(): JSX.Element {
         <nav className="main-nav header__main-nav">
           <ul className="main-nav__list">
             <li className="main-nav__item">
-              <Link className="main-nav__link" to={AppRoute.Main}>
+              <Link className="main-nav__link" to={AppRoute.Main} data-testid='header-catalog-link'>
                 Каталог
               </Link>
             </li>
