@@ -42,7 +42,7 @@ export const makeFakeProduct = (): TProduct => ({
 });
 
 export const makeFakePromo = () => ({
-  id: 1,
+  id: getRandomInt(1, 5),
   name: 'Орленок',
   previewImg: '/markup/img/content/orlenok.jpg',
   previewImg2x: '/markup/img/content/orlenok@2x.jpg',
