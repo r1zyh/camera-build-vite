@@ -4,3 +4,8 @@ export function humanizeReviewDate(date: string) {
   const formattedDate = dayjs(date).locale('ru').format('DD MMMM');
   return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1);
 }
+export function getRandomInt(min: number, max: number): number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

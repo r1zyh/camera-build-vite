@@ -23,11 +23,11 @@ export enum LevelTypes {
   Professional = 'Любительский',
 }
 
-export const NameSpace = {
-  Reviews: 'REVIEWS',
-  Products: 'PRODUCTS',
-  Promo: 'PROMO',
-} as const;
+export enum NameSpace {
+  Reviews = 'REVIEWS',
+  Products = 'PRODUCTS',
+  Promo = 'PROMO',
+}
 
 export enum APIRoute {
   Products = '/cameras',
