@@ -26,7 +26,7 @@ function Banner({ banners }: BannerProps): JSX.Element {
     >
       {banners.map((banner) => (
         <SwiperSlide key={banner.id}>
-          <div className="banner">
+          <div className="banner" data-testid="banner">
             <picture>
               <source
                 type="image/webp"

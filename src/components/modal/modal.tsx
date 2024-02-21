@@ -19,16 +19,16 @@ function Modal({
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         handleCloseModal();
       }
     };
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (
-        event.target instanceof HTMLElement &&
-        !event.target.closest('.modal__content')
+        e.target instanceof HTMLElement &&
+        !e.target.closest('.modal__content')
       ) {
         handleCloseModal();
       }
