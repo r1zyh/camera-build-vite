@@ -7,11 +7,7 @@ type RatingProps = {
 };
 
 const Rating = ({ rating, reviewCount, className }: RatingProps) => {
-  const renderStars = (
-    fullStars: number,
-    halfStar: boolean,
-    emptyStars: number
-  ) => {
+  const renderStars = (fullStars: number, emptyStars: number) => {
     const stars = [];
     for (let i = 0; i < fullStars; i++) {
       stars.push(
@@ -22,18 +18,6 @@ const Rating = ({ rating, reviewCount, className }: RatingProps) => {
           aria-hidden="true"
         >
           <use xlinkHref={`#${STAR_ICONS.full}`}></use>
-        </svg>
-      );
-    }
-    if (halfStar) {
-      stars.push(
-        <svg
-          key="half"
-          width={STAR_DIMENSIONS.width}
-          height={STAR_DIMENSIONS.height}
-          aria-hidden="true"
-        >
-          <use xlinkHref={`#${STAR_ICONS.half}`}></use>
         </svg>
       );
     }
@@ -52,14 +36,13 @@ const Rating = ({ rating, reviewCount, className }: RatingProps) => {
     return stars;
   };
 
+  const fullStars = Math.floor(rating);
+  const emptyStars = STAR_COUNTS.total - Math.ceil(rating);
+
   return (
-    <div className={`rate ${className}`}>
-      {renderStars(
-        Math.floor(rating),
-        rating % 1 >= STAR_COUNTS.halfThreshold,
-        STAR_COUNTS.total - Math.ceil(rating)
-      )}
-      <p className="visually-hidden">Рейтинг: {rating}</p>
+    <div className={`rate ${className}`} data-testid="rating">
+      {renderStars(fullStars, emptyStars)}
+      <p className="visually-hidden" data-testid='hidden-rate'>Рейтинг: {rating}</p>
       <p className="rate__count">
         <span className="visually-hidden">Всего оценок:</span>
         {reviewCount}

@@ -42,13 +42,11 @@ export const STAR_DIMENSIONS = {
 
 export const STAR_ICONS = {
   full: 'icon-full-star',
-  half: 'icon-half-star',
   empty: 'icon-star',
 };
 
 export const STAR_COUNTS = {
   full: 1,
-  halfThreshold: 0.5,
   total: 5,
 };
 

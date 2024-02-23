@@ -7,7 +7,7 @@ describe('Modal component', () => {
   const mockTitle = 'Test Modal';
   const mockContent = <div>Modal content</div>;
   const mockButtons = <button>OK</button>;
-  const noop = () => undefined;
+  const mockHandleClick = vi.fn();
 
   it('renders without crashing', () => {
     render(
@@ -15,7 +15,7 @@ describe('Modal component', () => {
         title={mockTitle}
         content={mockContent}
         buttons={mockButtons}
-        closeModal={noop}
+        closeModal={mockHandleClick}
       />
     );
   });
@@ -48,7 +48,6 @@ describe('Modal component', () => {
 
     userEvent.click(getByLabelText('Закрыть попап'));
 
-    // Ждем обновления состояния с помощью act
     act(() => {
       expect(closeModalCalled).toBe(false);
     });

@@ -17,8 +17,8 @@ export const makeFakeReview = (): TReview => ({
   createAt: new Date().toString(),
   cameraId: getRandomInt(1, 5),
   userName: 'fake user',
-  advantage: 'Lorem ipsum dolor sit amet',
-  disadvantage: 'Lorem ipsum dolor sit amet, consectetur.',
+  advantage: 'Some advantage',
+  disadvantage: 'Some disadvantage.',
   review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   rating: getRandomInt(1, 5),
 });
