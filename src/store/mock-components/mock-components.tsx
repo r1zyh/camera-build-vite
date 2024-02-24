@@ -46,3 +46,6 @@ export function withStore(
     mockAxiosAdapter,
   };
 }
+
+export const extractActionsTypes = (actions: Action<string>[]) =>
+  actions.map(({ type }) => type);

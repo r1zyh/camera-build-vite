@@ -102,7 +102,7 @@ export const fetchPromo = createAsyncThunk<void, undefined, thunkObjType>(
       const { data } = await api.get<TPromos>(APIRoute.Promo);
       dispatch(setPromos(data));
     } catch (error) {
-      console.error(error);
+      dispatch(redirectToRoute(AppRoute.Error));
     }
   }
 );

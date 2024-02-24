@@ -6,15 +6,26 @@ import Product from '../../pages/product/product';
 import NotFoundPage from '../../pages/not-found/not-found';
 import { HelmetProvider } from 'react-helmet-async';
 import { useAppDispatch } from '../../hooks/use-dispatch';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { fetchProducts, fetchPromo } from '../../store/api-actions';
+import ErrorComponent from '../error/error';
 
 function App() {
+
   const dispatch = useAppDispatch();
-  useEffect(() => {
+  const dispatchFetchProducts = useCallback(() => {
     dispatch(fetchProducts());
+
+  }, [dispatch]);
+
+  const dispatchFetchPromo = useCallback(() => {
     dispatch(fetchPromo());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatchFetchProducts();
+    dispatchFetchPromo();
+  }, [dispatchFetchProducts, dispatchFetchPromo]);
 
   return (
     <HelmetProvider>
@@ -23,6 +34,7 @@ function App() {
           <Route path={AppRoute.Main} element={<Main />}></Route>
           <Route path={AppRoute.Basket} element={<Basket />} />
           <Route path={`${AppRoute.Product}/:id`} element={<Product />} />
+          <Route path={AppRoute.Error} element={<ErrorComponent />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
