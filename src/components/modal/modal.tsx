@@ -45,7 +45,7 @@ function Modal({
   }, [closeModal, handleCloseModal]);
 
   return (
-    <div className="modal is-active">
+    <div className="modal is-active" data-testid="modal">
       <div className="modal__wrapper">
         <div className="modal__overlay"></div>
         <div className="modal__content">

@@ -90,9 +90,16 @@ function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
       Добавить в корзину
     </button>
   );
+
   const cardClass = isActive ? 'product-card is-active' : 'product-card';
+
   return (
-    <div className={cardClass} key={product.id} id={String(id)}>
+    <div
+      className={cardClass}
+      key={product.id}
+      id={String(id)}
+      data-testid="product-card-div"
+    >
       <div className="product-card__img">
         <picture>
           <source
@@ -115,7 +122,7 @@ function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
           className="product-card__rate"
         />
         <p className="product-card__title">{name}</p>
-        <p className="product-card__price">
+        <p className="product-card__price" data-testid="price">
           <span className="visually-hidden">Цена:</span>
           {price} ₽
         </p>
