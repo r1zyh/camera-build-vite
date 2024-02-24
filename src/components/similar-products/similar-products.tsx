@@ -10,7 +10,7 @@ type SimilarProductsProps = {
 function SimilarProducts({
   similarProducts,
 }: SimilarProductsProps): JSX.Element {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 3;
   const totalPages = Math.ceil(similarProducts.length / itemsPerPage);
 
