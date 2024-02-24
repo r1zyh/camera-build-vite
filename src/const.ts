@@ -67,3 +67,6 @@ export const ratingMap = {
   '2': 'Плохо',
   '1': 'Ужасно',
 };
+
+export const INITIAL_VISIBLE_REVIEWS = 3;
+export const REVIEWS_PER_LOAD = 3;

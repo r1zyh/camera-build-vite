@@ -5,14 +5,15 @@ import dayjs from 'dayjs';
 import ReviewForm from '../review-form/review-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from '../modal/modal';
-import { AppRoute } from '../../const';
+import {
+  AppRoute,
+  INITIAL_VISIBLE_REVIEWS,
+  REVIEWS_PER_LOAD,
+} from '../../const';
 
 type ReviewsProps = {
   reviews: TReviews;
 };
-
-const INITIAL_VISIBLE_REVIEWS = 3;
-const REVIEWS_PER_LOAD = 3;
 
 function ReviewList({ reviews }: ReviewsProps): JSX.Element {
   const [visibleReviews, setVisibleReviews] = useState(INITIAL_VISIBLE_REVIEWS);
@@ -94,6 +95,13 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
 
   return (
     <div className="page-content__section">
+      {isFormOpen && (
+        <ReviewForm
+          cameraId={id}
+          closeForm={closeFormHandler}
+          reviewSubmit={reviewSubmitHandler}
+        />
+      )}
       {isReviewSubmitted && (
         <Modal
           title={titleModal}
@@ -106,7 +114,12 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
         <div className="container">
           <div className="page-content__headed">
             <h2 className="title title--h3">Отзывы</h2>
-            <button className="btn" type="button" onClick={openFormHandler}>
+            <button
+              className="btn"
+              type="button"
+              onClick={openFormHandler}
+              data-testid="review-button"
+            >
               Оставить свой отзыв
             </button>
           </div>
@@ -125,6 +138,7 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
                     className="btn btn--purple"
                     type="button"
                     onClick={showMoreReviews}
+                    data-testid="more-reviews"
                   >
                     Показать больше отзывов
                   </button>
@@ -134,13 +148,6 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
           )}
         </div>
       </section>
-      {isFormOpen && (
-        <ReviewForm
-          cameraId={id}
-          closeForm={closeFormHandler}
-          reviewSubmit={reviewSubmitHandler}
-        />
-      )}
     </div>
   );
 }
