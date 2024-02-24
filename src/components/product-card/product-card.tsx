@@ -7,9 +7,10 @@ import Rating from '../rating/rating';
 
 type ProductCardProps = {
   product: TProduct;
+  isActive?: boolean;
 };
 
-function ProductCard({ product }: ProductCardProps): JSX.Element {
+function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
   const {
     id,
     name,
@@ -89,9 +90,9 @@ function ProductCard({ product }: ProductCardProps): JSX.Element {
       Добавить в корзину
     </button>
   );
-
+  const cardClass = isActive ? 'product-card is-active' : 'product-card';
   return (
-    <div className="product-card" key={product.id} id={String(id)}>
+    <div className={cardClass} key={product.id} id={String(id)}>
       <div className="product-card__img">
         <picture>
           <source

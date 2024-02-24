@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TProducts } from '../../types/products';
-import SimilarProductCard from '../similar-product-card/similar-product-card';
+import ProductCard from '../product-card/product-card';
 
 
 type SimilarProductsProps = {
@@ -35,9 +35,9 @@ function SimilarProducts({
           <div className="product-similar__slider">
             <div className="product-similar__slider-list">
               {similarProducts.map((product) => (
-                <SimilarProductCard
+                <ProductCard
                   key={product.id}
-                  similarProduct={product}
+                  product={product}
                   isActive={visibleProducts.some(
                     (visibleProduct) => visibleProduct.id === product.id
                   )}
