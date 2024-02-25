@@ -31,7 +31,7 @@ import {
   setActiveId,
   setPromos,
 } from './product-process/product-process';
-import { setReviews } from './review-process/review-process';
+import { setReviewPostStatus, setReviews, updateReviews } from './review-process/review-process';
 
 describe('Async actions', () => {
   const axios = createAPI();
@@ -195,7 +195,7 @@ describe('Async actions', () => {
       const fetchSimilarProductsActionFulfilled = emittedActions.at(
         2
       ) as ReturnType<typeof fetchSimilarProducts.fulfilled>;
-      (setProduct(newData));
+      setProduct(newData);
 
       expect(extractedActionsTypes).toEqual([
         fetchProduct.pending.type,
@@ -225,6 +225,49 @@ describe('Async actions', () => {
 
       const emittedActions = store.getActions();
       expect(emittedActions).toContainEqual(redirectToRoute(AppRoute.NotFound));
+    });
+  });
+
+  describe('postReview', () => {
+    it('should dispatch correct actions', async () => {
+
+      const mockReviewData = {
+        review: 'Test review',
+        rating: 5,
+        cameraId: 123,
+        userName: 'Test User',
+        advantage: 'Advantage',
+        disadvantage: 'Disadvantage',
+        resetForm: vi.fn(),
+      };
+
+      mockAxiosAdapter
+        .onPost(`${APIRoute.Reviews}`)
+        .reply(200, mockReviewData);
+
+      await store.dispatch(postReview(mockReviewData));
+
+      const emittedActions = store.getActions();
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchPostReviewsActionFulfilled = emittedActions.at(2) as ReturnType<
+        typeof postReview.fulfilled
+      >;
+
+      expect(extractedActionsTypes).toEqual([
+        postReview.pending.type,
+        setReviewPostStatus.type,
+        updateReviews.type,
+        setReviewPostStatus.type,
+        postReview.fulfilled.type,
+      ]);
+      expect(fetchPostReviewsActionFulfilled.payload).toEqual(expect.objectContaining({
+        review: mockReviewData.review,
+        rating: mockReviewData.rating,
+        cameraId: mockReviewData.cameraId,
+        userName: mockReviewData.userName,
+        advantage: mockReviewData.advantage,
+        disadvantage: mockReviewData.disadvantage
+      }));
     });
   });
 });
