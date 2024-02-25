@@ -1,4 +1,10 @@
-import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  Fragment,
+  useEffect,
+  useState,
+} from 'react';
 import { NameLength, TextLength, ratingMap } from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { postReview } from '../../store/api-actions';
@@ -17,6 +23,32 @@ function ReviewForm({
   cameraId,
   reviewSubmit,
 }: ReviewFormProps): JSX.Element {
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeForm();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        e.target instanceof HTMLElement &&
+        !e.target.closest('.modal__content')
+      ) {
+        closeForm();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [closeForm]);
+
   const dispatch = useAppDispatch();
   const productId = useAppSelector(getActiveId);
   const isReviewPosting = useAppSelector(getReviewPostStatus);
@@ -109,7 +141,7 @@ function ReviewForm({
   };
 
   return (
-    <div className="modal is-active" data-testid='review-form'>
+    <div className="modal is-active" data-testid="review-form">
       <div className="modal__wrapper">
         <div className="modal__overlay"></div>
         <div className="modal__content">

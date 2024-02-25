@@ -53,7 +53,8 @@ function ReviewList({ reviews }: ReviewsProps): JSX.Element {
     );
   };
 
-  const openFormHandler = () => {
+  const openFormHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setFormOpen(true);
     setScrollLocked(true);
   };

@@ -48,6 +48,7 @@ function Product(): JSX.Element {
       <div className="error-message">
         <p>{fetchError}</p>
       </div>
+
     );
   }
   const smoothScrollToTop = () => {

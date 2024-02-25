@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TProduct } from '../../types/products';
 import Modal from '../modal/modal';
 import { Link } from 'react-router-dom';
@@ -26,7 +26,15 @@ function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
     previewImgWebp2x,
   } = product;
 
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [isModalOpen]);
+
 
   const openModalHandler = () => {
     setModalOpen(true);
@@ -80,6 +88,7 @@ function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
 
   const buttons = (
     <button
+      ref={buttonRef}
       className="btn btn--purple modal__btn modal__btn--fit-width"
       type="button"
       onClick={buyButtonClickHandler}
