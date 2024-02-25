@@ -20,8 +20,18 @@ import {
   AppThunkDispatch,
   makeFakeProduct,
   makeFakePromo,
+  makeFakeReview,
 } from './mock-components/mocks';
 import { extractActionsTypes } from './mock-components/mock-components';
+import {
+  setProductsLoadingStatus,
+  setProducts,
+  setSimilarProducts,
+  setProduct,
+  setActiveId,
+  setPromos,
+} from './product-process/product-process';
+import { setReviews } from './review-process/review-process';
 
 describe('Async actions', () => {
   const axios = createAPI();
@@ -49,19 +59,20 @@ describe('Async actions', () => {
       await store.dispatch(fetchProducts());
 
       const emittedActions = store.getActions();
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchProductsActionFulfilled = emittedActions.at(2) as ReturnType<
+        typeof fetchProducts.fulfilled
+      >;
 
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setProductsLoadingStatus',
-        payload: true,
-      });
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setProducts',
-        payload: mockProducts,
-      });
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setProductsLoadingStatus',
-        payload: false,
-      });
+      expect(extractedActionsTypes).toEqual([
+        fetchProducts.pending.type,
+        setProductsLoadingStatus.type,
+        setProducts.type,
+        setProductsLoadingStatus.type,
+        fetchProducts.fulfilled.type,
+      ]);
+
+      expect(fetchProductsActionFulfilled.payload).toEqual(mockProducts);
     });
   });
 
@@ -84,18 +95,21 @@ describe('Async actions', () => {
 
       const emittedActions = store.getActions();
 
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setProductsLoadingStatus',
-        payload: true,
-      });
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setProductsLoadingStatus',
-        payload: false,
-      });
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setSimilarProducts',
-        payload: mockResponseData,
-      });
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchSimilarProductsActionFulfilled = emittedActions.at(
+        2
+      ) as ReturnType<typeof fetchSimilarProducts.fulfilled>;
+
+      expect(extractedActionsTypes).toEqual([
+        fetchSimilarProducts.pending.type,
+        setProductsLoadingStatus.type,
+        setSimilarProducts.type,
+        setProductsLoadingStatus.type,
+        fetchSimilarProducts.fulfilled.type,
+      ]);
+      expect(fetchSimilarProductsActionFulfilled.payload).toEqual(
+        mockResponseData
+      );
     });
   });
 
@@ -107,13 +121,21 @@ describe('Async actions', () => {
       await store.dispatch(fetchPromo());
 
       const emittedActions = store.getActions();
-      expect(emittedActions).toContainEqual({
-        type: 'PRODUCTS/setPromos',
-        payload: mockPromos,
-      });
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchPromosActionFulfilled = emittedActions.at(1) as ReturnType<
+        typeof fetchPromo.fulfilled
+      >;
+
+      expect(extractedActionsTypes).toEqual([
+        fetchPromo.pending.type,
+        setPromos.type,
+        fetchPromo.fulfilled.type,
+      ]);
+
+      expect(fetchPromosActionFulfilled.payload).toEqual(mockPromos);
     });
 
-    it('should dispatch correct actions on error fetch', async () => {
+    it('should dispatch correct actions on fetch error', async () => {
       const mockPromos = [makeFakePromo(), makeFakePromo()];
       mockAxiosAdapter.onGet(APIRoute.Promo).reply(500, mockPromos);
 
@@ -121,6 +143,88 @@ describe('Async actions', () => {
 
       const emittedActions = store.getActions();
       expect(emittedActions).toContainEqual(redirectToRoute(AppRoute.Error));
+    });
+  });
+
+  describe('fetchReviews', () => {
+    it('should dispatch correct actions', async () => {
+      const mockId = '123';
+      const mockReviews = [makeFakeReview(), makeFakeReview()];
+      mockAxiosAdapter
+        .onGet(`${APIRoute.Products}/${mockId}/reviews`)
+        .reply(200, mockReviews);
+
+      await store.dispatch(fetchReviews({ id: mockId }));
+
+      const emittedActions = store.getActions();
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchReviewsActionFulfilled = emittedActions.at(1) as ReturnType<
+        typeof fetchReviews.fulfilled
+      >;
+
+      expect(extractedActionsTypes).toEqual([
+        fetchReviews.pending.type,
+        setReviews.type,
+        fetchReviews.fulfilled.type,
+      ]);
+      expect(fetchReviewsActionFulfilled.payload).toEqual(mockReviews);
+    });
+  });
+
+  describe('fetchProduct', () => {
+    it('should dispatch correct actions', async () => {
+      const mockId = '123';
+      const mockProduct = makeFakeProduct();
+      const newData = {
+        ...mockProduct,
+        previewImg: `/${mockProduct.previewImg}`,
+        previewImg2x: `/${mockProduct.previewImg2x}`,
+        previewImgWebp: `/${mockProduct.previewImgWebp}`,
+        previewImgWebp2x: `/${mockProduct.previewImgWebp2x}`,
+      };
+
+      mockAxiosAdapter
+        .onGet(`${APIRoute.Products}/${mockId}`)
+        .reply(200, mockProduct);
+
+      await store.dispatch(fetchProduct({ id: mockId }));
+
+      const emittedActions = store.getActions();
+
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const fetchSimilarProductsActionFulfilled = emittedActions.at(
+        2
+      ) as ReturnType<typeof fetchSimilarProducts.fulfilled>;
+      (setProduct(newData));
+
+      expect(extractedActionsTypes).toEqual([
+        fetchProduct.pending.type,
+        setProductsLoadingStatus.type,
+        setProduct.type,
+        fetchReviews.pending.type,
+        fetchSimilarProducts.pending.type,
+        setProductsLoadingStatus.type,
+        setActiveId.type,
+        setProductsLoadingStatus.type,
+        setReviews.type,
+        setSimilarProducts.type,
+        setProductsLoadingStatus.type,
+        fetchProduct.fulfilled.type,
+      ]);
+      expect(fetchSimilarProductsActionFulfilled.payload).toEqual(newData);
+    });
+
+    it('should dispatch correct actions on fetch error', async () => {
+      const mockId = '123';
+      const mockProduct = makeFakeProduct();
+      mockAxiosAdapter
+        .onGet(`${APIRoute.Products}/${mockId}`)
+        .reply(500, mockProduct);
+
+      await store.dispatch(fetchProduct({ id: mockId }));
+
+      const emittedActions = store.getActions();
+      expect(emittedActions).toContainEqual(redirectToRoute(AppRoute.NotFound));
     });
   });
 });

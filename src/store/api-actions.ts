@@ -64,8 +64,8 @@ export const fetchSimilarProducts = createAsyncThunk<
     previewImgWebp: `/${item.previewImgWebp}`,
     previewImgWebp2x: `/${item.previewImgWebp2x}`,
   }));
-  dispatch(setProductsLoadingStatus(false));
   dispatch(setSimilarProducts(newData));
+  dispatch(setProductsLoadingStatus(false));
 });
 
 export const fetchProduct = createAsyncThunk<
