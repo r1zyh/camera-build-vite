@@ -4,6 +4,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 
 import { TPromos } from '../../types/promo';
+import { AppRoute } from '../../const';
+import { Link } from 'react-router-dom';
 
 SwiperCore.use([Navigation, Pagination, Autoplay]);
 
@@ -46,9 +48,12 @@ function Banner({ banners }: BannerProps): JSX.Element {
               <span className="banner__text">
                 Профессиональная камера от известного производителя
               </span>
-              <a className="btn" href="#">
+              <Link
+                className="btn btn--transparent"
+                to={`${AppRoute.Product}/${banner.id}`}
+              >
                 Подробнее
-              </a>
+              </Link>
             </p>
           </div>
         </SwiperSlide>
