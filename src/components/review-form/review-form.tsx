@@ -3,6 +3,7 @@ import {
   FormEvent,
   Fragment,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { NameLength, TextLength, ratingMap } from '../../const';
@@ -23,6 +24,7 @@ function ReviewForm({
   cameraId,
   reviewSubmit,
 }: ReviewFormProps): JSX.Element {
+  const userNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -42,6 +44,10 @@ function ReviewForm({
 
     document.addEventListener('keydown', handleEscape);
     document.addEventListener('click', handleClickOutside);
+
+    if (userNameRef.current) {
+      userNameRef.current.focus();
+    }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
@@ -196,6 +202,7 @@ function ReviewForm({
                       </svg>
                     </span>
                     <input
+                      ref={userNameRef}
                       type="text"
                       name="user-name"
                       placeholder="Введите ваше имя"
