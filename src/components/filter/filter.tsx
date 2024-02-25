@@ -61,7 +61,12 @@ function Filter(): JSX.Element {
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="collection" defaultChecked disabled />
+                <input
+                  type="checkbox"
+                  name="collection"
+                  defaultChecked
+                  disabled
+                />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Коллекционная</span>
               </label>

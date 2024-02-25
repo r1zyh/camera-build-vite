@@ -12,7 +12,7 @@ function Basket(): JSX.Element {
       </Helmet>
       <HeaderLayout />
       <main>
-        <div className="page-content" data-testid='basket'>
+        <div className="page-content" data-testid="basket">
           <div className="breadcrumbs">
             <div className="container">
               <ul className="breadcrumbs__list">
@@ -25,7 +25,11 @@ function Basket(): JSX.Element {
                   </a>
                 </li>
                 <li className="breadcrumbs__item">
-                  <Link className="breadcrumbs__link" to={AppRoute.Main} data-testid="breadcrumbs-list-catalog">
+                  <Link
+                    className="breadcrumbs__link"
+                    to={AppRoute.Main}
+                    data-testid="breadcrumbs-list-catalog"
+                  >
                     Каталог
                     <svg width="5" height="8" aria-hidden="true">
                       <use xlinkHref="#icon-arrow-mini"></use>
@@ -33,7 +37,10 @@ function Basket(): JSX.Element {
                   </Link>
                 </li>
                 <li className="breadcrumbs__item">
-                  <span className="breadcrumbs__link breadcrumbs__link--active" data-testid='breadcrumbs-list-basket'>
+                  <span
+                    className="breadcrumbs__link breadcrumbs__link--active"
+                    data-testid="breadcrumbs-list-basket"
+                  >
                     Корзина
                   </span>
                 </li>
@@ -214,7 +221,12 @@ function Basket(): JSX.Element {
                     <form action="#">
                       <div className="custom-input">
                         <label>
-                          <span className="custom-input__label" data-testid='basket-promo'>Промокод</span>
+                          <span
+                            className="custom-input__label"
+                            data-testid="basket-promo"
+                          >
+                            Промокод
+                          </span>
                           <input
                             type="text"
                             name="promo"

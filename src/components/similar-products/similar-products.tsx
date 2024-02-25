@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { TProducts } from '../../types/products';
 import ProductCard from '../product-card/product-card';
 
-
 type SimilarProductsProps = {
   similarProducts: TProducts;
 };
@@ -48,7 +47,7 @@ function SimilarProducts({
               className="slider-controls slider-controls--prev"
               type="button"
               aria-label="Предыдущая страница"
-              style={{pointerEvents: 'auto'}}
+              style={{ pointerEvents: 'auto' }}
               onClick={handlePrevClick}
               disabled={currentPage === 0}
             >
@@ -58,7 +57,7 @@ function SimilarProducts({
             </button>
             <button
               className="slider-controls slider-controls--next"
-              style={{pointerEvents: 'auto'}}
+              style={{ pointerEvents: 'auto' }}
               type="button"
               aria-label="Следующая страница"
               onClick={handleNextClick}

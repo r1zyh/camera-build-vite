@@ -43,12 +43,10 @@ function Product(): JSX.Element {
   }, [productId, dispatch]);
 
   if (fetchError) {
-    //вынести error в отдельный компонент
     return (
       <div className="error-message">
         <p>{fetchError}</p>
       </div>
-
     );
   }
   const smoothScrollToTop = () => {

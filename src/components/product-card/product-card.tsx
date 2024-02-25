@@ -35,7 +35,6 @@ function ProductCard({ product, isActive }: ProductCardProps): JSX.Element {
     }
   }, [isModalOpen]);
 
-
   const openModalHandler = () => {
     setModalOpen(true);
   };

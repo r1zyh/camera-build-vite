@@ -17,7 +17,11 @@ function HeaderLayout(): JSX.Element {
         <nav className="main-nav header__main-nav">
           <ul className="main-nav__list">
             <li className="main-nav__item">
-              <Link className="main-nav__link" to={AppRoute.Main} data-testid='header-catalog-link'>
+              <Link
+                className="main-nav__link"
+                to={AppRoute.Main}
+                data-testid="header-catalog-link"
+              >
                 Каталог
               </Link>
             </li>
@@ -81,7 +85,11 @@ function HeaderLayout(): JSX.Element {
             <span className="visually-hidden">Сбросить поиск</span>
           </button>
         </div>
-        <Link className="header__basket-link" to={AppRoute.Basket} data-testid="basket-link">
+        <Link
+          className="header__basket-link"
+          to={AppRoute.Basket}
+          data-testid="basket-link"
+        >
           <svg width={16} height={16} aria-hidden="true">
             <use xlinkHref="#icon-basket"></use>
           </svg>

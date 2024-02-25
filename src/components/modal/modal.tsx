@@ -13,7 +13,6 @@ function Modal({
   buttons,
   closeModal,
 }: ModalProps): JSX.Element {
-
   const handleCloseModal = useCallback(() => {
     closeModal();
   }, [closeModal]);

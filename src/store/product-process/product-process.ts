@@ -19,7 +19,6 @@ const initialState: ProductProcessType = {
   promos: [],
   isProductLoading: true,
   product: null,
-
 };
 
 export const productsProcessSlice = createSlice({

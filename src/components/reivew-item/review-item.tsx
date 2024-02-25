@@ -18,10 +18,19 @@ function ReviewItem({ review }: ReviewItemProps): JSX.Element {
     rating,
   } = review;
   return (
-    <li className="review-card" key={id} id={String(cameraId)} data-testid='review-card-test'>
+    <li
+      className="review-card"
+      key={id}
+      id={String(cameraId)}
+      data-testid="review-card-test"
+    >
       <div className="review-card__head">
         <p className="title title--h4">{userName}</p>
-        <time className="review-card__data" dateTime={createAt} data-testid ='time-test'>
+        <time
+          className="review-card__data"
+          dateTime={createAt}
+          data-testid="time-test"
+        >
           {humanizeReviewDate(createAt)}
         </time>
       </div>

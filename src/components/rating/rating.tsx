@@ -42,7 +42,9 @@ const Rating = ({ rating, reviewCount, className }: RatingProps) => {
   return (
     <div className={`rate ${className}`} data-testid="rating">
       {renderStars(fullStars, emptyStars)}
-      <p className="visually-hidden" data-testid='hidden-rate'>Рейтинг: {rating}</p>
+      <p className="visually-hidden" data-testid="hidden-rate">
+        Рейтинг: {rating}
+      </p>
       <p className="rate__count">
         <span className="visually-hidden">Всего оценок:</span>
         {reviewCount}
