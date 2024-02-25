@@ -4,7 +4,7 @@ import { AppRoute } from '../../const';
 
 function ErrorComponent() {
   return (
-    <div className={`page ${styles.errorPage}`}>
+    <div className={`page ${styles.errorPage}`} data-testid='error'>
       <title>{'Camera-shop - Error'}</title>
       <h1 className={styles.title}>Error</h1>
       <p className={styles.text}>

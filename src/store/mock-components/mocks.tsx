@@ -49,3 +49,16 @@ export const makeFakePromo = () => ({
   previewImgWebp: '/markup/img/content/orlenok.webp',
   previewImgWebp2x: '/markup/img/content/orlenok@2x.webp',
 });
+
+export const makeFakeStore = (initialState?: Partial<State>): State => ({
+  PRODUCTS: {
+    products: [],
+    similarProducts: [],
+    activeId: '',
+    promos: [],
+    isProductLoading: true,
+    product: null,
+  },
+  REVIEWS: { reviews: [], isReviewPosting: false },
+  ...(initialState ?? {}),
+});

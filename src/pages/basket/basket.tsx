@@ -12,7 +12,7 @@ function Basket(): JSX.Element {
       </Helmet>
       <HeaderLayout />
       <main>
-        <div className="page-content">
+        <div className="page-content" data-testid='basket'>
           <div className="breadcrumbs">
             <div className="container">
               <ul className="breadcrumbs__list">
