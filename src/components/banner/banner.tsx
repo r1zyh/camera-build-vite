@@ -49,7 +49,7 @@ function Banner({ banners }: BannerProps): JSX.Element {
                 Профессиональная камера от известного производителя
               </span>
               <Link
-                className="btn btn--transparent"
+                className="btn"
                 to={`${AppRoute.Product}/${banner.id}`}
               >
                 Подробнее
