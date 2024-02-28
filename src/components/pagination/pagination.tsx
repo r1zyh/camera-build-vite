@@ -56,7 +56,8 @@ function Pagination({
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => handlePageClick(currentPage + 1)}
+          onClick={() => currentPage >= 3 ? handlePageClick(currentPage + 1) : 'template'}
+
         >
           Далее
         </Link>

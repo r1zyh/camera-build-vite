@@ -29,6 +29,8 @@ function Product(): JSX.Element {
   const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchData = async () => {
       try {
         if (productId !== undefined) {
