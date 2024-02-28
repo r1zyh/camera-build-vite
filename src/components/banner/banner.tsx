@@ -1,5 +1,5 @@
 import SwiperCore from 'swiper';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Pagination, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 
@@ -7,7 +7,7 @@ import { TPromos } from '../../types/promo';
 import { AppRoute } from '../../const';
 import { Link } from 'react-router-dom';
 
-SwiperCore.use([Navigation, Pagination, Autoplay]);
+SwiperCore.use([Pagination, Autoplay]);
 
 interface BannerProps {
   banners: TPromos | null;
@@ -22,8 +22,6 @@ function Banner({ banners }: BannerProps): JSX.Element {
     <Swiper
       spaceBetween={20}
       slidesPerView={1}
-      navigation
-      pagination={{ clickable: true }}
       autoplay={{ delay: 5000 }}
     >
       {banners.map((banner) => (
