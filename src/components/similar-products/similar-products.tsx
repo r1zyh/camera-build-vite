@@ -47,7 +47,7 @@ function SimilarProducts({
               className="slider-controls slider-controls--prev"
               type="button"
               aria-label="Предыдущая страница"
-              style={{ pointerEvents: 'auto' }}
+              style={{ pointerEvents: currentPage === 0 ? 'none' : 'auto' }}
               onClick={handlePrevClick}
               disabled={currentPage === 0}
             >
@@ -57,7 +57,9 @@ function SimilarProducts({
             </button>
             <button
               className="slider-controls slider-controls--next"
-              style={{ pointerEvents: 'auto' }}
+              style={{
+                pointerEvents: currentPage === totalPages - 1 ? 'none' : 'auto',
+              }}
               type="button"
               aria-label="Следующая страница"
               onClick={handleNextClick}
