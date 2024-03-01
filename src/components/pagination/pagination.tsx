@@ -38,12 +38,12 @@ function Pagination({
     });
 
   const renderPrevButton = () =>
-    currentPage >= maxPageCount && (
+    startPage >= maxPageCount && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => handlePageClick(currentPage - 1)}
+          onClick={() => handlePageClick(startPage - 1)}
         >
           Назад
         </Link>
@@ -51,13 +51,12 @@ function Pagination({
     );
 
   const renderNextButton = () =>
-    currentPage !== totalPageCount && (
+    startPage + pagesToShow <= totalPageCount && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => currentPage >= 3 ? handlePageClick(currentPage + 1) : 'template'}
-
+          onClick={() => handlePageClick(startPage + pagesToShow)}
         >
           Далее
         </Link>
