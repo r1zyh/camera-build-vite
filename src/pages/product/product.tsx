@@ -13,7 +13,7 @@ import {
   getSimilarProducts,
 } from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Rating from '../../components/rating/rating';
 import { AppRoute } from '../../const';
 
@@ -29,15 +29,20 @@ function Product(): JSX.Element {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('description');
 
-  const queryParams = new URLSearchParams(location.search);
-  const activeTabParam = queryParams.get('tab');
-
-  useEffect(() => {
-    const defaultTab = activeTabParam || 'description';
-    queryParams.set('tab', defaultTab);
+  const updateUrl = useCallback((newTab: string) => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('tab', newTab);
     const newUrl = `${location.pathname}?${queryParams.toString()}`;
     window.history.replaceState(null, '', newUrl);
-  });
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const activeTabParam = queryParams.get('tab');
+    const defaultTab = activeTabParam || 'description';
+    setActiveTab(defaultTab);
+    updateUrl(defaultTab);
+  }, [location.search, updateUrl]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -89,9 +94,7 @@ function Product(): JSX.Element {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-    queryParams.set('tab', tab);
-    const newUrl = `${location.pathname}?${queryParams.toString()}`;
-    window.history.replaceState(null, '', newUrl);
+    updateUrl(tab);
   };
 
   const {
