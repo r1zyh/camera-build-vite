@@ -36,7 +36,7 @@ const Rating = ({ rating, reviewCount, className }: RatingProps) => {
     return stars;
   };
 
-  const fullStars = Math.floor(rating);
+  const fullStars = Math.round(rating);
   const emptyStars = STAR_COUNTS.total - Math.ceil(rating);
 
   return (

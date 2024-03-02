@@ -4,7 +4,7 @@ import HeaderLayout from '../../components/header/header';
 import SimilarProducts from '../../components/similar-products/similar-products';
 import ReviewList from '../../components/review-list/review-list';
 import { useAppDispatch } from '../../hooks/use-dispatch';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/use-select';
 import { getReviews } from '../../store/review-process/selectors';
 import {
@@ -20,6 +20,7 @@ import { AppRoute } from '../../const';
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
   const productId = useParams().id;
+  const location = useLocation();
   const products = useAppSelector(getProducts);
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
@@ -27,6 +28,15 @@ function Product(): JSX.Element {
 
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('description');
+
+  const queryParams = new URLSearchParams(location.search);
+  const activeTabParam = queryParams.get('tab');
+
+  useEffect(() => {
+    if (activeTabParam) {
+      setActiveTab(activeTabParam);
+    }
+  }, [activeTabParam]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -78,6 +88,9 @@ function Product(): JSX.Element {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
+    queryParams.set('tab', tab);
+    const newUrl = `${location.pathname}?${queryParams.toString()}`;
+    window.history.replaceState(null, '', newUrl);
   };
 
   const {
