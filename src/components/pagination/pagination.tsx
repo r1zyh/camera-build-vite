@@ -41,13 +41,27 @@ function Pagination({
 
   const { paginationItems, startPage } = renderPaginationItems();
 
+  const handlePrevClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    handlePageClick(startPage - 1);
+  };
+
+  const handleNextClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    handlePageClick(startPage + maxPageCount);
+  };
+
   const renderPrevButton = () =>
     startPage > 1 && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => handlePageClick(startPage - 1)}
+          onClick={handlePrevClick}
         >
           Назад
         </Link>
@@ -60,7 +74,7 @@ function Pagination({
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => handlePageClick(startPage + maxPageCount)}
+          onClick={handleNextClick}
         >
           Далее
         </Link>
@@ -77,4 +91,3 @@ function Pagination({
 }
 
 export default Pagination;
-
