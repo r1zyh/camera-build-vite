@@ -29,6 +29,7 @@ function ReviewForm({
 
   const inputClass = 'custom-input form-review__item';
   const textAreaClass = 'custom-textarea form-review__item';
+  const ratingInputClass = 'rate form-review__item';
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -84,11 +85,14 @@ function ReviewForm({
   const isValidName = (text: string) =>
     text.length >= NameLength.Min && text.length <= NameLength.Max;
 
+  const isValidRating = (text: string) => text.length !== 0;
+
   const isValidReview = () =>
     isValid(review) &&
     isValid(advantage) &&
     isValid(disadvantage) &&
-    isValidName(userName);
+    isValidName(userName) &&
+    isValidRating(rating);
 
   const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setReview(e.target.value);
@@ -162,7 +166,14 @@ function ReviewForm({
           <div className="form-review">
             <form method="post" onSubmit={handleFormSubmit}>
               <div className="form-review__rate">
-                <fieldset className="rate form-review__item">
+                <fieldset
+                  className={customValidChecker(
+                    rating,
+                    isSubmitClicked,
+                    isValidRating,
+                    ratingInputClass
+                  )}
+                >
                   <legend className="rate__caption">
                     Рейтинг
                     <svg width="9" height="9" aria-hidden="true">
