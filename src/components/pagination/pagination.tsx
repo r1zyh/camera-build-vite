@@ -14,18 +14,17 @@ function Pagination({
   handlePageClick,
   maxPageCount = 3,
 }: PaginationProps): JSX.Element {
-  const pagesToShow = Math.min(maxPageCount, totalPageCount);
+  const renderPaginationItems = () => {
+    const pagesToShow = Math.min(maxPageCount, totalPageCount);
+    const startPage =
+      currentPage <= Math.floor(pagesToShow / 2)
+        ? 1
+        : Math.min(
+          Math.max(1, currentPage - Math.floor(pagesToShow / 2)),
+          totalPageCount - pagesToShow + 1
+        );
 
-  const startPage =
-    currentPage <= Math.floor(pagesToShow / 2)
-      ? 1
-      : Math.min(
-        Math.max(1, currentPage - Math.floor(pagesToShow / 2)),
-        totalPageCount - pagesToShow + 1
-      );
-
-  const renderPaginationItems = () =>
-    Array.from({ length: pagesToShow }, (_, index) => {
+    const paginationItems = Array.from({ length: pagesToShow }, (_, index) => {
       const pageNumber = startPage + index;
       return (
         <PaginationItem
@@ -37,8 +36,13 @@ function Pagination({
       );
     });
 
+    return { paginationItems, startPage };
+  };
+
+  const { paginationItems, startPage } = renderPaginationItems();
+
   const renderPrevButton = () =>
-    startPage >= maxPageCount && (
+    startPage > 1 && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
@@ -51,12 +55,12 @@ function Pagination({
     );
 
   const renderNextButton = () =>
-    startPage + pagesToShow <= totalPageCount && (
+    startPage + maxPageCount <= totalPageCount && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
           to="#"
-          onClick={() => handlePageClick(startPage + pagesToShow)}
+          onClick={() => handlePageClick(startPage + maxPageCount)}
         >
           Далее
         </Link>
@@ -66,10 +70,11 @@ function Pagination({
   return (
     <ul className="pagination__list">
       {renderPrevButton()}
-      {renderPaginationItems()}
+      {paginationItems}
       {renderNextButton()}
     </ul>
   );
 }
 
 export default Pagination;
+
