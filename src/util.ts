@@ -9,3 +9,16 @@ export function getRandomInt(min: number, max: number): number {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export const customValidChecker = (
+  value: string,
+  isSubmitClicked: boolean,
+  validationFunction: (text: string) => boolean,
+  formInputClass: string
+) => {
+  if (isSubmitClicked) {
+    formInputClass += validationFunction(value) ? ' is-valid' : ' is-invalid';
+  }
+
+  return formInputClass;
+};

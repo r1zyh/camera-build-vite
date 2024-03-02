@@ -12,6 +12,7 @@ import { postReview } from '../../store/api-actions';
 import { useAppSelector } from '../../hooks/use-select';
 import { getActiveId } from '../../store/product-process/selectors';
 import { getReviewPostStatus } from '../../store/review-process/selectors';
+import { customValidChecker } from '../../util';
 
 type ReviewFormProps = {
   cameraId: string | undefined;
@@ -25,6 +26,9 @@ function ReviewForm({
   reviewSubmit,
 }: ReviewFormProps): JSX.Element {
   const userNameRef = useRef<HTMLInputElement>(null);
+
+  const inputClass = 'custom-input form-review__item';
+  const textAreaClass = 'custom-textarea form-review__item';
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -72,15 +76,19 @@ function ReviewForm({
 
   const [rating, setRating] = useState(localStorage.getItem('rating') || '');
 
+  const [isSubmitClicked, setIsSubmitClicked] = useState(false);
+
   const isValid = (text: string) =>
     text.length >= TextLength.Min && text.length <= TextLength.Max;
+
+  const isValidName = (text: string) =>
+    text.length >= NameLength.Min && text.length <= NameLength.Max;
 
   const isValidReview = () =>
     isValid(review) &&
     isValid(advantage) &&
     isValid(disadvantage) &&
-    userName.length >= NameLength.Min &&
-    userName.length <= NameLength.Max;
+    isValidName(userName);
 
   const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setReview(e.target.value);
@@ -121,7 +129,6 @@ function ReviewForm({
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (productId !== null && isValidReview()) {
       dispatch(
         postReview({
@@ -191,9 +198,17 @@ function ReviewForm({
                       <span>/</span> <span className="rate__all-stars">5</span>
                     </div>
                   </div>
+
                   <p className="rate__message">Нужно оценить товар</p>
                 </fieldset>
-                <div className="custom-input form-review__item">
+                <div
+                  className={customValidChecker(
+                    userName,
+                    isSubmitClicked,
+                    isValidName,
+                    inputClass
+                  )}
+                >
                   <label>
                     <span className="custom-input__label">
                       Ваше имя
@@ -206,15 +221,22 @@ function ReviewForm({
                       type="text"
                       name="user-name"
                       placeholder="Введите ваше имя"
-                      minLength={2}
-                      maxLength={15}
+                      minLength={NameLength.Min}
+                      maxLength={NameLength.Max}
                       onChange={handleInputChange}
-                      required
                     />
                   </label>
+
                   <p className="custom-input__error">Нужно указать имя</p>
                 </div>
-                <div className="custom-input form-review__item">
+                <div
+                  className={customValidChecker(
+                    advantage,
+                    isSubmitClicked,
+                    isValid,
+                    inputClass
+                  )}
+                >
                   <label>
                     <span className="custom-input__label">
                       Достоинства
@@ -225,18 +247,25 @@ function ReviewForm({
                     <input
                       type="text"
                       name="user-plus"
-                      minLength={10}
-                      maxLength={160}
+                      minLength={TextLength.Min}
+                      maxLength={TextLength.Max}
                       placeholder="Основные преимущества товара"
                       onChange={handleInputChange}
-                      required
                     />
                   </label>
+
                   <p className="custom-input__error">
                     Нужно указать достоинства
                   </p>
                 </div>
-                <div className="custom-input form-review__item">
+                <div
+                  className={customValidChecker(
+                    disadvantage,
+                    isSubmitClicked,
+                    isValid,
+                    inputClass
+                  )}
+                >
                   <label>
                     <span className="custom-input__label">
                       Недостатки
@@ -247,18 +276,24 @@ function ReviewForm({
                     <input
                       type="text"
                       name="user-minus"
-                      minLength={10}
-                      maxLength={160}
+                      minLength={TextLength.Min}
+                      maxLength={TextLength.Max}
                       placeholder="Главные недостатки товара"
                       onChange={handleInputChange}
-                      required
                     />
                   </label>
                   <p className="custom-input__error">
                     Нужно указать недостатки
                   </p>
                 </div>
-                <div className="custom-textarea form-review__item">
+                <div
+                  className={customValidChecker(
+                    review,
+                    isSubmitClicked,
+                    isValid,
+                    textAreaClass
+                  )}
+                >
                   <label>
                     <span className="custom-textarea__label">
                       Комментарий
@@ -268,8 +303,8 @@ function ReviewForm({
                     </span>
                     <textarea
                       name="user-comment"
-                      minLength={10}
-                      maxLength={160}
+                      minLength={TextLength.Min}
+                      maxLength={TextLength.Max}
                       placeholder="Поделитесь своим опытом покупки"
                       onChange={handleTextareaChange}
                     >
@@ -282,6 +317,7 @@ function ReviewForm({
               </div>
               <button
                 className="btn btn--purple form-review__btn"
+                onClick={() => setIsSubmitClicked(true)}
                 type="submit"
                 disabled={isReviewPosting && !isValidReview()}
               >
