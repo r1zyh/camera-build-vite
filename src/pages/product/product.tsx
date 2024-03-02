@@ -33,10 +33,11 @@ function Product(): JSX.Element {
   const activeTabParam = queryParams.get('tab');
 
   useEffect(() => {
-    if (activeTabParam) {
-      setActiveTab(activeTabParam);
-    }
-  }, [activeTabParam]);
+    const defaultTab = activeTabParam || 'description';
+    queryParams.set('tab', defaultTab);
+    const newUrl = `${location.pathname}?${queryParams.toString()}`;
+    window.history.replaceState(null, '', newUrl);
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
