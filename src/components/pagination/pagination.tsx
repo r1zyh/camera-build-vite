@@ -15,48 +15,49 @@ function Pagination({
   maxPageCount = 3,
 }: PaginationProps): JSX.Element {
   const renderPaginationItems = () => {
-    const pagesToShow = Math.min(maxPageCount, totalPageCount);
-    const startPage =
-      currentPage <= Math.floor(pagesToShow / 2)
-        ? 1
-        : Math.min(
-          Math.max(1, currentPage - Math.floor(pagesToShow / 2)),
-          totalPageCount - pagesToShow + 1
+    const groupIndex = Math.floor((currentPage - 1) / maxPageCount);
+    const startPage = groupIndex * maxPageCount + 1;
+    const endPage = Math.min(startPage + maxPageCount - 1, totalPageCount);
+
+    const paginationItems = Array.from(
+      { length: endPage - startPage + 1 },
+      (_, index) => {
+        const pageNumber = startPage + index;
+        return (
+          <PaginationItem
+            key={pageNumber}
+            pageNumber={pageNumber}
+            currentPage={currentPage}
+            handlePageClick={handlePageClick}
+          />
         );
+      }
+    );
 
-    const paginationItems = Array.from({ length: pagesToShow }, (_, index) => {
-      const pageNumber = startPage + index;
-      return (
-        <PaginationItem
-          key={pageNumber}
-          pageNumber={pageNumber}
-          currentPage={currentPage}
-          handlePageClick={handlePageClick}
-        />
-      );
-    });
-
-    return { paginationItems, startPage };
+    return { paginationItems, groupIndex, startPage };
   };
 
-  const { paginationItems, startPage } = renderPaginationItems();
+  const { paginationItems, startPage, groupIndex } = renderPaginationItems();
 
   const handlePrevClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
-    handlePageClick(startPage - 1);
+    const prevGroupIndex = Math.max(0, groupIndex - 1);
+    const nextPage = prevGroupIndex * maxPageCount + 1;
+    handlePageClick(nextPage);
   };
 
   const handleNextClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
-    handlePageClick(startPage + maxPageCount);
+    const nextPage = (groupIndex + 1) * maxPageCount + 1;
+    handlePageClick(nextPage);
   };
 
   const renderPrevButton = () =>
-    startPage > 1 && (
+    currentPage > 3 && (
       <li className="pagination__item">
         <Link
           className="pagination__link pagination__link--text"
