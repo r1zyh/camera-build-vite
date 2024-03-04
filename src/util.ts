@@ -17,7 +17,7 @@ export const customValidChecker = (
   formInputClass: string
 ) => {
   if (isSubmitClicked) {
-    formInputClass += validationFunction(value) ? ' is-valid' : ' is-invalid';
+    formInputClass += validationFunction(value) ? '' : ' is-invalid';
   }
 
   return formInputClass;
