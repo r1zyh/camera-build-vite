@@ -31,7 +31,7 @@ function Banner({ banners }: BannerProps): JSX.Element {
       slidesPerView={1}
       pagination={pagination}
       modules={[Pagination, Autoplay]}
-      autoplay={{ delay: 500000 }}
+      autoplay={{ delay: 5000 }}
       className="swiper-container"
     >
       {banners.map((banner) => (
