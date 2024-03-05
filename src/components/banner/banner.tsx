@@ -1,28 +1,38 @@
-import SwiperCore from 'swiper';
 import { Pagination, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
+import '../../../markup/css/style.css';
 
 import { TPromos } from '../../types/promo';
 import { AppRoute } from '../../const';
 import { Link } from 'react-router-dom';
 
-SwiperCore.use([Pagination, Autoplay]);
-
-interface BannerProps {
+type BannerProps = {
   banners: TPromos | null;
-}
+};
 
 function Banner({ banners }: BannerProps): JSX.Element {
   if (!banners || banners.length === 0) {
     return <div></div>;
   }
 
+  const pagination = {
+    clickable: true,
+    renderBullet: function (_index: number, className: string) {
+      return `<span class="${className}"></span>`;
+    },
+  };
+
   return (
     <Swiper
       spaceBetween={20}
       slidesPerView={1}
-      autoplay={{ delay: 5000 }}
+      pagination={pagination}
+      modules={[Pagination, Autoplay]}
+      autoplay={{ delay: 500000 }}
+      className="swiper-container"
     >
       {banners.map((banner) => (
         <SwiperSlide key={banner.id}>
@@ -46,10 +56,7 @@ function Banner({ banners }: BannerProps): JSX.Element {
               <span className="banner__text">
                 Профессиональная камера от известного производителя
               </span>
-              <Link
-                className="btn"
-                to={`${AppRoute.Product}/${banner.id}`}
-              >
+              <Link className="btn" to={`${AppRoute.Product}/${banner.id}`}>
                 Подробнее
               </Link>
             </p>
