@@ -7,6 +7,8 @@ type ProductProcessType = {
   products: TProducts;
   product: TProduct | null;
   activeId: string | undefined;
+  currentSortType: string | null;
+  currentSortOrder: string | null;
   promos: TPromos;
   isProductLoading: boolean;
   similarProducts: TProducts | null;
@@ -16,6 +18,8 @@ const initialState: ProductProcessType = {
   products: [],
   similarProducts: [],
   activeId: '',
+  currentSortType: null,
+  currentSortOrder: null,
   promos: [],
   isProductLoading: true,
   product: null,
@@ -43,6 +47,12 @@ export const productsProcessSlice = createSlice({
     setPromos: (state, action: PayloadAction<TPromos>) => {
       state.promos = action.payload;
     },
+    setSortType: (state, action: PayloadAction<string>) => {
+      state.currentSortType = action.payload;
+    },
+    setSortOrder: (state, action: PayloadAction<string>) => {
+      state.currentSortOrder = action.payload;
+    },
   },
 });
 
@@ -53,4 +63,6 @@ export const {
   setActiveId,
   setSimilarProducts,
   setProductsLoadingStatus,
+  setSortType,
+  setSortOrder
 } = productsProcessSlice.actions;

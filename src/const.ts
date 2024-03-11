@@ -71,3 +71,13 @@ export const ratingMap = {
 
 export const INITIAL_VISIBLE_REVIEWS = 3;
 export const REVIEWS_PER_LOAD = 3;
+
+export const enum SortTypes {
+  Price = 'price',
+  Popularity = 'popularity',
+}
+
+export const enum SortOrder {
+  Ascending = 'asc',
+  Descending = 'desc',
+}

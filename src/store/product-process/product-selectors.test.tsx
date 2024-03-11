@@ -18,6 +18,8 @@ describe('Product selectors', () => {
       product: fakeProduct,
       similarProducts: [fakeProduct],
       activeId: '1',
+      currentSortType: null,
+      currentSortOrder: null,
       isProductLoading: false,
       promos: [
         fakePromo,

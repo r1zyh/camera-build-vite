@@ -25,3 +25,8 @@ export const getProductsLoadingStatus = (
 export const getPromos = (
   state: Pick<State, NameSpace.Products>
 ): TPromos | null => state[NameSpace.Products].promos;
+export const getCurrentSortType = (state: State): string | null =>
+  state[NameSpace.Products].currentSortType;
+
+export const getCurrentSortOrder = (state: State): string | null =>
+  state[NameSpace.Products].currentSortOrder;
