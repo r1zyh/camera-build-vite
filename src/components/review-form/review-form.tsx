@@ -26,28 +26,45 @@ function ReviewForm({
   reviewSubmit,
 }: ReviewFormProps): JSX.Element {
   const userNameRef = useRef<HTMLInputElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  const dispatch = useAppDispatch();
+  const productId = useAppSelector(getActiveId);
+  const isReviewPosting = useAppSelector(getReviewPostStatus);
 
   const inputClass = 'custom-input form-review__item';
   const textAreaClass = 'custom-textarea form-review__item';
   const ratingInputClass = 'rate form-review__item';
 
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         closeForm();
+      }
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === userNameRef.current) {
+            e.preventDefault();
+            closeButtonRef.current?.focus();
+          }
+        } else {
+          if (document.activeElement === closeButtonRef.current) {
+            e.preventDefault();
+            userNameRef.current?.focus();
+          }
+        }
       }
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        e.target instanceof HTMLElement &&
-        !e.target.closest('.modal__content')
-      ) {
+      if (overlayRef.current && e.target === overlayRef.current) {
         closeForm();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('click', handleClickOutside);
 
     if (userNameRef.current) {
@@ -55,14 +72,11 @@ function ReviewForm({
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('click', handleClickOutside);
     };
   }, [closeForm]);
 
-  const dispatch = useAppDispatch();
-  const productId = useAppSelector(getActiveId);
-  const isReviewPosting = useAppSelector(getReviewPostStatus);
 
   const [review, setReview] = useState(localStorage.getItem('review') || '');
   const [userName, setUserName] = useState(
@@ -160,7 +174,7 @@ function ReviewForm({
   return (
     <div className="modal is-active" data-testid="review-form">
       <div className="modal__wrapper">
-        <div className="modal__overlay"></div>
+        <div className="modal__overlay" ref={overlayRef}></div>
         <div className="modal__content">
           <p className="title title--h4">Оставить отзыв</p>
           <div className="form-review">
@@ -337,6 +351,7 @@ function ReviewForm({
             </form>
           </div>
           <button
+            ref={closeButtonRef}
             className="cross-btn"
             type="button"
             aria-label="Закрыть попап"
