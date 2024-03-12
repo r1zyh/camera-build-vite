@@ -50,7 +50,7 @@ export const productsProcessSlice = createSlice({
     setSortType: (state, action: PayloadAction<string>) => {
       state.currentSortType = action.payload;
     },
-    setSortOrder: (state, action: PayloadAction<string>) => {
+    setSortOrder: (state, action: PayloadAction<string | null>) => {
       state.currentSortOrder = action.payload;
     },
   },

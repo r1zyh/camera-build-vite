@@ -17,37 +17,40 @@ function Sort(): JSX.Element {
   const stateProducts = useAppSelector(getProducts);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
-//Исправить логику сортировки
-  const handleSortSelect = (currentType: string) => {
-    const sortedProducts = [...stateProducts];
-    const sortByPrice = sortedProducts.sort((a, b) => a.price - b.price);
-    const sortByPopular = sortedProducts.sort((a, b) => a.rating - b.rating);
-    if (currentType === SortTypes.Price && currentSortOrder === null) {
-      dispatch(setSortOrder(SortOrder.Ascending));
-    }
+  const handleSortByPrice = () => {
+    const sortedProducts = [...stateProducts].sort((a, b) =>
+      currentSortOrder === SortOrder.Ascending
+        ? b.price - a.price
+        : a.price - b.price
+    );
+    dispatch(setProducts(sortedProducts));
+  };
 
-    dispatch(setSortType(currentType));
+  const handleSortByPopularity = () => {
+    const sortedProducts = [...stateProducts].sort((a, b) =>
+      currentSortOrder === SortOrder.Ascending
+        ? b.rating - a.rating
+        : a.rating - b.rating
+    );
+    dispatch(setProducts(sortedProducts));
+  };
 
+  const handleSorting = (currentType: string) => {
     switch (currentType) {
       case SortTypes.Popularity:
-        if (
-          currentSortOrder === null ||
-          currentSortOrder !== SortOrder.Ascending
-        ) {
-          dispatch(setProducts(sortByPopular));
-        } else {
-          dispatch(setProducts(sortByPopular.reverse()));
+        if (currentSortType === SortTypes.Price) {
+          dispatch(setSortOrder(currentSortOrder));
         }
+        handleSortByPopularity();
         break;
       case SortTypes.Price:
         if (
-          currentSortOrder !== SortOrder.Ascending &&
-          currentSortOrder !== null
+          currentSortType === SortTypes.Popularity &&
+          currentSortOrder === SortOrder.Descending
         ) {
-          dispatch(setProducts(sortByPrice.reverse()));
-        } else {
-          dispatch(setProducts(sortByPrice));
+          dispatch(setSortOrder(SortOrder.Ascending));
         }
+        handleSortByPrice();
         break;
       default:
         break;
@@ -55,15 +58,33 @@ function Sort(): JSX.Element {
   };
 
   const handleSortOrderChange = (sortOrder: string) => {
-    if (currentSortOrder === sortOrder) {
-      console.log('Равны')
-    } else { console.log("Не равны")}
+    if (currentSortType === null) {
+      dispatch(setSortType(SortTypes.Price));
+    }
     dispatch(setSortOrder(sortOrder));
-    console.log(currentSortOrder);
-    if (currentSortType !== null) {
-      handleSortSelect(currentSortType);
+    handleSorting(currentSortType || SortTypes.Price);
+  };
+
+  const handleSortSelect = (currentType: string) => {
+    if (currentType !== currentSortType) {
+      dispatch(setSortType(currentType));
+      if (currentType === SortTypes.Price && currentSortOrder === null) {
+        dispatch(setSortOrder(SortOrder.Ascending));
+      } else if (currentType !== SortTypes.Price && currentSortOrder === null) {
+        dispatch(setSortOrder(SortOrder.Ascending));
+      }
+      handleSorting(currentType);
+    } else {
+      if (currentType === SortTypes.Price) {
+        handleSortOrderChange(
+          currentSortOrder === SortOrder.Ascending
+            ? SortOrder.Descending
+            : SortOrder.Ascending
+        );
+      }
     }
   };
+
 
   return (
     <div className="catalog-sort">
