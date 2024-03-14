@@ -17,6 +17,11 @@ describe('Products Process Slice', () => {
     promos: [],
     isProductLoading: true,
     product: null,
+    currentSortType: null,
+    currentSortOrder: null,
+    camCategory: null,
+    camType: null,
+    camLevel: null,
   };
 
   const fakeProduct = makeFakeProduct();

@@ -30,3 +30,12 @@ export const getCurrentSortType = (state: State): string | null =>
 
 export const getCurrentSortOrder = (state: State): string | null =>
   state[NameSpace.Products].currentSortOrder;
+
+export const getCamCat = (state: State): string | null =>
+  state[NameSpace.Products].camCategory;
+
+export const getCamType = (state: State): string | null =>
+  state[NameSpace.Products].camType;
+
+export const getCamLvl = (state: State): string | null =>
+  state[NameSpace.Products].camLevel;

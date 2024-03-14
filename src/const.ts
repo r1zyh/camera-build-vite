@@ -21,7 +21,7 @@ export enum CategoryTypes {
 export enum LevelTypes {
   Zero = 'Нулевой',
   Amateur = 'Любительский',
-  Professional = 'Любительский',
+  Professional = 'Профессиональный',
 }
 
 export enum NameSpace {
@@ -81,3 +81,21 @@ export const enum SortOrder {
   Ascending = 'asc',
   Descending = 'desc',
 }
+
+export const cameraTypeNames: Record<CameraTypes, string> = {
+  [CameraTypes.Collectible]: 'collection',
+  [CameraTypes.Instant]: 'snapshot',
+  [CameraTypes.Digital]: 'digital',
+  [CameraTypes.Film]: 'film',
+};
+
+export const categoryTypeNames: Record<CategoryTypes, string> = {
+  [CategoryTypes.Camcorder]: 'videocamera',
+  [CategoryTypes.Camera]: 'photocamera',
+};
+
+export const levelTypeNames: Record<LevelTypes, string> = {
+  [LevelTypes.Zero]: 'zero',
+  [LevelTypes.Amateur]: 'non-professional',
+  [LevelTypes.Professional]: 'professional',
+};

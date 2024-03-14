@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { NameSpace } from '../../const';
+import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
 import { TPromos } from '../../types/promo';
 
@@ -12,6 +12,9 @@ type ProductProcessType = {
   promos: TPromos;
   isProductLoading: boolean;
   similarProducts: TProducts | null;
+  camCategory: CategoryTypes | null;
+  camType: CameraTypes | null;
+  camLevel: LevelTypes | null;
 };
 
 const initialState: ProductProcessType = {
@@ -23,6 +26,9 @@ const initialState: ProductProcessType = {
   promos: [],
   isProductLoading: true,
   product: null,
+  camCategory: null,
+  camType: null,
+  camLevel: null,
 };
 
 export const productsProcessSlice = createSlice({
@@ -53,6 +59,15 @@ export const productsProcessSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<string | null>) => {
       state.currentSortOrder = action.payload;
     },
+    setCamType: (state, action: PayloadAction<CameraTypes | null>) => {
+      state.camType = action.payload;
+    },
+    setCamCategory: (state, action: PayloadAction<CategoryTypes | null>) => {
+      state.camCategory = action.payload;
+    },
+    setCamLevel: (state, action: PayloadAction<LevelTypes | null>) => {
+      state.camLevel = action.payload;
+    },
   },
 });
 
@@ -64,5 +79,8 @@ export const {
   setSimilarProducts,
   setProductsLoadingStatus,
   setSortType,
-  setSortOrder
+  setSortOrder,
+  setCamCategory,
+  setCamLevel,
+  setCamType,
 } = productsProcessSlice.actions;

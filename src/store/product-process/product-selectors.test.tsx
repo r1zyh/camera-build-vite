@@ -20,6 +20,9 @@ describe('Product selectors', () => {
       activeId: '1',
       currentSortType: null,
       currentSortOrder: null,
+      camCategory: null,
+      camType: null,
+      camLevel: null,
       isProductLoading: false,
       promos: [
         fakePromo,
