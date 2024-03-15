@@ -10,11 +10,7 @@ import {
   categoryTypeNames,
   levelTypeNames,
 } from '../../const';
-import {
-  setCamCategory,
-  setCamLevel,
-  setCamType,
-} from '../../store/product-process/product-process';
+import { setProducts } from '../../store/product-process/product-process';
 
 function Filter(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -22,40 +18,66 @@ function Filter(): JSX.Element {
 
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
+  const [selectedType, setSelectedType] = useState<CameraTypes | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<LevelTypes | null>(null);
 
-  const handleTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
+  const updateFilteredProducts = () => {
+    const filteredProducts = products.filter((product) => {
+      if (selectedCategory !== null && product.category !== selectedCategory) {
+        return false;
+      }
+      if (selectedType !== null && product.type !== selectedType) {
+        return false;
+      }
+      if (selectedLevel !== null && product.level !== selectedLevel) {
+        return false;
+      }
+      return true;
+    });
+    dispatch(setProducts(filteredProducts));
+  };
+
+  const handleTypeChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    type: CameraTypes
+  ) => {
+    const { checked } = e.target;
     if (checked) {
-      dispatch(setCamType(name as CameraTypes));
+      setSelectedType(type);
+
+      updateFilteredProducts();
     }
   };
 
-  const handleLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
+  const handleLevelChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    level: LevelTypes
+  ) => {
+    const { checked } = e.target;
     if (checked) {
-      dispatch(setCamLevel(name as LevelTypes));
+      setSelectedLevel(level);
+      updateFilteredProducts();
     }
   };
 
   const handleCategoryChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement>,
     category: CategoryTypes
   ) => {
-    const { name, checked } = e.target;
+    const { checked } = e.target;
     if (checked) {
       setSelectedCategory(category);
-      dispatch(setCamCategory(name as CategoryTypes));
     } else {
       setSelectedCategory(null);
-      dispatch(setCamCategory(null));
     }
+    updateFilteredProducts();
   };
 
   const handlerResetFilters = () => {
+    dispatch(setProducts(products));
     setSelectedCategory(null);
-    dispatch(setCamCategory(null));
-    dispatch(setCamType(null));
-    dispatch(setCamLevel(null));
+    setSelectedType(null);
+    setSelectedLevel(null);
   };
   return (
     <div className="catalog__aside">
@@ -85,8 +107,7 @@ function Filter(): JSX.Element {
                   type="checkbox"
                   name={categoryTypeNames[CategoryTypes.Camera]}
                   onChange={(e) =>
-                    handleCategoryChange(e, CategoryTypes.Camera)
-                  }
+                    handleCategoryChange(e, CategoryTypes.Camera)}
                   checked={selectedCategory === CategoryTypes.Camera}
                 />
                 <span className="custom-checkbox__icon"></span>
@@ -99,8 +120,7 @@ function Filter(): JSX.Element {
                   type="checkbox"
                   name={categoryTypeNames[CategoryTypes.Camcorder]}
                   onChange={(e) =>
-                    handleCategoryChange(e, CategoryTypes.Camcorder)
-                  }
+                    handleCategoryChange(e, CategoryTypes.Camcorder)}
                   checked={selectedCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
@@ -115,7 +135,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Digital]}
-                  onChange={handleTypeChange}
+                  onChange={(e) => handleTypeChange(e, CameraTypes.Digital)}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Цифровая</span>
@@ -126,7 +146,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Film]}
-                  onChange={handleTypeChange}
+                  onChange={(e) => handleTypeChange(e, CameraTypes.Film)}
                   disabled={selectedCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
@@ -138,7 +158,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Instant]}
-                  onChange={handleTypeChange}
+                  onChange={(e) => handleTypeChange(e, CameraTypes.Instant)}
                   disabled={selectedCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
@@ -150,7 +170,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Collectible]}
-                  onChange={handleTypeChange}
+                  onChange={(e) => handleTypeChange(e, CameraTypes.Collectible)}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Коллекционная</span>
@@ -164,7 +184,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={levelTypeNames[LevelTypes.Zero]}
-                  onChange={handleLevelChange}
+                  onChange={(e) => handleLevelChange(e, LevelTypes.Zero)}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Нулевой</span>
@@ -175,7 +195,7 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={levelTypeNames[LevelTypes.Amateur]}
-                  onChange={handleLevelChange}
+                  onChange={(e) => handleLevelChange(e, LevelTypes.Amateur)}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Любительский</span>
@@ -186,7 +206,8 @@ function Filter(): JSX.Element {
                 <input
                   type="checkbox"
                   name={levelTypeNames[LevelTypes.Professional]}
-                  onChange={handleLevelChange}
+                  onChange={(e) =>
+                    handleLevelChange(e, LevelTypes.Professional)}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Профессиональный</span>
