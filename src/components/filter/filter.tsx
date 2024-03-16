@@ -1,7 +1,10 @@
 import { ChangeEvent, useState } from 'react';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
-import { getProducts } from '../../store/product-process/selectors';
+import {
+  getCurrentProducts,
+  getProducts,
+} from '../../store/product-process/selectors';
 import {
   CameraTypes,
   CategoryTypes,
@@ -10,12 +13,24 @@ import {
   categoryTypeNames,
   levelTypeNames,
 } from '../../const';
-import { setProducts } from '../../store/product-process/product-process';
+import {
+  setCurrentProducts,
+  setFiltersStatus,
+} from '../../store/product-process/product-process';
+
+type PriceRange = {
+  priceFrom: number | null;
+  priceTo: number | null;
+};
 
 function Filter(): JSX.Element {
   const dispatch = useAppDispatch();
-  const products = useAppSelector(getProducts);
-
+  const stateProducts = useAppSelector(getProducts);
+  const products = useAppSelector(getCurrentProducts);
+  const [priceRange, setPriceRange] = useState<PriceRange>({
+    priceFrom: null,
+    priceTo: null,
+  });
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
   const [selectedType, setSelectedType] = useState<CameraTypes | null>(null);
@@ -23,6 +38,18 @@ function Filter(): JSX.Element {
 
   const updateFilteredProducts = () => {
     const filteredProducts = products.filter((product) => {
+      if (
+        priceRange.priceFrom !== null &&
+        product.price < Number(priceRange.priceFrom)
+      ) {
+        return false;
+      }
+      if (
+        priceRange.priceTo !== null &&
+        product.price > Number(priceRange.priceTo)
+      ) {
+        return false;
+      }
       if (selectedCategory !== null && product.category !== selectedCategory) {
         return false;
       }
@@ -34,9 +61,24 @@ function Filter(): JSX.Element {
       }
       return true;
     });
-    dispatch(setProducts(filteredProducts));
+    dispatch(setFiltersStatus(true));
+    dispatch(setCurrentProducts(filteredProducts));
   };
 
+  const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPriceFrom = e.target.value;
+    setPriceRange({
+      ...priceRange,
+      priceFrom: newPriceFrom !== '' ? Number(newPriceFrom) : null,
+    });
+    updateFilteredProducts();
+  };
+
+  const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPriceTo = e.target.value;
+    setPriceRange({ ...priceRange, priceTo: Number(newPriceTo) });
+    updateFilteredProducts();
+  };
   const handleTypeChange = (
     e: ChangeEvent<HTMLInputElement>,
     type: CameraTypes
@@ -74,7 +116,8 @@ function Filter(): JSX.Element {
   };
 
   const handlerResetFilters = () => {
-    dispatch(setProducts(products));
+    dispatch(setFiltersStatus(false));
+    dispatch(setCurrentProducts(stateProducts));
     setSelectedCategory(null);
     setSelectedType(null);
     setSelectedLevel(null);
@@ -89,12 +132,28 @@ function Filter(): JSX.Element {
             <div className="catalog-filter__price-range">
               <div className="custom-input">
                 <label>
-                  <input type="number" name="price" placeholder="от" />
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="от"
+                    onChange={handlePriceFromChange}
+                    value={
+                      priceRange.priceFrom !== null ? priceRange.priceFrom : ''
+                    }
+                  />
                 </label>
               </div>
               <div className="custom-input">
                 <label>
-                  <input type="number" name="priceUp" placeholder="до" />
+                  <input
+                    type="number"
+                    name="priceUp"
+                    placeholder="до"
+                    onChange={handlePriceToChange}
+                    value={
+                      priceRange.priceTo !== null ? priceRange.priceTo : ''
+                    }
+                  />
                 </label>
               </div>
             </div>

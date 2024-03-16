@@ -31,11 +31,9 @@ export const getCurrentSortType = (state: State): string | null =>
 export const getCurrentSortOrder = (state: State): string | null =>
   state[NameSpace.Products].currentSortOrder;
 
-export const getCamCat = (state: State): string | null =>
-  state[NameSpace.Products].camCategory;
+export const getFilterStatus = (state: State): boolean =>
+  state[NameSpace.Products].filterStatus;
 
-export const getCamType = (state: State): string | null =>
-  state[NameSpace.Products].camType;
-
-export const getCamLvl = (state: State): string | null =>
-  state[NameSpace.Products].camLevel;
+export const getCurrentProducts = (
+  state: Pick<State, NameSpace.Products>
+): TProducts => state[NameSpace.Products].currentVisibleProducts;

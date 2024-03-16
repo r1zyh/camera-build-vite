@@ -15,18 +15,15 @@ describe('Product selectors', () => {
   const state = {
     [NameSpace.Products]: {
       products: [fakeProduct],
+      currentVisibleProducts: [fakeProduct],
       product: fakeProduct,
       similarProducts: [fakeProduct],
       activeId: '1',
       currentSortType: null,
       currentSortOrder: null,
-      camCategory: null,
-      camType: null,
-      camLevel: null,
       isProductLoading: false,
-      promos: [
-        fakePromo,
-      ],
+      filterStatus: false,
+      promos: [fakePromo],
     },
   };
 
@@ -57,8 +54,6 @@ describe('Product selectors', () => {
 
   test('getPromos selector', () => {
     const promos = getPromos(state);
-    expect(promos).toEqual([
-      fakePromo,
-    ]);
+    expect(promos).toEqual([fakePromo]);
   });
 });

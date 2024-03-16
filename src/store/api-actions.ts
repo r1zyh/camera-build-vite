@@ -5,6 +5,7 @@ import { TProduct, TProducts } from '../types/products';
 import { APIRoute, AppRoute } from '../const';
 import {
   setActiveId,
+  setCurrentProducts,
   setProduct,
   setProducts,
   setProductsLoadingStatus,
@@ -33,6 +34,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
     try {
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
+      dispatch(setCurrentProducts(data));
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));

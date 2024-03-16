@@ -1,10 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
+import { NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
 import { TPromos } from '../../types/promo';
 
 type ProductProcessType = {
   products: TProducts;
+  currentVisibleProducts: TProducts;
   product: TProduct | null;
   activeId: string | undefined;
   currentSortType: string | null;
@@ -12,23 +13,20 @@ type ProductProcessType = {
   promos: TPromos;
   isProductLoading: boolean;
   similarProducts: TProducts | null;
-  camCategory: CategoryTypes | null;
-  camType: CameraTypes | null;
-  camLevel: LevelTypes | null;
+  filterStatus: boolean;
 };
 
 const initialState: ProductProcessType = {
   products: [],
+  currentVisibleProducts: [],
   similarProducts: [],
   activeId: '',
   currentSortType: null,
   currentSortOrder: null,
   promos: [],
-  isProductLoading: true,
+  isProductLoading: false,
   product: null,
-  camCategory: null,
-  camType: null,
-  camLevel: null,
+  filterStatus: false,
 };
 
 export const productsProcessSlice = createSlice({
@@ -59,14 +57,11 @@ export const productsProcessSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<string | null>) => {
       state.currentSortOrder = action.payload;
     },
-    setCamType: (state, action: PayloadAction<CameraTypes | null>) => {
-      state.camType = action.payload;
+    setCurrentProducts: (state, action: PayloadAction<TProducts>) => {
+      state.currentVisibleProducts = action.payload;
     },
-    setCamCategory: (state, action: PayloadAction<CategoryTypes | null>) => {
-      state.camCategory = action.payload;
-    },
-    setCamLevel: (state, action: PayloadAction<LevelTypes | null>) => {
-      state.camLevel = action.payload;
+    setFiltersStatus: (state, action: PayloadAction<boolean>) => {
+      state.filterStatus = action.payload;
     },
   },
 });
@@ -80,7 +75,6 @@ export const {
   setProductsLoadingStatus,
   setSortType,
   setSortOrder,
-  setCamCategory,
-  setCamLevel,
-  setCamType,
+  setFiltersStatus,
+  setCurrentProducts,
 } = productsProcessSlice.actions;

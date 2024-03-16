@@ -12,6 +12,7 @@ import {
 describe('Products Process Slice', () => {
   const initialState = {
     products: [],
+    currentVisibleProducts: [],
     similarProducts: null,
     activeId: '',
     promos: [],
@@ -19,9 +20,7 @@ describe('Products Process Slice', () => {
     product: null,
     currentSortType: null,
     currentSortOrder: null,
-    camCategory: null,
-    camType: null,
-    camLevel: null,
+    filterStatus: false,
   };
 
   const fakeProduct = makeFakeProduct();

@@ -5,15 +5,24 @@ import FooterLayout from '../../components/footer/footer';
 import HeaderLayout from '../../components/header/header';
 import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
-import { getProducts, getPromos } from '../../store/product-process/selectors';
+import {
+  getCurrentProducts,
+  getFilterStatus,
+  getProducts,
+  getPromos,
+} from '../../store/product-process/selectors';
 import { useState, useEffect, useCallback } from 'react';
 import Pagination from '../../components/pagination/pagination';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
+import { TProducts } from '../../types/products';
 
 function Main(): JSX.Element {
-  const products = useAppSelector(getProducts);
+  const filterStatus = useAppSelector(getFilterStatus);
+  const stateProducts = useAppSelector(getProducts);
+  const currentVisibleProducts = useAppSelector(getCurrentProducts);
+
   const banners = useAppSelector(getPromos);
 
   const [itemsPerPage] = useState(9);
@@ -45,8 +54,15 @@ function Main(): JSX.Element {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPageCount = Math.ceil(products.length / itemsPerPage);
+  const applyFilters = (): TProducts => {
+    if (filterStatus) {
+      return currentVisibleProducts.slice(indexOfFirstItem, indexOfLastItem);
+    } else {
+      return stateProducts.slice(indexOfFirstItem, indexOfLastItem);
+    }
+  };
+
+  const totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
 
   return (
     <div className="wrapper">
@@ -65,7 +81,7 @@ function Main(): JSX.Element {
                 <Filter />
                 <div className="catalog__content">
                   <Sort />
-                  <ProductCardList products={currentProducts} />
+                  <ProductCardList products={applyFilters()} />
                   <div className="pagination">
                     <Pagination
                       maxPageCount={maxPageCount}
