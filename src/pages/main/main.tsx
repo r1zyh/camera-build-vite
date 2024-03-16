@@ -80,7 +80,7 @@ function Main(): JSX.Element {
               <div className="page-content__columns">
                 <Filter />
                 <div className="catalog__content">
-                  <Sort />
+                  <Sort products={applyFilters()} />
                   <ProductCardList products={applyFilters()} />
                   <div className="pagination">
                     <Pagination

@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import Sort from './sort';
+import { makeFakeProduct } from '../../store/mock-components/mocks';
 
 describe('Sort component', () => {
+  const fakeProduct = [makeFakeProduct()];
   it('should render correctly', () => {
-    render(<Sort />);
-
+    render(<Sort products={fakeProduct} />);
 
     expect(screen.getByText('Сортировать:')).toBeInTheDocument();
 

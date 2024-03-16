@@ -118,6 +118,7 @@ function Filter(): JSX.Element {
   const handlerResetFilters = () => {
     dispatch(setFiltersStatus(false));
     dispatch(setCurrentProducts(stateProducts));
+    setPriceRange({ priceFrom: null, priceTo: null });
     setSelectedCategory(null);
     setSelectedType(null);
     setSelectedLevel(null);

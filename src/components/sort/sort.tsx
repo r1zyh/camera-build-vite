@@ -1,38 +1,41 @@
 import { SortOrder, SortTypes } from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import {
-  setProducts,
+  setCurrentProducts,
   setSortOrder,
   setSortType,
 } from '../../store/product-process/product-process';
 import {
   getCurrentSortOrder,
   getCurrentSortType,
-  getProducts,
 } from '../../store/product-process/selectors';
 import { useAppSelector } from '../../hooks/use-select';
+import { TProducts } from '../../types/products';
 
-function Sort(): JSX.Element {
+type SortProps = {
+  products: TProducts;
+};
+
+function Sort({ products }: SortProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const stateProducts = useAppSelector(getProducts);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
   const handleSortByPrice = () => {
-    const sortedProducts = [...stateProducts].sort((a, b) =>
+    const sortedProducts = products.sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? b.price - a.price
         : a.price - b.price
     );
-    dispatch(setProducts(sortedProducts));
+    dispatch(setCurrentProducts(sortedProducts));
   };
 
   const handleSortByPopularity = () => {
-    const sortedProducts = [...stateProducts].sort((a, b) =>
+    const sortedProducts = products.sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? b.rating - a.rating
         : a.rating - b.rating
     );
-    dispatch(setProducts(sortedProducts));
+    dispatch(setCurrentProducts(sortedProducts));
   };
 
   const handleSorting = (currentType: string) => {
@@ -84,7 +87,6 @@ function Sort(): JSX.Element {
       }
     }
   };
-
 
   return (
     <div className="catalog-sort">
