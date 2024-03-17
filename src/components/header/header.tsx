@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { ChangeEvent, useState } from 'react';
 import { useAppSelector } from '../../hooks/use-select';
@@ -9,6 +9,7 @@ function HeaderLayout(): JSX.Element {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpened, setIsOpened] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -25,9 +26,8 @@ function HeaderLayout(): JSX.Element {
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSelectItem = (selectedItem) => {
-    // Здесь можете добавить перенаправление на страницу товара
-    console.log('Выбран товар:', selectedItem);
+  const handleSelectItem = (productId: number) => {
+    navigate(`${AppRoute.Product}/${productId}`);
   };
 
   return (
@@ -101,6 +101,7 @@ function HeaderLayout(): JSX.Element {
                     key={product.id}
                     className="form-search__select-item"
                     tabIndex={0}
+                    onClick={() => handleSelectItem(product.id)}
                   >
                     {product.name}
                   </li>
