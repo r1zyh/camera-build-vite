@@ -1,7 +1,35 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { ChangeEvent, useState } from 'react';
+import { useAppSelector } from '../../hooks/use-select';
+import { getProducts } from '../../store/product-process/selectors';
 
 function HeaderLayout(): JSX.Element {
+  const products = useAppSelector(getProducts);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isOpened, setIsOpened] = useState(false);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    setIsOpened(true);
+  };
+
+  const handlerFormReset = () => {
+    setIsOpened(false);
+    setSearchQuery('');
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSelectItem = (selectedItem) => {
+    // Здесь можете добавить перенаправление на страницу товара
+    console.log('Выбран товар:', selectedItem);
+  };
+
   return (
     <header className="header" id="header">
       <div className="container">
@@ -42,7 +70,7 @@ function HeaderLayout(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <div className="form-search">
+        <div className={`form-search ${isOpened ? 'list-opened' : ''}`}>
           <form>
             <label>
               <svg
@@ -58,32 +86,40 @@ function HeaderLayout(): JSX.Element {
                 type="text"
                 autoComplete="off"
                 placeholder="Поиск по сайту"
+                value={searchQuery}
+                onChange={handleInputChange}
               />
             </label>
-            <ul className="form-search__select-list">
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 8i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 7i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 6i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 5i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 4i
-              </li>
-            </ul>
+            {searchQuery.length >= 3 && (
+              <ul
+                className={`form-search__select-list ${
+                  isOpened ? 'scroller' : ''
+                }`}
+              >
+                {filteredProducts.map((product) => (
+                  <li
+                    key={product.id}
+                    className="form-search__select-item"
+                    tabIndex={0}
+                  >
+                    {product.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </form>
-          <button className="form-search__reset" type="reset">
-            <svg width={10} height={10} aria-hidden="true">
-              <use xlinkHref="#icon-close"></use>
-            </svg>
-            <span className="visually-hidden">Сбросить поиск</span>
-          </button>
+          {searchQuery.length >= 3 && (
+            <button
+              className="form-search__reset"
+              type="reset"
+              onClick={handlerFormReset}
+            >
+              <svg width={10} height={10} aria-hidden="true">
+                <use xlinkHref="#icon-close"></use>
+              </svg>
+              <span className="visually-hidden">Сбросить поиск</span>
+            </button>
+          )}
         </div>
         <Link
           className="header__basket-link"
