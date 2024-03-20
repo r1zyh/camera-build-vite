@@ -3,6 +3,8 @@ import { AppDispatch, State } from '../types/state';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { TProduct, TProducts } from '../types/products';
 import { APIRoute, AppRoute } from '../const';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   setActiveId,
   setCurrentProducts,
@@ -38,6 +40,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
+      toast.error('Failed to fetch Products!');
     }
   }
 );
@@ -46,9 +49,13 @@ export const fetchReviews = createAsyncThunk<
   { id: string | undefined },
   thunkObjType
 >('data/fetchReviews', async ({ id }, { dispatch, extra: api }) => {
-  const url = id !== undefined ? `${APIRoute.Products}/${id}/reviews` : '';
-  const { data } = await api.get<TReviews>(url);
-  dispatch(setReviews(data));
+  try {
+    const url = id !== undefined ? `${APIRoute.Products}/${id}/reviews` : '';
+    const { data } = await api.get<TReviews>(url);
+    dispatch(setReviews(data));
+  } catch {
+    toast.error('Failed to fetch Reviews!');
+  }
 });
 
 export const fetchSimilarProducts = createAsyncThunk<
@@ -57,17 +64,22 @@ export const fetchSimilarProducts = createAsyncThunk<
   thunkObjType
 >('data/fetchSimilarProducts', async ({ id }, { dispatch, extra: api }) => {
   dispatch(setProductsLoadingStatus(true));
-  const url = id !== undefined ? `${APIRoute.Products}/${id}/similar` : '';
-  const { data } = await api.get<TProducts>(url);
-  const newData: TProducts = data.map((item) => ({
-    ...item,
-    previewImg: `/${item.previewImg}`,
-    previewImg2x: `/${item.previewImg2x}`,
-    previewImgWebp: `/${item.previewImgWebp}`,
-    previewImgWebp2x: `/${item.previewImgWebp2x}`,
-  }));
-  dispatch(setSimilarProducts(newData));
-  dispatch(setProductsLoadingStatus(false));
+  try {
+    const url = id !== undefined ? `${APIRoute.Products}/${id}/similar` : '';
+    const { data } = await api.get<TProducts>(url);
+    const newData: TProducts = data.map((item) => ({
+      ...item,
+      previewImg: `/${item.previewImg}`,
+      previewImg2x: `/${item.previewImg2x}`,
+      previewImgWebp: `/${item.previewImgWebp}`,
+      previewImgWebp2x: `/${item.previewImgWebp2x}`,
+    }));
+    dispatch(setSimilarProducts(newData));
+    dispatch(setProductsLoadingStatus(false));
+  } catch {
+    dispatch(setProductsLoadingStatus(false));
+    toast.error('Failed to fetch Similar Products!');
+  }
 });
 
 export const fetchProduct = createAsyncThunk<
@@ -93,7 +105,7 @@ export const fetchProduct = createAsyncThunk<
     dispatch(setProductsLoadingStatus(false));
   } catch {
     dispatch(setProductsLoadingStatus(false));
-    dispatch(redirectToRoute(AppRoute.NotFound));
+    toast.error('Failed to fetch Product!');
   }
 });
 
@@ -105,6 +117,7 @@ export const fetchPromo = createAsyncThunk<void, undefined, thunkObjType>(
       dispatch(setPromos(data));
     } catch (error) {
       dispatch(redirectToRoute(AppRoute.Error));
+      toast.error('Failed to fetch Promos!');
     }
   }
 );
@@ -141,6 +154,7 @@ export const postReview = createAsyncThunk<
         resetForm();
       } catch {
         dispatch(setReviewPostStatus(false));
+        toast.error('Failed to post Review!');
       }
     }
     );
