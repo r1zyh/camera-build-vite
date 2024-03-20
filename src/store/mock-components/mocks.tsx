@@ -53,11 +53,15 @@ export const makeFakePromo = () => ({
 export const makeFakeStore = (initialState?: Partial<State>): State => ({
   PRODUCTS: {
     products: [],
+    currentVisibleProducts: [],
     similarProducts: [],
     activeId: '',
     promos: [],
     isProductLoading: true,
     product: null,
+    currentSortOrder: null,
+    currentSortType: null,
+    filterStatus: false,
   },
   REVIEWS: { reviews: [], isReviewPosting: false },
   ...(initialState ?? {}),

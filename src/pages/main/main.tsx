@@ -9,6 +9,7 @@ import {
   getCurrentProducts,
   getFilterStatus,
   getProducts,
+  getProductsLoadingStatus,
   getPromos,
 } from '../../store/product-process/selectors';
 import { useState, useEffect, useCallback } from 'react';
@@ -17,11 +18,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import { TProducts } from '../../types/products';
+import Loader from '../../components/loader/loader';
 
 function Main(): JSX.Element {
   const filterStatus = useAppSelector(getFilterStatus);
   const stateProducts = useAppSelector(getProducts);
   const currentVisibleProducts = useAppSelector(getCurrentProducts);
+  const isProductLoading = useAppSelector(getProductsLoadingStatus);
 
   const banners = useAppSelector(getPromos);
 
@@ -63,6 +66,10 @@ function Main(): JSX.Element {
   };
 
   const totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
+
+  if (isProductLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="wrapper">

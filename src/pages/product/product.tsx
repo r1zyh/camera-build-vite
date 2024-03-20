@@ -10,12 +10,14 @@ import { getReviews } from '../../store/review-process/selectors';
 import {
   getProduct,
   getProducts,
+  getProductsLoadingStatus,
   getSimilarProducts,
 } from '../../store/product-process/selectors';
 import { fetchProduct } from '../../store/api-actions';
 import { useCallback, useEffect, useState } from 'react';
 import Rating from '../../components/rating/rating';
 import { AppRoute } from '../../const';
+import Loader from '../../components/loader/loader';
 
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -25,16 +27,20 @@ function Product(): JSX.Element {
   const reviews = useAppSelector(getReviews);
   const product = useAppSelector(getProduct);
   const similarProducts = useAppSelector(getSimilarProducts);
+  const isProductLoading = useAppSelector(getProductsLoadingStatus);
 
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('description');
 
-  const updateUrl = useCallback((newTab: string) => {
-    const queryParams = new URLSearchParams(location.search);
-    queryParams.set('tab', newTab);
-    const newUrl = `${location.pathname}?${queryParams.toString()}`;
-    window.history.replaceState(null, '', newUrl);
-  }, [location.pathname, location.search]);
+  const updateUrl = useCallback(
+    (newTab: string) => {
+      const queryParams = new URLSearchParams(location.search);
+      queryParams.set('tab', newTab);
+      const newUrl = `${location.pathname}?${queryParams.toString()}`;
+      window.history.replaceState(null, '', newUrl);
+    },
+    [location.pathname, location.search]
+  );
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -83,13 +89,10 @@ function Product(): JSX.Element {
     products === null ||
     reviews === null ||
     product === null ||
-    similarProducts === null
+    similarProducts === null ||
+    isProductLoading
   ) {
-    return (
-      <div>
-        <p>Loading Screen Template</p>
-      </div>
-    );
+    return <Loader />;
   }
 
   const handleTabClick = (tab: string) => {
