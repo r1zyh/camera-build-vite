@@ -158,3 +158,40 @@ export const postReview = createAsyncThunk<
       }
     }
     );
+
+type FetchPriceRangeOptions = {
+  price_gte?: number;
+  price_lte?: number;
+  _start?: number;
+  _end?: number;
+  _limit?: number;
+};
+
+export const fetchPriceRange = createAsyncThunk<
+  void,
+  FetchPriceRangeOptions,
+  thunkObjType
+>('data/priceRange', async (options, { dispatch, extra: api }) => {
+  try {
+    let queryParams = '';
+    if (options.price_gte !== undefined && options.price_lte !== undefined) {
+      queryParams += `price_gte=${options.price_gte}&price_lte=${options.price_lte}`;
+    }
+    if (options._start !== undefined && options._end !== undefined) {
+      queryParams += `${queryParams ? '&' : ''}_start=${options._start}&_end=${
+        options._end
+      }`;
+    }
+    if (options._limit !== undefined) {
+      queryParams += `${queryParams ? '&' : ''}_limit=${options._limit}`;
+    }
+
+    const { data } = await api.get<TProducts>(
+      `${APIRoute.Products}?${queryParams}`
+    );
+    dispatch(setCurrentProducts(data));
+  } catch (error) {
+    dispatch(redirectToRoute(AppRoute.Error));
+    toast.error('Failed to fetch Price Range!');
+  }
+});
