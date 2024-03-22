@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
 import {
@@ -17,39 +17,47 @@ import {
   setCurrentProducts,
   setFiltersStatus,
 } from '../../store/product-process/product-process';
-
-type PriceRange = {
-  priceFrom: number | null;
-  priceTo: number | null;
-};
+import { fetchPriceRange } from '../../store/api-actions';
 
 function Filter(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateProducts = useAppSelector(getProducts);
   const products = useAppSelector(getCurrentProducts);
-  const [priceRange, setPriceRange] = useState<PriceRange>({
-    priceFrom: null,
-    priceTo: null,
-  });
+
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
   const [selectedType, setSelectedType] = useState<CameraTypes | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<LevelTypes | null>(null);
+  const [selectedPriceFrom, setSelectedPriceFrom] = useState<number | null>(
+    null
+  );
+  const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (selectedPriceFrom !== null || selectedPriceTo !== null) {
+      dispatch(
+        fetchPriceRange({
+          'price_gte': selectedPriceFrom,
+          'price_lte': selectedPriceTo,
+        })
+      );
+    }
+  }, [dispatch, selectedPriceFrom, selectedPriceTo]);
+
+  const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPriceFrom = e.target.value;
+    setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
+    dispatch(setFiltersStatus(true));
+  };
+
+  const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newPriceTo = e.target.value;
+    setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
+    dispatch(setFiltersStatus(true));
+  };
 
   const updateFilteredProducts = () => {
     const filteredProducts = products.filter((product) => {
-      if (
-        priceRange.priceFrom !== null &&
-        product.price < Number(priceRange.priceFrom)
-      ) {
-        return false;
-      }
-      if (
-        priceRange.priceTo !== null &&
-        product.price > Number(priceRange.priceTo)
-      ) {
-        return false;
-      }
       if (selectedCategory !== null && product.category !== selectedCategory) {
         return false;
       }
@@ -65,20 +73,6 @@ function Filter(): JSX.Element {
     dispatch(setCurrentProducts(filteredProducts));
   };
 
-  const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newPriceFrom = e.target.value;
-    setPriceRange({
-      ...priceRange,
-      priceFrom: newPriceFrom !== '' ? Number(newPriceFrom) : null,
-    });
-    updateFilteredProducts();
-  };
-
-  const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newPriceTo = e.target.value;
-    setPriceRange({ ...priceRange, priceTo: Number(newPriceTo) });
-    updateFilteredProducts();
-  };
   const handleTypeChange = (
     e: ChangeEvent<HTMLInputElement>,
     type: CameraTypes
@@ -118,7 +112,8 @@ function Filter(): JSX.Element {
   const handlerResetFilters = () => {
     dispatch(setFiltersStatus(false));
     dispatch(setCurrentProducts(stateProducts));
-    setPriceRange({ priceFrom: null, priceTo: null });
+    setSelectedPriceFrom(null);
+    setSelectedPriceTo(null);
     setSelectedCategory(null);
     setSelectedType(null);
     setSelectedLevel(null);
@@ -138,9 +133,7 @@ function Filter(): JSX.Element {
                     name="price"
                     placeholder="от"
                     onChange={handlePriceFromChange}
-                    value={
-                      priceRange.priceFrom !== null ? priceRange.priceFrom : ''
-                    }
+                    value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
                   />
                 </label>
               </div>
@@ -151,9 +144,7 @@ function Filter(): JSX.Element {
                     name="priceUp"
                     placeholder="до"
                     onChange={handlePriceToChange}
-                    value={
-                      priceRange.priceTo !== null ? priceRange.priceTo : ''
-                    }
+                    value={selectedPriceTo !== null ? selectedPriceTo : ''}
                   />
                 </label>
               </div>

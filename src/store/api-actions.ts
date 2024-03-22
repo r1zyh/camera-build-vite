@@ -159,9 +159,9 @@ export const postReview = createAsyncThunk<
     }
     );
 
-type FetchPriceRangeOptions = {
-  price_gte?: number;
-  price_lte?: number;
+export type FetchPriceRangeOptions = {
+  price_gte?: number | null;
+  price_lte?: number | null;
   _start?: number;
   _end?: number;
   _limit?: number;
@@ -174,9 +174,15 @@ export const fetchPriceRange = createAsyncThunk<
 >('data/priceRange', async (options, { dispatch, extra: api }) => {
   try {
     let queryParams = '';
-    if (options.price_gte !== undefined && options.price_lte !== undefined) {
+    if (
+      options.price_gte !== undefined &&
+      options.price_lte !== undefined &&
+      options.price_gte !== null &&
+      options.price_lte !== null
+    ) {
       queryParams += `price_gte=${options.price_gte}&price_lte=${options.price_lte}`;
     }
+
     if (options._start !== undefined && options._end !== undefined) {
       queryParams += `${queryParams ? '&' : ''}_start=${options._start}&_end=${
         options._end
