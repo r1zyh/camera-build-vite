@@ -3,6 +3,8 @@ import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
 import {
   getCurrentProducts,
+  getMaxProdPrice,
+  getMinProdPrice,
   getProducts,
 } from '../../store/product-process/selectors';
 import {
@@ -19,10 +21,16 @@ import {
 } from '../../store/product-process/product-process';
 import { fetchPriceRange } from '../../store/api-actions';
 
-function Filter(): JSX.Element {
+type FilterProps = {
+  setCurrentPage: (page: number) => void;
+};
+
+function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   const dispatch = useAppDispatch();
   const stateProducts = useAppSelector(getProducts);
   const products = useAppSelector(getCurrentProducts);
+  const minPrice = useAppSelector(getMinProdPrice);
+  const maxPrice = useAppSelector(getMaxProdPrice);
 
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
@@ -48,12 +56,14 @@ function Filter(): JSX.Element {
     const newPriceFrom = e.target.value;
     setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
     dispatch(setFiltersStatus(true));
+    setCurrentPage(1);
   };
 
   const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceTo = e.target.value;
     setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
     dispatch(setFiltersStatus(true));
+    setCurrentPage(1);
   };
 
   const updateFilteredProducts = () => {
@@ -70,6 +80,7 @@ function Filter(): JSX.Element {
       return true;
     });
     dispatch(setFiltersStatus(true));
+    setCurrentPage(1);
     dispatch(setCurrentProducts(filteredProducts));
   };
 
@@ -131,7 +142,7 @@ function Filter(): JSX.Element {
                   <input
                     type="number"
                     name="price"
-                    placeholder="от"
+                    placeholder={String(minPrice)}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
                   />
@@ -142,7 +153,7 @@ function Filter(): JSX.Element {
                   <input
                     type="number"
                     name="priceUp"
-                    placeholder="до"
+                    placeholder={String(maxPrice)}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
                   />

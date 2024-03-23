@@ -37,3 +37,27 @@ export const getFilterStatus = (state: State): boolean =>
 export const getCurrentProducts = (
   state: Pick<State, NameSpace.Products>
 ): TProducts => state[NameSpace.Products].currentVisibleProducts;
+
+export const getProdPrices = (
+  state: Pick<State, NameSpace.Products>
+): number[] =>
+  state[NameSpace.Products].currentVisibleProducts.map(
+    (product) => product.price
+  );
+
+export const getMinProdPrice = (state: State): number | null => {
+  const prices = getProdPrices(state);
+  if (prices.length === 0) {
+    return null;
+  }
+  return Math.min(...prices);
+};
+
+
+export const getMaxProdPrice = (state: State): number | null => {
+  const prices = getProdPrices(state);
+  if (prices.length === 0) {
+    return null;
+  }
+  return Math.max(...prices);
+};

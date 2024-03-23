@@ -65,7 +65,16 @@ function Main(): JSX.Element {
     }
   };
 
-  const totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
+  const calcTotalPageCount = () => {
+    let totalPageCount: number;
+    if (filterStatus) {
+      totalPageCount = Math.ceil(currentVisibleProducts.length / itemsPerPage);
+    } else {
+      totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
+    }
+
+    return totalPageCount;
+  };
 
   if (isProductLoading) {
     return <Loader />;
@@ -85,7 +94,7 @@ function Main(): JSX.Element {
             <div className="container">
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
-                <Filter />
+                <Filter setCurrentPage={setCurrentPage} />
                 <div className="catalog__content">
                   <Sort products={applyFilters()} />
                   <ProductCardList products={applyFilters()} />
@@ -93,7 +102,7 @@ function Main(): JSX.Element {
                     <Pagination
                       maxPageCount={maxPageCount}
                       currentPage={currentPage}
-                      totalPageCount={totalPageCount}
+                      totalPageCount={calcTotalPageCount()}
                       handlePageClick={handlePageClick}
                     />
                   </div>
