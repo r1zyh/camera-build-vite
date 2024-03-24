@@ -17,15 +17,14 @@ import Pagination from '../../components/pagination/pagination';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
-import { TProducts } from '../../types/products';
 import Loader from '../../components/loader/loader';
+import { applyFilters, calcTotalPageCount } from '../../util';
 
 function Main(): JSX.Element {
   const filterStatus = useAppSelector(getFilterStatus);
   const stateProducts = useAppSelector(getProducts);
   const currentVisibleProducts = useAppSelector(getCurrentProducts);
   const isProductLoading = useAppSelector(getProductsLoadingStatus);
-
   const banners = useAppSelector(getPromos);
 
   const [itemsPerPage] = useState(9);
@@ -37,6 +36,8 @@ function Main(): JSX.Element {
   );
   const [currentPage, setCurrentPage] = useState(currentPageParam);
   const maxPageCount = 3;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   const updateUrl = useCallback(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -53,27 +54,6 @@ function Main(): JSX.Element {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
     }
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const applyFilters = (): TProducts => {
-    if (filterStatus) {
-      return currentVisibleProducts.slice(indexOfFirstItem, indexOfLastItem);
-    } else {
-      return stateProducts.slice(indexOfFirstItem, indexOfLastItem);
-    }
-  };
-
-  const calcTotalPageCount = () => {
-    let totalPageCount: number;
-    if (filterStatus) {
-      totalPageCount = Math.ceil(currentVisibleProducts.length / itemsPerPage);
-    } else {
-      totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
-    }
-
-    return totalPageCount;
   };
 
   if (isProductLoading) {
@@ -96,13 +76,34 @@ function Main(): JSX.Element {
               <div className="page-content__columns">
                 <Filter setCurrentPage={setCurrentPage} />
                 <div className="catalog__content">
-                  <Sort products={applyFilters()} />
-                  <ProductCardList products={applyFilters()} />
+                  <Sort
+                    products={applyFilters(
+                      indexOfFirstItem,
+                      indexOfLastItem,
+                      filterStatus,
+                      currentVisibleProducts,
+                      stateProducts
+                    )}
+                  />
+                  <ProductCardList
+                    products={applyFilters(
+                      indexOfFirstItem,
+                      indexOfLastItem,
+                      filterStatus,
+                      currentVisibleProducts,
+                      stateProducts
+                    )}
+                  />
                   <div className="pagination">
                     <Pagination
                       maxPageCount={maxPageCount}
                       currentPage={currentPage}
-                      totalPageCount={calcTotalPageCount()}
+                      totalPageCount={calcTotalPageCount(
+                        filterStatus,
+                        currentVisibleProducts,
+                        stateProducts,
+                        itemsPerPage
+                      )}
                       handlePageClick={handlePageClick}
                     />
                   </div>

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
+import { TProducts } from './types/products';
 export function humanizeReviewDate(date: string) {
   const formattedDate = dayjs(date).locale('ru').format('DD MMMM');
   return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1);
@@ -43,4 +44,34 @@ export const handleTabKeyDown = (
       firstFocusableElementRef.current?.focus();
     }
   }
+};
+
+export const applyFilters = (
+  indexOfFirstItem: number,
+  indexOfLastItem: number,
+  filterStatus: boolean,
+  currentVisibleProducts: TProducts,
+  stateProducts: TProducts
+): TProducts => {
+  if (filterStatus) {
+    return currentVisibleProducts.slice(indexOfFirstItem, indexOfLastItem);
+  } else {
+    return stateProducts.slice(indexOfFirstItem, indexOfLastItem);
+  }
+};
+
+export const calcTotalPageCount = (
+  filterStatus: boolean,
+  currentVisibleProducts: TProducts,
+  stateProducts: TProducts,
+  itemsPerPage: number
+): number => {
+  let totalPageCount: number;
+  if (filterStatus) {
+    totalPageCount = Math.ceil(currentVisibleProducts.length / itemsPerPage);
+  } else {
+    totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
+  }
+
+  return totalPageCount;
 };
