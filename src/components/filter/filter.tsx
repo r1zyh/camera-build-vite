@@ -34,8 +34,8 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
 
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryTypes | null>(null);
-  const [selectedType, setSelectedType] = useState<CameraTypes | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<LevelTypes | null>(null);
+  const [selectedTypes, setSelectedTypes] = useState<CameraTypes[]>([]);
+  const [selectedLevels, setSelectedLevels] = useState<LevelTypes[]>([]);
   const [selectedPriceFrom, setSelectedPriceFrom] = useState<number | null>(
     null
   );
@@ -71,10 +71,13 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
       if (selectedCategory !== null && product.category !== selectedCategory) {
         return false;
       }
-      if (selectedType !== null && product.type !== selectedType) {
+      if (selectedTypes.length > 0 && !selectedTypes.includes(product.type)) {
         return false;
       }
-      if (selectedLevel !== null && product.level !== selectedLevel) {
+      if (
+        selectedLevels.length > 0 &&
+        !selectedLevels.includes(product.level)
+      ) {
         return false;
       }
       return true;
@@ -90,7 +93,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   ) => {
     const { checked } = e.target;
     if (checked) {
-      setSelectedType(type);
+      setSelectedTypes((prevTypes) => [...prevTypes, type]);
 
       updateFilteredProducts();
     }
@@ -102,7 +105,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   ) => {
     const { checked } = e.target;
     if (checked) {
-      setSelectedLevel(level);
+      setSelectedLevels((prevLevels) => [...prevLevels, level]);
       updateFilteredProducts();
     }
   };
@@ -114,10 +117,11 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     const { checked } = e.target;
     if (checked) {
       setSelectedCategory(category);
+      updateFilteredProducts();
     } else {
       setSelectedCategory(null);
+      updateFilteredProducts();
     }
-    updateFilteredProducts();
   };
 
   const handlerResetFilters = () => {
@@ -126,8 +130,8 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     setSelectedPriceFrom(null);
     setSelectedPriceTo(null);
     setSelectedCategory(null);
-    setSelectedType(null);
-    setSelectedLevel(null);
+    setSelectedTypes([]);
+    setSelectedLevels([]);
   };
   return (
     <div className="catalog__aside">
@@ -142,7 +146,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   <input
                     type="number"
                     name="price"
-                    placeholder={String(minPrice)}
+                    placeholder={minPrice !== null ? String(minPrice) : '0'}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
                   />
@@ -153,7 +157,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   <input
                     type="number"
                     name="priceUp"
-                    placeholder={String(maxPrice)}
+                    placeholder={maxPrice !== null ? String(maxPrice) : '0'}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
                   />

@@ -1,0 +1,16 @@
+.cardsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .textContainer {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+  }
+  
+  .text {
+    font-size: 1.5em;
+  }

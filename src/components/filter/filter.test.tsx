@@ -2,8 +2,9 @@ import { render, screen } from '@testing-library/react';
 import Filter from './filter';
 
 describe('Filter component', () => {
+  const mockHandleClick = vi.fn();
   it('should render correctly', () => {
-    render(<Filter />);
+    render(<Filter setCurrentPage={mockHandleClick} />);
 
     expect(screen.getByText('Фильтр')).toBeInTheDocument();
 

@@ -5,6 +5,8 @@ import { useAppSelector } from '../../hooks/use-select';
 import { getProducts } from '../../store/product-process/selectors';
 
 function HeaderLayout(): JSX.Element {
+  const minQueryLength = 3;
+  const minQueryCloseLength = 1;
   const products = useAppSelector(getProducts);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +30,12 @@ function HeaderLayout(): JSX.Element {
 
   const handleSelectItem = (productId: number) => {
     navigate(`${AppRoute.Product}/${productId}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, productId: number) => {
+    if (e.key === 'Enter') {
+      handleSelectItem(productId);
+    }
   };
 
   return (
@@ -90,7 +98,7 @@ function HeaderLayout(): JSX.Element {
                 onChange={handleInputChange}
               />
             </label>
-            {searchQuery.length >= 3 && (
+            {searchQuery.length >= minQueryLength && (
               <ul
                 className={`form-search__select-list ${
                   isOpened ? 'scroller' : ''
@@ -102,6 +110,7 @@ function HeaderLayout(): JSX.Element {
                     className="form-search__select-item"
                     tabIndex={0}
                     onClick={() => handleSelectItem(product.id)}
+                    onKeyDown={(e) => handleKeyDown(e, product.id)}
                   >
                     {product.name}
                   </li>
@@ -109,7 +118,7 @@ function HeaderLayout(): JSX.Element {
               </ul>
             )}
           </form>
-          {searchQuery.length >= 3 && (
+          {searchQuery.length >= minQueryCloseLength && (
             <button
               className="form-search__reset"
               type="reset"
