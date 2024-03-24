@@ -12,7 +12,7 @@ import { postReview } from '../../store/api-actions';
 import { useAppSelector } from '../../hooks/use-select';
 import { getActiveId } from '../../store/product-process/selectors';
 import { getReviewPostStatus } from '../../store/review-process/selectors';
-import { customValidChecker } from '../../util';
+import { customValidChecker, handleTabKeyDown } from '../../util';
 
 type ReviewFormProps = {
   cameraId: string | undefined;
@@ -43,19 +43,7 @@ function ReviewForm({
         closeForm();
       }
 
-      if (e.key === 'Tab') {
-        if (e.shiftKey) {
-          if (document.activeElement === userNameRef.current) {
-            e.preventDefault();
-            closeButtonRef.current?.focus();
-          }
-        } else {
-          if (document.activeElement === closeButtonRef.current) {
-            e.preventDefault();
-            userNameRef.current?.focus();
-          }
-        }
-      }
+      handleTabKeyDown(e, userNameRef, closeButtonRef);
     };
 
     const handleClickOutside = (e: MouseEvent) => {

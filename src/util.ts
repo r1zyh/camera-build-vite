@@ -22,3 +22,25 @@ export const customValidChecker = (
 
   return formInputClass;
 };
+
+export const handleTabKeyDown = (
+  e: KeyboardEvent,
+  firstFocusableElementRef: React.RefObject<HTMLElement>,
+  lastFocusableElementRef: React.RefObject<HTMLElement>
+) => {
+  if (e.key === 'Tab') {
+    if (
+      e.shiftKey &&
+      document.activeElement === firstFocusableElementRef.current
+    ) {
+      e.preventDefault();
+      lastFocusableElementRef.current?.focus();
+    } else if (
+      !e.shiftKey &&
+      document.activeElement === lastFocusableElementRef.current
+    ) {
+      e.preventDefault();
+      firstFocusableElementRef.current?.focus();
+    }
+  }
+};

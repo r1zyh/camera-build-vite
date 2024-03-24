@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
+import { handleTabKeyDown } from '../../util';
 
 type ModalProps = {
   title: string;
@@ -28,21 +29,7 @@ function Modal({
         handleCloseModal();
       }
 
-      if (e.key === 'Tab') {
-        if (
-          e.shiftKey &&
-          document.activeElement === firstFocusableElementRef.current
-        ) {
-          e.preventDefault();
-          lastFocusableElementRef.current?.focus();
-        } else if (
-          !e.shiftKey &&
-          document.activeElement === lastFocusableElementRef.current
-        ) {
-          e.preventDefault();
-          firstFocusableElementRef.current?.focus();
-        }
-      }
+      handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef);
     },
     [handleCloseModal]
   );

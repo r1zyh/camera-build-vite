@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
 import {
@@ -20,6 +20,7 @@ import {
   setFiltersStatus,
 } from '../../store/product-process/product-process';
 import { fetchPriceRange } from '../../store/api-actions';
+import { handleTabKeyDown } from '../../util';
 
 type FilterProps = {
   setCurrentPage: (page: number) => void;
@@ -27,6 +28,9 @@ type FilterProps = {
 
 function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
+  const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
+
   const stateProducts = useAppSelector(getProducts);
   const products = useAppSelector(getCurrentProducts);
   const minPrice = useAppSelector(getMinProdPrice);
@@ -51,6 +55,24 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
       );
     }
   }, [dispatch, selectedPriceFrom, selectedPriceTo]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef);
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (firstFocusableElementRef.current) {
+      firstFocusableElementRef.current.focus();
+    }
+  }, []);
 
   const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceFrom = e.target.value;
@@ -133,6 +155,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     setSelectedTypes([]);
     setSelectedLevels([]);
   };
+
   return (
     <div className="catalog__aside">
       <div className="catalog-filter">
@@ -144,6 +167,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
               <div className="custom-input">
                 <label>
                   <input
+                    ref={firstFocusableElementRef}
                     type="number"
                     name="price"
                     placeholder={minPrice !== null ? String(minPrice) : '0'}
@@ -281,6 +305,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
             </div>
           </fieldset>
           <button
+            ref={lastFocusableElementRef}
             className="btn catalog-filter__reset-btn"
             type="reset"
             onClick={handlerResetFilters}
