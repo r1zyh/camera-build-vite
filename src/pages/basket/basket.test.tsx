@@ -1,11 +1,36 @@
 import { render, screen } from '@testing-library/react';
-import { withHistory } from '../../store/mock-components/mock-components';
+import {
+  withHistory,
+  withStore,
+} from '../../store/mock-components/mock-components';
 import Basket from './basket';
 import HeaderLayout from '../../components/header/header';
+import { MemoryHistory, createMemoryHistory } from 'history';
+import { makeFakeStore } from '../../store/mock-components/mocks';
+import { AppRoute } from '../../const';
 
 describe('Basket', () => {
+  let mockHistory: MemoryHistory;
   beforeEach(() => {
-    render(withHistory(<Basket />));
+    mockHistory = createMemoryHistory();
+    const withHistoryComponent = withHistory(<Basket />, mockHistory);
+    const { withStoreComponent } = withStore(
+      withHistoryComponent,
+      makeFakeStore()
+    );
+    mockHistory.push(AppRoute.Basket);
+
+    render(withStoreComponent);
+  });
+  it('should render when navigate to /basket', () => {
+    const withHistoryComponent = withHistory(<Basket />, mockHistory);
+    const { withStoreComponent } = withStore(
+      withHistoryComponent,
+      makeFakeStore()
+    );
+    mockHistory.push(AppRoute.Basket);
+
+    render(withStoreComponent);
   });
 
   it('should render breadcrumbs correctly', () => {
@@ -42,8 +67,14 @@ describe('Basket', () => {
 
 describe('BasketHeader', () => {
   it('should render header correctly', () => {
-    render(withHistory(<HeaderLayout />));
-
+    const mockHistory = createMemoryHistory();
+    const withHistoryComponent = withHistory(<HeaderLayout />, mockHistory);
+    const { withStoreComponent } = withStore(
+      withHistoryComponent,
+      makeFakeStore()
+    );
+    mockHistory.push(AppRoute.Basket);
+    render(withStoreComponent);
     const catalogLink = screen.getByTestId('header-catalog-link');
     expect(catalogLink).toBeInTheDocument();
   });

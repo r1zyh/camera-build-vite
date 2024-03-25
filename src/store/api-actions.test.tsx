@@ -30,6 +30,7 @@ import {
   setProduct,
   setActiveId,
   setPromos,
+  setCurrentProducts,
 } from './product-process/product-process';
 import { setReviewPostStatus, setReviews, updateReviews } from './review-process/review-process';
 
@@ -68,6 +69,7 @@ describe('Async actions', () => {
         fetchProducts.pending.type,
         setProductsLoadingStatus.type,
         setProducts.type,
+        setCurrentProducts.type,
         setProductsLoadingStatus.type,
         fetchProducts.fulfilled.type,
       ]);
@@ -224,7 +226,7 @@ describe('Async actions', () => {
       await store.dispatch(fetchProduct({ id: mockId }));
 
       const emittedActions = store.getActions();
-      expect(emittedActions).toContainEqual(redirectToRoute(AppRoute.NotFound));
+      expect(emittedActions).toContainEqual(store.dispatch(redirectToRoute(AppRoute.Error)));
     });
   });
 

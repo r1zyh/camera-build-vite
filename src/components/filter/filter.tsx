@@ -173,6 +173,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                     placeholder={minPrice !== null ? String(minPrice) : '0'}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
+                    data-testid='от'
                   />
                 </label>
               </div>
@@ -184,6 +185,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                     placeholder={maxPrice !== null ? String(maxPrice) : '0'}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
+                    data-testid='до'
                   />
                 </label>
               </div>

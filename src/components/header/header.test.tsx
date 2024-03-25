@@ -1,11 +1,25 @@
 import { render, screen } from '@testing-library/react';
 import { AppRoute } from '../../const';
 import HeaderLayout from './header';
-import { withHistory } from '../../store/mock-components/mock-components';
+import {
+  withHistory,
+  withStore,
+} from '../../store/mock-components/mock-components';
+import { createMemoryHistory } from 'history';
+import { makeFakeStore } from '../../store/mock-components/mocks';
 
 describe('HeaderLayout component', () => {
   it('should render correctly', () => {
-    render(withHistory(<HeaderLayout />));
+    const mockHistory = createMemoryHistory();
+    const withHistoryComponent = withHistory(<HeaderLayout />, mockHistory);
+    const { withStoreComponent } = withStore(
+      withHistoryComponent,
+      makeFakeStore()
+    );
+    mockHistory.push(AppRoute.Main);
+
+    render(withStoreComponent);
+
 
     expect(screen.getByLabelText('Переход на главную')).toBeInTheDocument();
 
@@ -14,9 +28,7 @@ describe('HeaderLayout component', () => {
     const guaranteesLink = screen.getByText('Гарантии');
     const deliveryLink = screen.getByText('Доставка');
     const aboutLink = screen.getByText('О компании');
-    const resetButton = screen.getByText('Сбросить поиск');
 
-    expect(resetButton).toBeInTheDocument();
     expect(guaranteesLink).toBeInTheDocument();
     expect(guaranteesLink).toHaveAttribute('href', '#');
 

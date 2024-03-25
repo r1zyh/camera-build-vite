@@ -18,6 +18,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Rating from '../../components/rating/rating';
 import { AppRoute } from '../../const';
 import Loader from '../../components/loader/loader';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Product(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -67,11 +69,7 @@ function Product(): JSX.Element {
   }, [productId, dispatch]);
 
   if (fetchError) {
-    return (
-      <div className="error-message">
-        <p>{fetchError}</p>
-      </div>
-    );
+    toast.error(fetchError);
   }
   const smoothScrollToTop = () => {
     const c = document.documentElement.scrollTop || document.body.scrollTop;

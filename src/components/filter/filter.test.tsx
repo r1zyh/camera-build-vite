@@ -1,15 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import Filter from './filter';
+import { createMemoryHistory } from 'history';
+import { withHistory, withStore } from '../../store/mock-components/mock-components';
+import { makeFakeStore } from '../../store/mock-components/mocks';
+import { AppRoute } from '../../const';
 
 describe('Filter component', () => {
   const mockHandleClick = vi.fn();
   it('should render correctly', () => {
-    render(<Filter setCurrentPage={mockHandleClick} />);
+    const mockHistory = createMemoryHistory();
+    const withHistoryComponent = withHistory(
+      <Filter setCurrentPage={mockHandleClick} />,
+      mockHistory
+    );
+    const { withStoreComponent } = withStore(
+      withHistoryComponent,
+      makeFakeStore()
+    );
+    mockHistory.push(AppRoute.Main);
+
+    render(withStoreComponent);
 
     expect(screen.getByText('Фильтр')).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText('от')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('до')).toBeInTheDocument();
+    expect(screen.getByTestId('от')).toBeInTheDocument();
+    expect(screen.getByTestId('до')).toBeInTheDocument();
 
     expect(screen.getByText('Фотокамера')).toBeInTheDocument();
     expect(screen.getByText('Видеокамера')).toBeInTheDocument();
