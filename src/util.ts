@@ -25,7 +25,10 @@ export const customValidChecker = (
 };
 
 export const handleTabKeyDown = (
-  e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLButtonElement>,
+  e:
+    | KeyboardEvent
+    | React.KeyboardEvent<HTMLInputElement>
+    | React.KeyboardEvent<HTMLButtonElement>,
   firstFocusableElementRef: React.RefObject<HTMLElement>,
   lastFocusableElementRef: React.RefObject<HTMLElement>
 ) => {
@@ -66,12 +69,9 @@ export const calcTotalPageCount = (
   stateProducts: TProducts,
   itemsPerPage: number
 ): number => {
-  let totalPageCount: number;
   if (filterStatus) {
-    totalPageCount = Math.ceil(currentVisibleProducts.length / itemsPerPage);
+    return Math.ceil(currentVisibleProducts.length / itemsPerPage);
   } else {
-    totalPageCount = Math.ceil(stateProducts.length / itemsPerPage);
+    return Math.ceil(stateProducts.length / itemsPerPage);
   }
-
-  return totalPageCount;
 };

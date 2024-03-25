@@ -2,12 +2,14 @@ import { SortOrder, SortTypes } from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import {
   setCurrentProducts,
+  setProducts,
   setSortOrder,
   setSortType,
 } from '../../store/product-process/product-process';
 import {
   getCurrentSortOrder,
   getCurrentSortType,
+  getFilterStatus,
 } from '../../store/product-process/selectors';
 import { useAppSelector } from '../../hooks/use-select';
 import { TProducts } from '../../types/products';
@@ -20,13 +22,19 @@ function Sort({ products }: SortProps): JSX.Element {
   const dispatch = useAppDispatch();
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
+  const filterStatus = useAppSelector(getFilterStatus);
+
   const handleSortByPrice = () => {
     const sortedProducts = products.sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? b.price - a.price
         : a.price - b.price
     );
-    dispatch(setCurrentProducts(sortedProducts));
+
+    if (filterStatus) {
+      dispatch(setCurrentProducts(sortedProducts));
+    }
+    dispatch(setProducts(sortedProducts));
   };
 
   const handleSortByPopularity = () => {
@@ -35,24 +43,24 @@ function Sort({ products }: SortProps): JSX.Element {
         ? b.rating - a.rating
         : a.rating - b.rating
     );
-    dispatch(setCurrentProducts(sortedProducts));
+    if (filterStatus) {
+      dispatch(setCurrentProducts(sortedProducts));
+    }
+    dispatch(setProducts(sortedProducts));
   };
 
-  const handleSorting = (currentType: string) => {
+  const handleSortSelect = (currentType: string) => {
+    if (currentType === SortTypes.Price && currentSortOrder === null) {
+      dispatch(setSortOrder(SortOrder.Ascending));
+    }
+
+    dispatch(setSortType(currentType));
+
     switch (currentType) {
       case SortTypes.Popularity:
-        if (currentSortType === SortTypes.Price) {
-          dispatch(setSortOrder(currentSortOrder));
-        }
         handleSortByPopularity();
         break;
       case SortTypes.Price:
-        if (
-          currentSortType === SortTypes.Popularity &&
-          currentSortOrder === SortOrder.Descending
-        ) {
-          dispatch(setSortOrder(SortOrder.Ascending));
-        }
         handleSortByPrice();
         break;
       default:
@@ -61,30 +69,13 @@ function Sort({ products }: SortProps): JSX.Element {
   };
 
   const handleSortOrderChange = (sortOrder: string) => {
+    dispatch(setSortOrder(sortOrder));
+    if (currentSortType !== null) {
+      handleSortSelect(currentSortType);
+    }
+
     if (currentSortType === null) {
       dispatch(setSortType(SortTypes.Price));
-    }
-    dispatch(setSortOrder(sortOrder));
-    handleSorting(currentSortType || SortTypes.Price);
-  };
-
-  const handleSortSelect = (currentType: string) => {
-    if (currentType !== currentSortType) {
-      dispatch(setSortType(currentType));
-      if (currentType === SortTypes.Price && currentSortOrder === null) {
-        dispatch(setSortOrder(SortOrder.Ascending));
-      } else if (currentType !== SortTypes.Price && currentSortOrder === null) {
-        dispatch(setSortOrder(SortOrder.Ascending));
-      }
-      handleSorting(currentType);
-    } else {
-      if (currentType === SortTypes.Price) {
-        handleSortOrderChange(
-          currentSortOrder === SortOrder.Ascending
-            ? SortOrder.Descending
-            : SortOrder.Ascending
-        );
-      }
     }
   };
 
