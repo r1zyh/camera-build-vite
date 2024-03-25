@@ -1,13 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../../const';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { useAppSelector } from '../../hooks/use-select';
 import { getProducts } from '../../store/product-process/selectors';
+import { handleTabKeyDown } from '../../util';
 
 function HeaderLayout(): JSX.Element {
   const minQueryLength = 3;
   const minQueryCloseLength = 1;
   const products = useAppSelector(getProducts);
+  const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
+  const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpened, setIsOpened] = useState(false);
@@ -37,6 +40,7 @@ function HeaderLayout(): JSX.Element {
       handleSelectItem(productId);
     }
   };
+
 
   return (
     <header className="header" id="header">
@@ -90,12 +94,14 @@ function HeaderLayout(): JSX.Element {
                 <use xlinkHref="#icon-lens"></use>
               </svg>
               <input
+                ref={firstFocusableElementRef}
                 className="form-search__input"
                 type="text"
                 autoComplete="off"
                 placeholder="Поиск по сайту"
                 value={searchQuery}
                 onChange={handleInputChange}
+                onKeyDown={(e) => handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef)}
               />
             </label>
             {searchQuery.length >= minQueryLength && (
@@ -120,9 +126,11 @@ function HeaderLayout(): JSX.Element {
           </form>
           {searchQuery.length >= minQueryCloseLength && (
             <button
+              ref={lastFocusableElementRef}
               className="form-search__reset"
               type="reset"
               onClick={handlerFormReset}
+              onKeyDown={(e) => handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef)}
             >
               <svg width={10} height={10} aria-hidden="true">
                 <use xlinkHref="#icon-close"></use>

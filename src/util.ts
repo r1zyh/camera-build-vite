@@ -25,7 +25,7 @@ export const customValidChecker = (
 };
 
 export const handleTabKeyDown = (
-  e: KeyboardEvent,
+  e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLButtonElement>,
   firstFocusableElementRef: React.RefObject<HTMLElement>,
   lastFocusableElementRef: React.RefObject<HTMLElement>
 ) => {
