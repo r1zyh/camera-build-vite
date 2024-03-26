@@ -76,15 +76,7 @@ function Main(): JSX.Element {
               <div className="page-content__columns">
                 <Filter setCurrentPage={setCurrentPage} />
                 <div className="catalog__content">
-                  <Sort
-                    products={applyFilters(
-                      indexOfFirstItem,
-                      indexOfLastItem,
-                      filterStatus,
-                      currentVisibleProducts,
-                      stateProducts
-                    )}
-                  />
+                  <Sort/>
                   <ProductCardList
                     products={applyFilters(
                       indexOfFirstItem,

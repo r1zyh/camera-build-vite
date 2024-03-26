@@ -10,22 +10,19 @@ import {
   getCurrentSortOrder,
   getCurrentSortType,
   getFilterStatus,
+  getProducts,
 } from '../../store/product-process/selectors';
 import { useAppSelector } from '../../hooks/use-select';
-import { TProducts } from '../../types/products';
 
-type SortProps = {
-  products: TProducts;
-};
-
-function Sort({ products }: SortProps): JSX.Element {
+function Sort(): JSX.Element {
   const dispatch = useAppDispatch();
+  const stateProducts = useAppSelector(getProducts);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
   const filterStatus = useAppSelector(getFilterStatus);
 
   const handleSortByPrice = () => {
-    const sortedProducts = products.sort((a, b) =>
+    const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? b.price - a.price
         : a.price - b.price
@@ -38,7 +35,7 @@ function Sort({ products }: SortProps): JSX.Element {
   };
 
   const handleSortByPopularity = () => {
-    const sortedProducts = products.sort((a, b) =>
+    const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? b.rating - a.rating
         : a.rating - b.rating
