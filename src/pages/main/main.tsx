@@ -21,13 +21,12 @@ import Loader from '../../components/loader/loader';
 import { applyFilters, calcTotalPageCount } from '../../util';
 
 function Main(): JSX.Element {
+  const itemsPerPage = 9;
   const filterStatus = useAppSelector(getFilterStatus);
   const stateProducts = useAppSelector(getProducts);
   const currentVisibleProducts = useAppSelector(getCurrentProducts);
   const isProductLoading = useAppSelector(getProductsLoadingStatus);
   const banners = useAppSelector(getPromos);
-
-  const [itemsPerPage] = useState(9);
   const navigate = useNavigate();
   const location = useLocation();
   const currentPageParam = parseInt(
@@ -76,7 +75,7 @@ function Main(): JSX.Element {
               <div className="page-content__columns">
                 <Filter setCurrentPage={setCurrentPage} />
                 <div className="catalog__content">
-                  <Sort/>
+                  <Sort />
                   <ProductCardList
                     products={applyFilters(
                       indexOfFirstItem,

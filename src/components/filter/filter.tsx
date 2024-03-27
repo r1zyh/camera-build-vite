@@ -2,7 +2,9 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
 import {
-  getCurrentProducts,
+  getFilterCategory,
+  getFilterLevels,
+  getFilterTypes,
   getMaxProdPrice,
   getMinProdPrice,
   getProducts,
@@ -17,6 +19,9 @@ import {
 } from '../../const';
 import {
   setCurrentProducts,
+  setFilterCategory,
+  setFilterLevels,
+  setFilterTypes,
   setFiltersStatus,
 } from '../../store/product-process/product-process';
 import { fetchPriceRange } from '../../store/api-actions';
@@ -32,14 +37,19 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
 
   const stateProducts = useAppSelector(getProducts);
-  const products = useAppSelector(getCurrentProducts);
   const minPrice = useAppSelector(getMinProdPrice);
   const maxPrice = useAppSelector(getMaxProdPrice);
 
-  const [selectedCategory, setSelectedCategory] =
-    useState<CategoryTypes | null>(null);
-  const [selectedTypes, setSelectedTypes] = useState<CameraTypes[]>([]);
-  const [selectedLevels, setSelectedLevels] = useState<LevelTypes[]>([]);
+  const filterCategory = useAppSelector(getFilterCategory);
+  const filterTypes = useAppSelector(getFilterTypes);
+  const filterLevels = useAppSelector(getFilterLevels);
+  const [filterTypesList, setFilterTypesList] = useState<Set<CameraTypes>>(
+    new Set()
+  );
+  const [filterLevelsList, setFilterLevelsList] = useState<Set<LevelTypes>>(
+    new Set()
+  );
+
   const [selectedPriceFrom, setSelectedPriceFrom] = useState<number | null>(
     null
   );
@@ -87,38 +97,42 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     dispatch(setFiltersStatus(true));
     setCurrentPage(1);
   };
-
-  const updateFilteredProducts = () => {
-    const filteredProducts = products.filter((product) => {
-      if (selectedCategory !== null && product.category !== selectedCategory) {
-        return false;
-      }
-      if (selectedTypes.length > 0 && !selectedTypes.includes(product.type)) {
-        return false;
-      }
-      if (
-        selectedLevels.length > 0 &&
-        !selectedLevels.includes(product.level)
-      ) {
-        return false;
-      }
-      return true;
-    });
-    dispatch(setFiltersStatus(true));
-    setCurrentPage(1);
-    dispatch(setCurrentProducts(filteredProducts));
-  };
+  useEffect(() => {
+    const updateFilteredProducts = () => {
+      const filteredProducts = stateProducts.filter((product) => {
+        if (filterCategory !== null && product.category !== filterCategory) {
+          return false;
+        }
+        if (filterTypes.length > 0 && !filterTypes.includes(product.type)) {
+          return false;
+        }
+        if (filterLevels.length > 0 && !filterLevels.includes(product.level)) {
+          return false;
+        }
+        return true;
+      });
+      setCurrentPage(1);
+      dispatch(setFiltersStatus(true));
+      dispatch(setCurrentProducts(filteredProducts));
+    };
+    updateFilteredProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterCategory, filterTypes, filterLevels]);
 
   const handleTypeChange = (
     e: ChangeEvent<HTMLInputElement>,
     type: CameraTypes
   ) => {
     const { checked } = e.target;
-    if (checked) {
-      setSelectedTypes((prevTypes) => [...prevTypes, type]);
 
-      updateFilteredProducts();
+    const newList = new Set(filterTypesList);
+    if (checked) {
+      newList.add(type);
+    } else {
+      newList.delete(type);
     }
+    setFilterTypesList(newList);
+    dispatch(setFilterTypes([...newList]));
   };
 
   const handleLevelChange = (
@@ -126,10 +140,15 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     level: LevelTypes
   ) => {
     const { checked } = e.target;
+
+    const newList = new Set(filterLevelsList);
     if (checked) {
-      setSelectedLevels((prevLevels) => [...prevLevels, level]);
-      updateFilteredProducts();
+      newList.add(level);
+    } else {
+      newList.delete(level);
     }
+    setFilterLevelsList(newList);
+    dispatch(setFilterLevels([...newList]));
   };
 
   const handleCategoryChange = (
@@ -138,11 +157,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   ) => {
     const { checked } = e.target;
     if (checked) {
-      setSelectedCategory(category);
-      updateFilteredProducts();
-    } else {
-      setSelectedCategory(null);
-      updateFilteredProducts();
+      dispatch(setFilterCategory(category));
     }
   };
 
@@ -151,9 +166,9 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     dispatch(setCurrentProducts(stateProducts));
     setSelectedPriceFrom(null);
     setSelectedPriceTo(null);
-    setSelectedCategory(null);
-    setSelectedTypes([]);
-    setSelectedLevels([]);
+    dispatch(setFilterCategory(null));
+    dispatch(setFilterTypes([]));
+    dispatch(setFilterLevels([]));
   };
 
   return (
@@ -173,7 +188,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                     placeholder={minPrice !== null ? String(minPrice) : '0'}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
-                    data-testid='от'
+                    data-testid="от"
                   />
                 </label>
               </div>
@@ -185,7 +200,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                     placeholder={maxPrice !== null ? String(maxPrice) : '0'}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
-                    data-testid='до'
+                    data-testid="до"
                   />
                 </label>
               </div>
@@ -200,7 +215,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   name={categoryTypeNames[CategoryTypes.Camera]}
                   onChange={(e) =>
                     handleCategoryChange(e, CategoryTypes.Camera)}
-                  checked={selectedCategory === CategoryTypes.Camera}
+                  checked={filterCategory === CategoryTypes.Camera}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Фотокамера</span>
@@ -213,7 +228,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   name={categoryTypeNames[CategoryTypes.Camcorder]}
                   onChange={(e) =>
                     handleCategoryChange(e, CategoryTypes.Camcorder)}
-                  checked={selectedCategory === CategoryTypes.Camcorder}
+                  checked={filterCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Видеокамера</span>
@@ -239,7 +254,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Film]}
                   onChange={(e) => handleTypeChange(e, CameraTypes.Film)}
-                  disabled={selectedCategory === CategoryTypes.Camcorder}
+                  disabled={filterCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Плёночная</span>
@@ -251,7 +266,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
                   type="checkbox"
                   name={cameraTypeNames[CameraTypes.Instant]}
                   onChange={(e) => handleTypeChange(e, CameraTypes.Instant)}
-                  disabled={selectedCategory === CategoryTypes.Camcorder}
+                  disabled={filterCategory === CategoryTypes.Camcorder}
                 />
                 <span className="custom-checkbox__icon"></span>
                 <span className="custom-checkbox__label">Моментальная</span>

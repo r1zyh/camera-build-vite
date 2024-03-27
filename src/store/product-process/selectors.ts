@@ -1,4 +1,4 @@
-import { NameSpace } from '../../const';
+import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
 import { TPromos } from '../../types/promo';
 import { State } from '../../types/state';
@@ -34,6 +34,17 @@ export const getCurrentSortOrder = (state: State): string | null =>
 export const getFilterStatus = (state: State): boolean =>
   state[NameSpace.Products].filterStatus;
 
+export const getFilterCategory = (state: State): CategoryTypes | null =>
+  state[NameSpace.Products].filterCategory;
+
+export const getFilterTypes = (
+  state: Pick<State, NameSpace.Products>
+): CameraTypes[] => state[NameSpace.Products].filterTypes;
+
+export const getFilterLevels = (
+  state: Pick<State, NameSpace.Products>
+): LevelTypes[] => state[NameSpace.Products].filterLevels;
+
 export const getCurrentProducts = (
   state: Pick<State, NameSpace.Products>
 ): TProducts => state[NameSpace.Products].currentVisibleProducts;
@@ -52,7 +63,6 @@ export const getMinProdPrice = (state: State): number | null => {
   }
   return Math.min(...prices);
 };
-
 
 export const getMaxProdPrice = (state: State): number | null => {
   const prices = getProdPrices(state);

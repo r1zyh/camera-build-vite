@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { NameSpace } from '../../const';
+import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
 import { TProduct, TProducts } from '../../types/products';
 import { TPromos } from '../../types/promo';
 
@@ -14,6 +14,9 @@ type ProductProcessType = {
   isProductLoading: boolean;
   similarProducts: TProducts | null;
   filterStatus: boolean;
+  filterCategory: CategoryTypes | null;
+  filterTypes: CameraTypes[];
+  filterLevels: LevelTypes[];
 };
 
 const initialState: ProductProcessType = {
@@ -27,6 +30,9 @@ const initialState: ProductProcessType = {
   isProductLoading: false,
   product: null,
   filterStatus: false,
+  filterCategory: null,
+  filterTypes: [],
+  filterLevels: [],
 };
 
 export const productsProcessSlice = createSlice({
@@ -63,6 +69,15 @@ export const productsProcessSlice = createSlice({
     setFiltersStatus: (state, action: PayloadAction<boolean>) => {
       state.filterStatus = action.payload;
     },
+    setFilterCategory: (state, action: PayloadAction<CategoryTypes | null>) => {
+      state.filterCategory = action.payload;
+    },
+    setFilterTypes: (state, action: PayloadAction<CameraTypes[]>) => {
+      state.filterTypes = action.payload;
+    },
+    setFilterLevels: (state, action: PayloadAction<LevelTypes[]>) => {
+      state.filterLevels = action.payload;
+    },
   },
 });
 
@@ -77,4 +92,7 @@ export const {
   setSortOrder,
   setFiltersStatus,
   setCurrentProducts,
+  setFilterCategory,
+  setFilterLevels,
+  setFilterTypes,
 } = productsProcessSlice.actions;
