@@ -13,6 +13,7 @@ import {
   getProducts,
 } from '../../store/product-process/selectors';
 import { useAppSelector } from '../../hooks/use-select';
+import { useEffect } from 'react';
 
 function Sort(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -24,8 +25,8 @@ function Sort(): JSX.Element {
   const handleSortByPrice = () => {
     const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
-        ? b.price - a.price
-        : a.price - b.price
+        ? a.price - b.price
+        : b.price - a.price
     );
 
     if (filterStatus) {
@@ -37,8 +38,8 @@ function Sort(): JSX.Element {
   const handleSortByPopularity = () => {
     const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
-        ? b.rating - a.rating
-        : a.rating - b.rating
+        ? a.rating - b.rating
+        : b.rating - a.rating
     );
     if (filterStatus) {
       dispatch(setCurrentProducts(sortedProducts));
@@ -67,14 +68,17 @@ function Sort(): JSX.Element {
 
   const handleSortOrderChange = (sortOrder: string) => {
     dispatch(setSortOrder(sortOrder));
-    if (currentSortType !== null) {
-      handleSortSelect(currentSortType);
-    }
-
     if (currentSortType === null) {
       dispatch(setSortType(SortTypes.Price));
     }
   };
+
+  useEffect(() => {
+    if (currentSortType !== null) {
+      handleSortSelect(currentSortType);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSortType, currentSortOrder, filterStatus]);
 
   return (
     <div className="catalog-sort">

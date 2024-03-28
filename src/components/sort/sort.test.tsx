@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import Sort from './sort';
-import { makeFakeProduct } from '../../store/mock-components/mocks';
 import {
   withHistory,
   withStore,
@@ -10,11 +9,10 @@ import { makeFakeStore } from '../../store/mock-components/mocks';
 import { AppRoute } from '../../const';
 
 describe('Sort component', () => {
-  const fakeProduct = [makeFakeProduct()];
   it('should render correctly', () => {
     const mockHistory = createMemoryHistory();
     const withHistoryComponent = withHistory(
-      <Sort products={fakeProduct} />,
+      <Sort />,
       mockHistory
     );
     const { withStoreComponent } = withStore(
