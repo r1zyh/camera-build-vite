@@ -4,6 +4,7 @@ import { useAppSelector } from '../../hooks/use-select';
 import {
   getFilterCategory,
   getFilterLevels,
+  getFilterStatus,
   getFilterTypes,
   getMaxProdPrice,
   getMinProdPrice,
@@ -27,14 +28,11 @@ import {
 import { fetchPriceRange } from '../../store/api-actions';
 import { handleTabKeyDown } from '../../util';
 
-type FilterProps = {
-  setCurrentPage: (page: number) => void;
-};
-
-function Filter({ setCurrentPage }: FilterProps): JSX.Element {
+function Filter(): JSX.Element {
   const dispatch = useAppDispatch();
   const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
   const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
+  const filerStatus = useAppSelector(getFilterStatus);
 
   const stateProducts = useAppSelector(getProducts);
   const minPrice = useAppSelector(getMinProdPrice);
@@ -56,7 +54,36 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
-    if (selectedPriceFrom !== null || selectedPriceTo !== null) {
+    const inputMin = String(selectedPriceFrom).split('');
+    const stateMin = String(minPrice).split('');
+    const isMinPriceValid =
+      selectedPriceFrom &&
+      minPrice !== null &&
+      inputMin.length > stateMin.length &&
+      selectedPriceFrom < minPrice;
+
+    if (isMinPriceValid) {
+      setSelectedPriceFrom(minPrice);
+    }
+
+    const inputMax = String(selectedPriceTo).split('');
+    const stateMax = String(maxPrice).split('');
+    const isMaxPriceValid =
+      selectedPriceTo &&
+      maxPrice !== null &&
+      inputMax.length >= stateMax.length &&
+      selectedPriceTo > maxPrice &&
+      selectedPriceTo;
+
+    if (isMaxPriceValid) {
+      setSelectedPriceTo(maxPrice);
+    }
+    if (
+      selectedPriceFrom !== null &&
+      selectedPriceTo !== null &&
+      !isMinPriceValid &&
+      !isMaxPriceValid
+    ) {
       dispatch(
         fetchPriceRange({
           'price_gte': selectedPriceFrom,
@@ -64,7 +91,7 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
         })
       );
     }
-  }, [dispatch, selectedPriceFrom, selectedPriceTo]);
+  }, [dispatch, selectedPriceFrom, selectedPriceTo, minPrice, maxPrice]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -88,14 +115,12 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
     const newPriceFrom = e.target.value;
     setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
     dispatch(setFiltersStatus(true));
-    setCurrentPage(1);
   };
 
   const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceTo = e.target.value;
     setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
     dispatch(setFiltersStatus(true));
-    setCurrentPage(1);
   };
   useEffect(() => {
     const updateFilteredProducts = () => {
@@ -111,13 +136,19 @@ function Filter({ setCurrentPage }: FilterProps): JSX.Element {
         }
         return true;
       });
-      setCurrentPage(1);
+
       dispatch(setFiltersStatus(true));
       dispatch(setCurrentProducts(filteredProducts));
     };
     updateFilteredProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterCategory, filterTypes, filterLevels]);
+  }, [
+    filterCategory,
+    filterTypes,
+    filterLevels,
+    dispatch,
+    stateProducts,
+    filerStatus,
+  ]);
 
   const handleTypeChange = (
     e: ChangeEvent<HTMLInputElement>,
