@@ -6,11 +6,10 @@ import { makeFakeStore } from '../../store/mock-components/mocks';
 import { AppRoute } from '../../const';
 
 describe('Filter component', () => {
-  const mockHandleClick = vi.fn();
   it('should render correctly', () => {
     const mockHistory = createMemoryHistory();
     const withHistoryComponent = withHistory(
-      <Filter setCurrentPage={mockHandleClick} />,
+      <Filter />,
       mockHistory
     );
     const { withStoreComponent } = withStore(
