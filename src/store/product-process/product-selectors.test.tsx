@@ -24,6 +24,9 @@ describe('Product selectors', () => {
       isProductLoading: false,
       filterStatus: false,
       promos: [fakePromo],
+      filterCategory: null,
+      filterTypes: [],
+      filterLevels: [],
     },
   };
 

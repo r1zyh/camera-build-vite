@@ -21,6 +21,9 @@ describe('Products Process Slice', () => {
     currentSortType: null,
     currentSortOrder: null,
     filterStatus: false,
+    filterCategory: null,
+    filterTypes: [],
+    filterLevels: [],
   };
 
   const fakeProduct = makeFakeProduct();
