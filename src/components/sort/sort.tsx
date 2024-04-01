@@ -1,5 +1,6 @@
 import { SortOrder, SortTypes } from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
+import queryString from 'query-string';
 import {
   setCurrentProducts,
   setProducts,
@@ -14,13 +15,24 @@ import {
 } from '../../store/product-process/selectors';
 import { useAppSelector } from '../../hooks/use-select';
 import { useEffect } from 'react';
+import { useLocation} from 'react-router-dom';
 
 function Sort(): JSX.Element {
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const queryParams = queryString.parse(location.search);
   const stateProducts = useAppSelector(getProducts);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
   const filterStatus = useAppSelector(getFilterStatus);
+
+
+  const updateSortParamsInUrl = (type: string, order: string) => {
+    const updatedParams = { ...queryParams, sortType: type, sortOrder: order };
+    const searchParams = new URLSearchParams(updatedParams).toString();
+    const newUrl = `${location.pathname}?${searchParams}`;
+    window.history.pushState(null, '', newUrl);
+  };
 
   const handleSortByPrice = () => {
     const sortedProducts = [...stateProducts].sort((a, b) =>
@@ -54,6 +66,10 @@ function Sort(): JSX.Element {
 
     dispatch(setSortType(currentType));
 
+    if (currentType !== null || currentSortOrder !== null) {
+      updateSortParamsInUrl(currentType, currentSortOrder || SortOrder.Ascending);
+    }
+
     switch (currentType) {
       case SortTypes.Popularity:
         handleSortByPopularity();
@@ -72,6 +88,14 @@ function Sort(): JSX.Element {
       dispatch(setSortType(SortTypes.Price));
     }
   };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.delete('sortType');
+    searchParams.delete('sortOrder');
+    const newUrl = `${location.pathname}?${searchParams.toString()}`;
+    window.history.replaceState(null, '', newUrl);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     if (currentSortType !== null) {
