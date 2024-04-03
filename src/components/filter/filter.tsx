@@ -1,6 +1,22 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import {
+  CameraTypes,
+  CategoryTypes,
+  LevelTypes,
+  cameraTypeNames,
+  categoryTypeNames,
+  levelTypeNames,
+} from '../../const';
 import { useAppDispatch } from '../../hooks/use-dispatch';
 import { useAppSelector } from '../../hooks/use-select';
+import { fetchPriceRange } from '../../store/api-actions';
+import {
+  setCurrentProducts,
+  setFilterCategory,
+  setFilterLevels,
+  setFilterTypes,
+  setFiltersStatus,
+} from '../../store/product-process/product-process';
 import {
   getFilterCategory,
   getFilterLevels,
@@ -10,22 +26,6 @@ import {
   getMinProdPrice,
   getProducts,
 } from '../../store/product-process/selectors';
-import {
-  CameraTypes,
-  CategoryTypes,
-  LevelTypes,
-  cameraTypeNames,
-  categoryTypeNames,
-  levelTypeNames,
-} from '../../const';
-import {
-  setCurrentProducts,
-  setFilterCategory,
-  setFilterLevels,
-  setFilterTypes,
-  setFiltersStatus,
-} from '../../store/product-process/product-process';
-import { fetchPriceRange } from '../../store/api-actions';
 import { handleTabKeyDown } from '../../util';
 
 function Filter(): JSX.Element {
@@ -54,43 +54,12 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
-    const inputMin = String(selectedPriceFrom).split('');
-    const stateMin = String(minPrice).split('');
-    const isMinPriceValid =
-      selectedPriceFrom &&
-      minPrice !== null &&
-      inputMin.length > stateMin.length &&
-      selectedPriceFrom < minPrice;
-
-    if (isMinPriceValid) {
-      setSelectedPriceFrom(minPrice);
-    }
-
-    const inputMax = String(selectedPriceTo).split('');
-    const stateMax = String(maxPrice).split('');
-    const isMaxPriceValid =
-      selectedPriceTo &&
-      maxPrice !== null &&
-      inputMax.length >= stateMax.length &&
-      selectedPriceTo > maxPrice &&
-      selectedPriceTo;
-
-    if (isMaxPriceValid) {
-      setSelectedPriceTo(maxPrice);
-    }
-    if (
-      selectedPriceFrom !== null &&
-      selectedPriceTo !== null &&
-      !isMinPriceValid &&
-      !isMaxPriceValid
-    ) {
-      dispatch(
-        fetchPriceRange({
-          'price_gte': selectedPriceFrom,
-          'price_lte': selectedPriceTo,
-        })
-      );
-    }
+    dispatch(
+      fetchPriceRange({
+        'price_gte': selectedPriceFrom,
+        'price_lte': selectedPriceTo,
+      })
+    );
   }, [dispatch, selectedPriceFrom, selectedPriceTo, minPrice, maxPrice]);
 
   useEffect(() => {
@@ -116,12 +85,42 @@ function Filter(): JSX.Element {
     setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
     dispatch(setFiltersStatus(true));
   };
+  const handlePriceFormBlur = () => {
+    setSelectedPriceFrom((prev) => {
+      if (typeof prev !== 'number' || typeof minPrice !== 'number' || typeof maxPrice !== 'number') {
+        return prev;
+      }
+      if (prev < minPrice) {
+        return minPrice;
+      }
+      if (prev > maxPrice) {
+        return maxPrice;
+      }
+      return prev;
+    });
+  };
 
   const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceTo = e.target.value;
     setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
     dispatch(setFiltersStatus(true));
   };
+
+  const handlePriceToBlur = () => {
+    setSelectedPriceTo((prev) => {
+      if (typeof prev !== 'number' || typeof maxPrice !== 'number' || typeof minPrice !== 'number') {
+        return prev;
+      }
+      if (prev > maxPrice) {
+        return maxPrice;
+      }
+      if (prev < minPrice) {
+        return minPrice;
+      }
+      return prev;
+    });
+  };
+
   useEffect(() => {
     const updateFilteredProducts = () => {
       const filteredProducts = stateProducts.filter((product) => {
@@ -214,6 +213,7 @@ function Filter(): JSX.Element {
                 <label>
                   <input
                     ref={firstFocusableElementRef}
+                    onBlur={handlePriceFormBlur}
                     type="number"
                     name="price"
                     placeholder={minPrice !== null ? String(minPrice) : '0'}
@@ -226,6 +226,7 @@ function Filter(): JSX.Element {
               <div className="custom-input">
                 <label>
                   <input
+                    onBlur={handlePriceToBlur}
                     type="number"
                     name="priceUp"
                     placeholder={maxPrice !== null ? String(maxPrice) : '0'}
