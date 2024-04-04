@@ -7,6 +7,8 @@ import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
 import {
   getCurrentProducts,
+  getCurrentSortOrder,
+  getCurrentSortType,
   getFilterStatus,
   getProducts,
   getProductsLoadingStatus,
@@ -26,6 +28,8 @@ function Main(): JSX.Element {
   const stateProducts = useAppSelector(getProducts);
   const currentVisibleProducts = useAppSelector(getCurrentProducts);
   const isProductLoading = useAppSelector(getProductsLoadingStatus);
+  const currentSortType = useAppSelector(getCurrentSortType);
+  const currentSortOrder = useAppSelector(getCurrentSortOrder);
   const banners = useAppSelector(getPromos);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,22 +42,26 @@ function Main(): JSX.Element {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const updateUrl = useCallback(() => {
+  const updateUrl = useCallback((pageNumber: number) => {
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set('page', currentPage.toString());
+    searchParams.set('page', pageNumber.toString());
+    if (currentSortType && currentSortOrder) {
+      searchParams.set('sortType', currentSortType);
+      searchParams.set('sortOrder', currentSortOrder);
+    }
     const newUrl = `${location.pathname}?${searchParams.toString()}`;
     navigate(newUrl, { replace: true });
-  }, [currentPage, location.pathname, location.search, navigate]);
-
-  useEffect(() => {
-    updateUrl();
-  }, [updateUrl]);
-
+  }, [location.search, location.pathname, navigate, currentSortType, currentSortOrder]);
   const handlePageClick = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
+      updateUrl(pageNumber);
     }
   };
+
+  useEffect(() => {
+    updateUrl(currentPage);
+  }, [currentPage, updateUrl]);
 
   if (isProductLoading) {
     return <Loader />;
