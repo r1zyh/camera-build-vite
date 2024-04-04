@@ -11,6 +11,7 @@ function HeaderLayout(): JSX.Element {
   const products = useAppSelector(getProducts);
   const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
   const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpened, setIsOpened] = useState(false);
@@ -35,12 +36,41 @@ function HeaderLayout(): JSX.Element {
     navigate(`${AppRoute.Product}/${productId}`);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, productId: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLLIElement>,
+    productId: number,
+    index: number
+  ) => {
     if (e.key === 'Enter') {
       handleSelectItem(productId);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex((prevIndex) =>
+        prevIndex !== null
+          ? Math.min(prevIndex + 1, filteredProducts.length - 1)
+          : 0
+      );
+      const nextIndex = Math.min(index + 1, filteredProducts.length - 1);
+      const nextElement = document.querySelector(
+        `.form-search__select-item:nth-child(${nextIndex + 1})`
+      ) as HTMLLIElement;
+      if (nextElement) {
+        nextElement.focus();
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex((prevIndex) =>
+        prevIndex !== null ? Math.max(prevIndex - 1, 0) : 0
+      );
+      const prevIndex = Math.max(index - 1, 0);
+      const prevElement = document.querySelector(
+        `.form-search__select-item:nth-child(${prevIndex + 1})`
+      ) as HTMLLIElement;
+      if (prevElement) {
+        prevElement.focus();
+      }
     }
   };
-
 
   return (
     <header className="header" id="header">
@@ -101,7 +131,12 @@ function HeaderLayout(): JSX.Element {
                 placeholder="Поиск по сайту"
                 value={searchQuery}
                 onChange={handleInputChange}
-                onKeyDown={(e) => handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef)}
+                onKeyDown={(e) =>
+                  handleTabKeyDown(
+                    e,
+                    firstFocusableElementRef,
+                    lastFocusableElementRef
+                  )}
               />
             </label>
             {searchQuery.length >= minQueryLength && (
@@ -110,13 +145,15 @@ function HeaderLayout(): JSX.Element {
                   isOpened ? 'scroller' : ''
                 }`}
               >
-                {filteredProducts.map((product) => (
+                {filteredProducts.map((product, index) => (
                   <li
                     key={product.id}
-                    className="form-search__select-item"
+                    className={`form-search__select-item ${
+                      selectedIndex === index ? 'selected' : ''
+                    }`}
                     tabIndex={0}
                     onClick={() => handleSelectItem(product.id)}
-                    onKeyDown={(e) => handleKeyDown(e, product.id)}
+                    onKeyDown={(e) => handleKeyDown(e, product.id, index)}
                   >
                     {product.name}
                   </li>
@@ -130,7 +167,12 @@ function HeaderLayout(): JSX.Element {
               className="form-search__reset"
               type="reset"
               onClick={handlerFormReset}
-              onKeyDown={(e) => handleTabKeyDown(e, firstFocusableElementRef, lastFocusableElementRef)}
+              onKeyDown={(e) =>
+                handleTabKeyDown(
+                  e,
+                  firstFocusableElementRef,
+                  lastFocusableElementRef
+                )}
             >
               <svg width={10} height={10} aria-hidden="true">
                 <use xlinkHref="#icon-close"></use>

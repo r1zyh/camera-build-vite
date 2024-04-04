@@ -63,6 +63,10 @@ function Sort(): JSX.Element {
     if (currentType === SortTypes.Price && currentSortOrder === null) {
       dispatch(setSortOrder(SortOrder.Ascending));
     }
+    if (currentType === SortTypes.Popularity && currentSortOrder === null) {
+      dispatch(setSortOrder(SortOrder.Ascending));
+    }
+
 
     dispatch(setSortType(currentType));
 
