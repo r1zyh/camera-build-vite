@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { TProducts } from './types/products';
+import { SortOrder, SortTypes } from './const';
 export function humanizeReviewDate(date: string) {
   const formattedDate = dayjs(date).locale('ru').format('DD MMMM');
   return formattedDate.charAt(0).toLowerCase() + formattedDate.slice(1);
@@ -75,3 +76,25 @@ export const calcTotalPageCount = (
     return Math.ceil(stateProducts.length / itemsPerPage);
   }
 };
+
+export function translateSortType(sortType: string) {
+  switch (sortType) {
+    case SortTypes.Price:
+      return 'Цена';
+    case SortTypes.Popularity:
+      return 'Популярность';
+    default:
+      return sortType;
+  }
+}
+
+export function translateSortOrder(sortOrder: string) {
+  switch (sortOrder) {
+    case SortOrder.Ascending:
+      return 'Возр';
+    case SortOrder.Descending:
+      return 'Убыв';
+    default:
+      return sortOrder;
+  }
+}

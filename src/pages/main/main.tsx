@@ -23,7 +23,12 @@ import { useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Loader from '../../components/loader/loader';
-import { applyFilters, calcTotalPageCount } from '../../util';
+import {
+  applyFilters,
+  calcTotalPageCount,
+  translateSortOrder,
+  translateSortType,
+} from '../../util';
 
 function Main(): JSX.Element {
   const itemsPerPage = 9;
@@ -55,26 +60,34 @@ function Main(): JSX.Element {
     resetUrl();
   }, [resetUrl]);
 
-
-  const updateUrl = useCallback((pageNumber: number) => {
-    const searchParams = new URLSearchParams();
-    searchParams.set('page', pageNumber.toString());
-    if (currentSortType && currentSortOrder) {
-      searchParams.set('sortType', currentSortType);
-      searchParams.set('sortOrder', currentSortOrder);
-    }
-    if (filterCategory) {
-      searchParams.set('filterCategory', filterCategory);
-    }
-    if (filterTypes && filterTypes.length > 0) {
-      searchParams.set('filterTypes', filterTypes.join(','));
-    }
-    if (filterLevels && filterLevels.length > 0) {
-      searchParams.set('filterLevels', filterLevels.join(','));
-    }
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.replaceState({}, document.title, newUrl);
-  }, [currentSortType, currentSortOrder, filterCategory, filterTypes, filterLevels]);
+  const updateUrl = useCallback(
+    (pageNumber: number) => {
+      const searchParams = new URLSearchParams();
+      searchParams.set('page', pageNumber.toString());
+      if (currentSortType && currentSortOrder) {
+        searchParams.set('sortType', translateSortType(currentSortType));
+        searchParams.set('sortOrder', translateSortOrder(currentSortOrder));
+      }
+      if (filterCategory) {
+        searchParams.set('filterCategory', filterCategory);
+      }
+      if (filterTypes && filterTypes.length > 0) {
+        searchParams.set('filterTypes', filterTypes.join(','));
+      }
+      if (filterLevels && filterLevels.length > 0) {
+        searchParams.set('filterLevels', filterLevels.join(','));
+      }
+      const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+      window.history.replaceState({}, document.title, newUrl);
+    },
+    [
+      currentSortType,
+      currentSortOrder,
+      filterCategory,
+      filterTypes,
+      filterLevels,
+    ]
+  );
 
   const handlePageClick = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
