@@ -9,14 +9,17 @@ import {
   getCurrentProducts,
   getCurrentSortOrder,
   getCurrentSortType,
+  getFilterCategory,
+  getFilterLevels,
   getFilterStatus,
+  getFilterTypes,
   getProducts,
   getProductsLoadingStatus,
   getPromos,
 } from '../../store/product-process/selectors';
 import { useState, useEffect, useCallback } from 'react';
 import Pagination from '../../components/pagination/pagination';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Loader from '../../components/loader/loader';
@@ -30,8 +33,10 @@ function Main(): JSX.Element {
   const isProductLoading = useAppSelector(getProductsLoadingStatus);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
+  const filterCategory = useAppSelector(getFilterCategory);
+  const filterTypes = useAppSelector(getFilterTypes);
+  const filterLevels = useAppSelector(getFilterLevels);
   const banners = useAppSelector(getPromos);
-  const navigate = useNavigate();
   const location = useLocation();
   const currentPageParam = parseInt(
     new URLSearchParams(location.search).get('page') || '1',
@@ -42,16 +47,35 @@ function Main(): JSX.Element {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
+  const resetUrl = useCallback(() => {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }, []);
+
+  useEffect(() => {
+    resetUrl();
+  }, [resetUrl]);
+
+
   const updateUrl = useCallback((pageNumber: number) => {
-    const searchParams = new URLSearchParams(location.search);
+    const searchParams = new URLSearchParams();
     searchParams.set('page', pageNumber.toString());
     if (currentSortType && currentSortOrder) {
       searchParams.set('sortType', currentSortType);
       searchParams.set('sortOrder', currentSortOrder);
     }
-    const newUrl = `${location.pathname}?${searchParams.toString()}`;
-    navigate(newUrl, { replace: true });
-  }, [location.search, location.pathname, navigate, currentSortType, currentSortOrder]);
+    if (filterCategory) {
+      searchParams.set('filterCategory', filterCategory);
+    }
+    if (filterTypes && filterTypes.length > 0) {
+      searchParams.set('filterTypes', filterTypes.join(','));
+    }
+    if (filterLevels && filterLevels.length > 0) {
+      searchParams.set('filterLevels', filterLevels.join(','));
+    }
+    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+    window.history.replaceState({}, document.title, newUrl);
+  }, [currentSortType, currentSortOrder, filterCategory, filterTypes, filterLevels]);
+
   const handlePageClick = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
