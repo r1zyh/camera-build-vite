@@ -36,7 +36,6 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
     try {
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
-      dispatch(setCurrentProducts(data));
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
@@ -172,6 +171,7 @@ export const fetchPriceRange = createAsyncThunk<
   FetchPriceRangeOptions,
   thunkObjType
 >('data/priceRange', async (options, { dispatch, extra: api }) => {
+
   try {
     let queryParams = '';
     if (
@@ -181,6 +181,10 @@ export const fetchPriceRange = createAsyncThunk<
       options.price_lte !== null
     ) {
       queryParams += `price_gte=${options.price_gte}&price_lte=${options.price_lte}`;
+      const { data } = await api.get<TProducts>(
+        `${APIRoute.Products}?${queryParams}`
+      );
+      dispatch(setCurrentProducts(data));
     }
 
     if (options._start !== undefined && options._end !== undefined) {
@@ -192,10 +196,6 @@ export const fetchPriceRange = createAsyncThunk<
       queryParams += `${queryParams ? '&' : ''}_limit=${options._limit}`;
     }
 
-    const { data } = await api.get<TProducts>(
-      `${APIRoute.Products}?${queryParams}`
-    );
-    dispatch(setCurrentProducts(data));
   } catch (error) {
     dispatch(redirectToRoute(AppRoute.Error));
     toast.error('Failed to fetch Price Range!');

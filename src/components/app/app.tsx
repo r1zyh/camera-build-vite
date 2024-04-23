@@ -6,24 +6,17 @@ import Product from '../../pages/product/product';
 import NotFoundPage from '../../pages/not-found/not-found';
 import { HelmetProvider } from 'react-helmet-async';
 import { useAppDispatch } from '../../hooks/use-dispatch';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { fetchProducts, fetchPromo } from '../../store/api-actions';
 import ErrorComponent from '../error/error';
 
 function App() {
   const dispatch = useAppDispatch();
-  const dispatchFetchProducts = useCallback(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
-  const dispatchFetchPromo = useCallback(() => {
-    dispatch(fetchPromo());
-  }, [dispatch]);
 
   useEffect(() => {
-    dispatchFetchProducts();
-    dispatchFetchPromo();
-  }, [dispatchFetchProducts, dispatchFetchPromo]);
+    dispatch(fetchProducts());
+    dispatch(fetchPromo());
+  }, [dispatch]);
 
   return (
     <HelmetProvider>
