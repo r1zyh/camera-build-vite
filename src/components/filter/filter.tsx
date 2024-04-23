@@ -18,6 +18,7 @@ import {
   setFiltersStatus,
 } from '../../store/product-process/product-process';
 import {
+  getCurrentProducts,
   getFilterCategory,
   getFilterLevels,
   getFilterStatus,
@@ -32,7 +33,7 @@ function Filter(): JSX.Element {
   const dispatch = useAppDispatch();
   const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
   const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
-  const filerStatus = useAppSelector(getFilterStatus);
+  const filterStatus = useAppSelector(getFilterStatus);
 
   const stateProducts = useAppSelector(getProducts);
   const minPrice = useAppSelector(getMinProdPrice);
@@ -41,6 +42,14 @@ function Filter(): JSX.Element {
   const filterCategory = useAppSelector(getFilterCategory);
   const filterTypes = useAppSelector(getFilterTypes);
   const filterLevels = useAppSelector(getFilterLevels);
+
+  const test = useAppSelector(getCurrentProducts);
+
+  console.log(stateProducts);
+  console.log(test);
+  console.log(filterStatus);
+  console.log(filterCategory);
+
   const [filterTypesList, setFilterTypesList] = useState<Set<CameraTypes>>(
     new Set()
   );
@@ -87,7 +96,11 @@ function Filter(): JSX.Element {
   };
   const handlePriceFormBlur = () => {
     setSelectedPriceFrom((prev) => {
-      if (typeof prev !== 'number' || typeof minPrice !== 'number' || typeof maxPrice !== 'number') {
+      if (
+        typeof prev !== 'number' ||
+        typeof minPrice !== 'number' ||
+        typeof maxPrice !== 'number'
+      ) {
         return prev;
       }
       if (prev < minPrice) {
@@ -108,7 +121,11 @@ function Filter(): JSX.Element {
 
   const handlePriceToBlur = () => {
     setSelectedPriceTo((prev) => {
-      if (typeof prev !== 'number' || typeof maxPrice !== 'number' || typeof minPrice !== 'number') {
+      if (
+        typeof prev !== 'number' ||
+        typeof maxPrice !== 'number' ||
+        typeof minPrice !== 'number'
+      ) {
         return prev;
       }
       if (prev > maxPrice) {
@@ -135,7 +152,6 @@ function Filter(): JSX.Element {
         }
         return true;
       });
-
       dispatch(setFiltersStatus(true));
       dispatch(setCurrentProducts(filteredProducts));
     };
@@ -146,7 +162,7 @@ function Filter(): JSX.Element {
     filterLevels,
     dispatch,
     stateProducts,
-    filerStatus,
+    filterStatus,
   ]);
 
   const handleTypeChange = (

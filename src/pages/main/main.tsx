@@ -7,27 +7,19 @@ import Sort from '../../components/sort/sort';
 import { useAppSelector } from '../../hooks/use-select';
 import {
   getCurrentProducts,
-  getCurrentSortOrder,
-  getCurrentSortType,
-  getFilterCategory,
-  getFilterLevels,
   getFilterStatus,
-  getFilterTypes,
   getProducts,
   getProductsLoadingStatus,
   getPromos,
 } from '../../store/product-process/selectors';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import Pagination from '../../components/pagination/pagination';
-import { useLocation } from 'react-router-dom';
 import Banner from '../../components/banner/banner';
 import Breadcrumbs from '../../components/breadcrumbs/breadcrumbs';
 import Loader from '../../components/loader/loader';
 import {
   applyFilters,
   calcTotalPageCount,
-  translateSortOrder,
-  translateSortType,
 } from '../../util';
 
 function Main(): JSX.Element {
@@ -36,69 +28,19 @@ function Main(): JSX.Element {
   const stateProducts = useAppSelector(getProducts);
   const currentVisibleProducts = useAppSelector(getCurrentProducts);
   const isProductLoading = useAppSelector(getProductsLoadingStatus);
-  const currentSortType = useAppSelector(getCurrentSortType);
-  const currentSortOrder = useAppSelector(getCurrentSortOrder);
-  const filterCategory = useAppSelector(getFilterCategory);
-  const filterTypes = useAppSelector(getFilterTypes);
-  const filterLevels = useAppSelector(getFilterLevels);
   const banners = useAppSelector(getPromos);
-  const location = useLocation();
-  const currentPageParam = parseInt(
-    new URLSearchParams(location.search).get('page') || '1',
-    10
-  );
+  const currentPageParam = 1;
   const [currentPage, setCurrentPage] = useState(currentPageParam);
   const maxPageCount = 3;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const resetUrl = useCallback(() => {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }, []);
-
-  useEffect(() => {
-    resetUrl();
-  }, [resetUrl]);
-
-  const updateUrl = useCallback(
-    (pageNumber: number) => {
-      const searchParams = new URLSearchParams();
-      searchParams.set('page', pageNumber.toString());
-      if (currentSortType && currentSortOrder) {
-        searchParams.set('sortType', translateSortType(currentSortType));
-        searchParams.set('sortOrder', translateSortOrder(currentSortOrder));
-      }
-      if (filterCategory) {
-        searchParams.set('filterCategory', filterCategory);
-      }
-      if (filterTypes && filterTypes.length > 0) {
-        searchParams.set('filterTypes', filterTypes.join(','));
-      }
-      if (filterLevels && filterLevels.length > 0) {
-        searchParams.set('filterLevels', filterLevels.join(','));
-      }
-      const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-      window.history.replaceState({}, document.title, newUrl);
-    },
-    [
-      currentSortType,
-      currentSortOrder,
-      filterCategory,
-      filterTypes,
-      filterLevels,
-    ]
-  );
 
   const handlePageClick = (pageNumber: number) => {
     if (pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
-      updateUrl(pageNumber);
     }
   };
-
-  useEffect(() => {
-    updateUrl(currentPage);
-  }, [currentPage, updateUrl]);
 
   if (isProductLoading) {
     return <Loader />;

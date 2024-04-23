@@ -7,6 +7,7 @@ import {
   setSortType,
 } from '../../store/product-process/product-process';
 import {
+  getCurrentProducts,
   getCurrentSortOrder,
   getCurrentSortType,
   getFilterStatus,
@@ -18,32 +19,43 @@ import { useEffect } from 'react';
 function Sort(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateProducts = useAppSelector(getProducts);
+  const currentProducts = useAppSelector(getCurrentProducts);
   const currentSortType = useAppSelector(getCurrentSortType);
   const currentSortOrder = useAppSelector(getCurrentSortOrder);
   const filterStatus = useAppSelector(getFilterStatus);
 
   const handleSortByPrice = () => {
+    if (filterStatus) {
+      const sortedProducts = [...currentProducts].sort((a, b) =>
+        currentSortOrder === SortOrder.Ascending
+          ? a.price - b.price
+          : b.price - a.price
+      );
+      dispatch(setCurrentProducts(sortedProducts));
+    }
     const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? a.price - b.price
         : b.price - a.price
     );
 
-    if (filterStatus) {
-      dispatch(setCurrentProducts(sortedProducts));
-    }
     dispatch(setProducts(sortedProducts));
   };
 
   const handleSortByPopularity = () => {
+    if (filterStatus) {
+      const sortedProducts = [...currentProducts].sort((a, b) =>
+        currentSortOrder === SortOrder.Ascending
+          ? a.rating - b.rating
+          : b.rating - a.rating
+      );
+      dispatch(setCurrentProducts(sortedProducts));
+    }
     const sortedProducts = [...stateProducts].sort((a, b) =>
       currentSortOrder === SortOrder.Ascending
         ? a.rating - b.rating
         : b.rating - a.rating
     );
-    if (filterStatus) {
-      dispatch(setCurrentProducts(sortedProducts));
-    }
     dispatch(setProducts(sortedProducts));
   };
 
@@ -54,7 +66,6 @@ function Sort(): JSX.Element {
     if (currentType === SortTypes.Popularity && currentSortOrder === null) {
       dispatch(setSortOrder(SortOrder.Ascending));
     }
-
 
     dispatch(setSortType(currentType));
 
@@ -81,7 +92,7 @@ function Sort(): JSX.Element {
     if (currentSortType !== null) {
       handleSortSelect(currentSortType);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSortType, currentSortOrder, filterStatus]);
 
   return (
