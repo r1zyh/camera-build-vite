@@ -18,7 +18,6 @@ import {
   setFiltersStatus,
 } from '../../store/product-process/product-process';
 import {
-  getCurrentProducts,
   getFilterCategory,
   getFilterLevels,
   getFilterStatus,
@@ -43,12 +42,6 @@ function Filter(): JSX.Element {
   const filterTypes = useAppSelector(getFilterTypes);
   const filterLevels = useAppSelector(getFilterLevels);
 
-  const test = useAppSelector(getCurrentProducts);
-
-  console.log(stateProducts);
-  console.log(test);
-  console.log(filterStatus);
-  console.log(filterCategory);
 
   const [filterTypesList, setFilterTypesList] = useState<Set<CameraTypes>>(
     new Set()
@@ -63,13 +56,15 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
-    dispatch(
-      fetchPriceRange({
-        'price_gte': selectedPriceFrom,
-        'price_lte': selectedPriceTo,
-      })
-    );
-  }, [dispatch, selectedPriceFrom, selectedPriceTo, minPrice, maxPrice]);
+    if (selectedPriceTo && selectedPriceTo) {
+      dispatch(
+        fetchPriceRange({
+          'price_gte': selectedPriceFrom,
+          'price_lte': selectedPriceTo,
+        })
+      );
+    }
+  }, [dispatch, selectedPriceFrom, selectedPriceTo]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -91,8 +86,8 @@ function Filter(): JSX.Element {
 
   const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceFrom = e.target.value;
-    setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
     dispatch(setFiltersStatus(true));
+    setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
   };
   const handlePriceFormBlur = () => {
     setSelectedPriceFrom((prev) => {
@@ -115,8 +110,8 @@ function Filter(): JSX.Element {
 
   const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceTo = e.target.value;
-    setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
     dispatch(setFiltersStatus(true));
+    setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
   };
 
   const handlePriceToBlur = () => {
