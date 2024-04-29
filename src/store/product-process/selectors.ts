@@ -49,25 +49,30 @@ export const getCurrentProducts = (
   state: Pick<State, NameSpace.Products>
 ): TProducts => state[NameSpace.Products].currentVisibleProducts;
 
-export const getProdPrices = (
+export const getMinProdPrice = (
   state: Pick<State, NameSpace.Products>
-): number[] =>
-  state[NameSpace.Products].currentVisibleProducts.map(
-    (product) => product.price
-  );
+): number | null => state[NameSpace.Products].minPrice;
 
-export const getMinProdPrice = (state: State): number | null => {
-  const prices = getProdPrices(state);
+export const getMaxProdPrice = (
+  state: Pick<State, NameSpace.Products>
+): number | null => state[NameSpace.Products].maxPrice;
+
+export const getDefMinProdPrice = (state: Pick<State, NameSpace.Products>): number | null => {
+  const prices = state[NameSpace.Products].prices;
   if (prices.length === 0) {
     return null;
   }
   return Math.min(...prices);
 };
 
-export const getMaxProdPrice = (state: State): number | null => {
-  const prices = getProdPrices(state);
+export const getDefMaxProdPrice = (state: Pick<State, NameSpace.Products>): number | null => {
+  const prices = state[NameSpace.Products].prices;
   if (prices.length === 0) {
     return null;
   }
   return Math.max(...prices);
 };
+
+export const getPricesProducts = (
+  state: Pick<State, NameSpace.Products>
+): number[] => state[NameSpace.Products].prices;

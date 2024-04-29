@@ -16,8 +16,11 @@ import {
   setFilterLevels,
   setFilterTypes,
   setFiltersStatus,
+  setPrices,
 } from '../../store/product-process/product-process';
 import {
+  getDefMaxProdPrice,
+  getDefMinProdPrice,
   getFilterCategory,
   getFilterLevels,
   getFilterStatus,
@@ -37,11 +40,12 @@ function Filter(): JSX.Element {
   const stateProducts = useAppSelector(getProducts);
   const minPrice = useAppSelector(getMinProdPrice);
   const maxPrice = useAppSelector(getMaxProdPrice);
+  const minDefPrice = useAppSelector(getDefMinProdPrice);
+  const maxDefPrice = useAppSelector(getDefMaxProdPrice);
 
   const filterCategory = useAppSelector(getFilterCategory);
   const filterTypes = useAppSelector(getFilterTypes);
   const filterLevels = useAppSelector(getFilterLevels);
-
 
   const [filterTypesList, setFilterTypesList] = useState<Set<CameraTypes>>(
     new Set()
@@ -56,7 +60,20 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
+    dispatch(setPrices());
     if (selectedPriceTo && selectedPriceTo) {
+      if (
+        minPrice &&
+        maxPrice !== null &&
+        selectedPriceFrom &&
+        selectedPriceTo !== null
+      ) {
+        if (selectedPriceFrom < minPrice && selectedPriceTo > maxPrice) {
+          setSelectedPriceFrom(minPrice);
+          setSelectedPriceTo(maxPrice);
+        }
+      }
+
       dispatch(
         fetchPriceRange({
           'price_gte': selectedPriceFrom,
@@ -64,6 +81,7 @@ function Filter(): JSX.Element {
         })
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, selectedPriceFrom, selectedPriceTo]);
 
   useEffect(() => {
@@ -227,7 +245,7 @@ function Filter(): JSX.Element {
                     onBlur={handlePriceFormBlur}
                     type="number"
                     name="price"
-                    placeholder={minPrice !== null ? String(minPrice) : '0'}
+                    placeholder={minPrice !== null ? String(minPrice) : String(minDefPrice)}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
                     data-testid="от"
@@ -240,7 +258,7 @@ function Filter(): JSX.Element {
                     onBlur={handlePriceToBlur}
                     type="number"
                     name="priceUp"
-                    placeholder={maxPrice !== null ? String(maxPrice) : '0'}
+                    placeholder={maxPrice !== null ? String(maxPrice) : String(maxDefPrice)}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
                     data-testid="до"

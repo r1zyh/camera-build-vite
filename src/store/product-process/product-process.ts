@@ -17,6 +17,9 @@ type ProductProcessType = {
   filterCategory: CategoryTypes | null;
   filterTypes: CameraTypes[];
   filterLevels: LevelTypes[];
+  prices: number[];
+  minPrice: number | null;
+  maxPrice: number | null;
 };
 
 const initialState: ProductProcessType = {
@@ -33,6 +36,9 @@ const initialState: ProductProcessType = {
   filterCategory: null,
   filterTypes: [],
   filterLevels: [],
+  prices: [],
+  minPrice: null,
+  maxPrice: null,
 };
 
 export const productsProcessSlice = createSlice({
@@ -78,6 +84,16 @@ export const productsProcessSlice = createSlice({
     setFilterLevels: (state, action: PayloadAction<LevelTypes[]>) => {
       state.filterLevels = action.payload;
     },
+    setPrices: (state) => {
+      const prices = state.currentVisibleProducts.map((product) => product.price);
+      state.prices = prices;
+    },
+    setMinPrice: (state, action: PayloadAction<number>) => {
+      state.minPrice = action.payload;
+    },
+    setMaxPrice: (state, action: PayloadAction<number>) => {
+      state.maxPrice = action.payload;
+    },
   },
 });
 
@@ -95,4 +111,7 @@ export const {
   setFilterCategory,
   setFilterLevels,
   setFilterTypes,
+  setMaxPrice,
+  setMinPrice,
+  setPrices
 } = productsProcessSlice.actions;

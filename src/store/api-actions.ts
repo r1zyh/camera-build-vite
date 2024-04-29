@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
   setActiveId,
   setCurrentProducts,
+  setMaxPrice,
+  setMinPrice,
   setProduct,
   setProducts,
   setProductsLoadingStatus,
@@ -185,6 +187,8 @@ export const fetchPriceRange = createAsyncThunk<
         `${APIRoute.Products}?${queryParams}`
       );
       dispatch(setCurrentProducts(data));
+      dispatch(setMinPrice(options.price_gte));
+      dispatch(setMaxPrice(options.price_lte));
     }
 
     if (options._start !== undefined && options._end !== undefined) {
