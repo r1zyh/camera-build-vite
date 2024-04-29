@@ -78,9 +78,6 @@ function Filter(): JSX.Element {
         setSelectedPriceFrom(minPrice);
         setSelectedPriceTo(maxPrice);
       }
-    } else {
-      setSelectedPriceFrom(minDefPrice);
-      setSelectedPriceTo(maxDefPrice);
     }
 
     dispatch(
