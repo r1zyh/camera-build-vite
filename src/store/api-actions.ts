@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   setActiveId,
-  setCurrentProducts,
   setMaxPrice,
   setMinPrice,
   setProduct,
@@ -15,6 +14,7 @@ import {
   setProductsLoadingStatus,
   setPromos,
   setSimilarProducts,
+  setTest,
 } from './product-process/product-process';
 import { TAddReview, TReview, TReviews } from '../types/review';
 import {
@@ -186,7 +186,7 @@ export const fetchPriceRange = createAsyncThunk<
       const { data } = await api.get<TProducts>(
         `${APIRoute.Products}?${queryParams}`
       );
-      dispatch(setCurrentProducts(data));
+      dispatch(setTest(data));
       dispatch(setMinPrice(options.price_gte));
       dispatch(setMaxPrice(options.price_lte));
     }

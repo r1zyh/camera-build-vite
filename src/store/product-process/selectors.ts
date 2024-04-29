@@ -1,5 +1,6 @@
-import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
-import { TProduct, TProducts } from '../../types/products';
+import { TProducts } from './../../types/products';
+import { CameraTypes, CategoryTypes, LevelTypes, NameSpace} from '../../const';
+import { TProduct} from '../../types/products';
 import { TPromos } from '../../types/promo';
 import { State } from '../../types/state';
 
@@ -76,3 +77,7 @@ export const getDefMaxProdPrice = (state: Pick<State, NameSpace.Products>): numb
 export const getPricesProducts = (
   state: Pick<State, NameSpace.Products>
 ): number[] => state[NameSpace.Products].prices;
+
+export const getTest = (state: Pick<State, NameSpace.Products>): TProducts => state[NameSpace.Products].test;
+
+export const getTestStatus = (state: Pick<State, NameSpace.Products>): boolean => state[NameSpace.Products].testStatus;

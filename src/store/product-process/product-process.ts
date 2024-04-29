@@ -1,6 +1,7 @@
+import { TProducts } from './../../types/products';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
-import { TProduct, TProducts } from '../../types/products';
+import { TProduct } from '../../types/products';
 import { TPromos } from '../../types/promo';
 
 type ProductProcessType = {
@@ -20,6 +21,8 @@ type ProductProcessType = {
   prices: number[];
   minPrice: number | null;
   maxPrice: number | null;
+  test: TProducts;
+  testStatus: boolean;
 };
 
 const initialState: ProductProcessType = {
@@ -39,6 +42,8 @@ const initialState: ProductProcessType = {
   prices: [],
   minPrice: null,
   maxPrice: null,
+  test: [],
+  testStatus: false,
 };
 
 export const productsProcessSlice = createSlice({
@@ -85,7 +90,7 @@ export const productsProcessSlice = createSlice({
       state.filterLevels = action.payload;
     },
     setPrices: (state) => {
-      const prices = state.currentVisibleProducts.map((product) => product.price);
+      const prices = state.products.map((product) => product.price);
       state.prices = prices;
     },
     setMinPrice: (state, action: PayloadAction<number>) => {
@@ -93,6 +98,12 @@ export const productsProcessSlice = createSlice({
     },
     setMaxPrice: (state, action: PayloadAction<number>) => {
       state.maxPrice = action.payload;
+    },
+    setTest: (state, action: PayloadAction<TProducts>) => {
+      state.test = action.payload;
+    },
+    setTestStatus: (state, action: PayloadAction<boolean>) => {
+      state.testStatus = action.payload;
     },
   },
 });
@@ -113,5 +124,7 @@ export const {
   setFilterTypes,
   setMaxPrice,
   setMinPrice,
-  setPrices
+  setPrices,
+  setTest,
+  setTestStatus,
 } = productsProcessSlice.actions;

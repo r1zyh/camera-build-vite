@@ -17,6 +17,7 @@ import {
   setFilterTypes,
   setFiltersStatus,
   setPrices,
+  setTestStatus,
 } from '../../store/product-process/product-process';
 import {
   getDefMaxProdPrice,
@@ -28,6 +29,8 @@ import {
   getMaxProdPrice,
   getMinProdPrice,
   getProducts,
+  getTest,
+  getTestStatus,
 } from '../../store/product-process/selectors';
 import { handleTabKeyDown } from '../../util';
 
@@ -38,10 +41,12 @@ function Filter(): JSX.Element {
   const filterStatus = useAppSelector(getFilterStatus);
 
   const stateProducts = useAppSelector(getProducts);
+  const test = useAppSelector(getTest);
   const minPrice = useAppSelector(getMinProdPrice);
   const maxPrice = useAppSelector(getMaxProdPrice);
   const minDefPrice = useAppSelector(getDefMinProdPrice);
   const maxDefPrice = useAppSelector(getDefMaxProdPrice);
+  const testStatus = useAppSelector(getTestStatus);
 
   const filterCategory = useAppSelector(getFilterCategory);
   const filterTypes = useAppSelector(getFilterTypes);
@@ -60,27 +65,31 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
+    dispatch(setTestStatus(true));
     dispatch(setPrices());
-    if (selectedPriceTo && selectedPriceTo) {
-      if (
-        minPrice &&
+    if (
+      minPrice &&
         maxPrice !== null &&
         selectedPriceFrom &&
         selectedPriceTo !== null
-      ) {
-        if (selectedPriceFrom < minPrice && selectedPriceTo > maxPrice) {
-          setSelectedPriceFrom(minPrice);
-          setSelectedPriceTo(maxPrice);
-        }
+        && testStatus
+    ) {
+      if (selectedPriceFrom < minPrice && selectedPriceTo > maxPrice) {
+        setSelectedPriceFrom(minPrice);
+        setSelectedPriceTo(maxPrice);
       }
-
-      dispatch(
-        fetchPriceRange({
-          'price_gte': selectedPriceFrom,
-          'price_lte': selectedPriceTo,
-        })
-      );
+    } else {
+      setSelectedPriceFrom(minDefPrice);
+      setSelectedPriceTo(maxDefPrice);
     }
+
+    dispatch(
+      fetchPriceRange({
+        'price_gte': selectedPriceFrom,
+        'price_lte': selectedPriceTo,
+      })
+    );
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, selectedPriceFrom, selectedPriceTo]);
 
@@ -153,7 +162,7 @@ function Filter(): JSX.Element {
 
   useEffect(() => {
     const updateFilteredProducts = () => {
-      const filteredProducts = stateProducts.filter((product) => {
+      const filteredProducts = test.filter((product) => {
         if (filterCategory !== null && product.category !== filterCategory) {
           return false;
         }
@@ -166,6 +175,7 @@ function Filter(): JSX.Element {
         return true;
       });
       dispatch(setFiltersStatus(true));
+      dispatch(setTestStatus(true));
       dispatch(setCurrentProducts(filteredProducts));
     };
     updateFilteredProducts();
@@ -174,7 +184,7 @@ function Filter(): JSX.Element {
     filterTypes,
     filterLevels,
     dispatch,
-    stateProducts,
+    test,
     filterStatus,
   ]);
 
@@ -222,6 +232,7 @@ function Filter(): JSX.Element {
 
   const handlerResetFilters = () => {
     dispatch(setFiltersStatus(false));
+    dispatch(setTestStatus(false));
     dispatch(setCurrentProducts(stateProducts));
     setSelectedPriceFrom(null);
     setSelectedPriceTo(null);
