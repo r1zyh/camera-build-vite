@@ -16,6 +16,8 @@ import {
   setFilterLevels,
   setFilterTypes,
   setFiltersStatus,
+  setMaxPrice,
+  setMinPrice,
   setPrices,
   setTestStatus,
 } from '../../store/product-process/product-process';
@@ -236,6 +238,10 @@ function Filter(): JSX.Element {
     dispatch(setFilterCategory(null));
     dispatch(setFilterTypes([]));
     dispatch(setFilterLevels([]));
+    if (minDefPrice && maxDefPrice) {
+      dispatch(setMinPrice(minDefPrice));
+      dispatch(setMaxPrice(maxDefPrice));
+    }
   };
 
   return (

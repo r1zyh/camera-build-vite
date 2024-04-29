@@ -38,6 +38,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
     try {
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
+      dispatch(setTest(data));
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
