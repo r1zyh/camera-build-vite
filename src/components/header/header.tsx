@@ -11,6 +11,8 @@ function HeaderLayout(): JSX.Element {
   const products = useAppSelector(getProducts);
   const firstFocusableElementRef = useRef<HTMLInputElement | null>(null);
   const lastFocusableElementRef = useRef<HTMLButtonElement | null>(null);
+  const listRef = useRef<HTMLUListElement | null>(null);
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,9 +53,7 @@ function HeaderLayout(): JSX.Element {
           : 0
       );
       const nextIndex = Math.min(index + 1, filteredProducts.length - 1);
-      const nextElement = document.querySelector(
-        `.form-search__select-item:nth-child(${nextIndex + 1})`
-      ) as HTMLLIElement;
+      const nextElement = listRef.current?.children[nextIndex] as HTMLLIElement;
       if (nextElement) {
         nextElement.focus();
       }
@@ -63,14 +63,13 @@ function HeaderLayout(): JSX.Element {
         prevIndex !== null ? Math.max(prevIndex - 1, 0) : 0
       );
       const prevIndex = Math.max(index - 1, 0);
-      const prevElement = document.querySelector(
-        `.form-search__select-item:nth-child(${prevIndex + 1})`
-      ) as HTMLLIElement;
+      const prevElement = listRef.current?.children[prevIndex] as HTMLLIElement;
       if (prevElement) {
         prevElement.focus();
       }
     }
   };
+
 
   return (
     <header className="header" id="header">
@@ -141,6 +140,7 @@ function HeaderLayout(): JSX.Element {
             </label>
             {searchQuery.length >= minQueryLength && (
               <ul
+                ref={listRef}
                 className={`form-search__select-list ${
                   isOpened ? 'scroller' : ''
                 }`}
