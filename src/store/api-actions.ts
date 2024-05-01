@@ -14,7 +14,7 @@ import {
   setProductsLoadingStatus,
   setPromos,
   setSimilarProducts,
-  setTest,
+  setProductsByPrice,
 } from './product-process/product-process';
 import { TAddReview, TReview, TReviews } from '../types/review';
 import {
@@ -38,7 +38,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
     try {
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
-      dispatch(setTest(data));
+      dispatch(setProductsByPrice(data));
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
@@ -181,7 +181,7 @@ export const fetchPriceRange = createAsyncThunk<
       const { data } = await api.get<TProducts>(
         `${APIRoute.Products}?${queryParams}`
       );
-      dispatch(setTest(data));
+      dispatch(setProductsByPrice(data));
       dispatch(setMinPrice(options.price_gte));
       dispatch(setMaxPrice(options.price_lte));
     }

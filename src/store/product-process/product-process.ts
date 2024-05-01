@@ -21,8 +21,8 @@ type ProductProcessType = {
   prices: number[];
   minPrice: number | null;
   maxPrice: number | null;
-  test: TProducts;
-  testStatus: boolean;
+  productsByPrice: TProducts;
+  prodByPriceStatus: boolean;
 };
 
 const initialState: ProductProcessType = {
@@ -42,8 +42,8 @@ const initialState: ProductProcessType = {
   prices: [],
   minPrice: null,
   maxPrice: null,
-  test: [],
-  testStatus: false,
+  productsByPrice: [],
+  prodByPriceStatus: false,
 };
 
 export const productsProcessSlice = createSlice({
@@ -99,11 +99,11 @@ export const productsProcessSlice = createSlice({
     setMaxPrice: (state, action: PayloadAction<number>) => {
       state.maxPrice = action.payload;
     },
-    setTest: (state, action: PayloadAction<TProducts>) => {
-      state.test = action.payload;
+    setProductsByPrice: (state, action: PayloadAction<TProducts>) => {
+      state.productsByPrice = action.payload;
     },
-    setTestStatus: (state, action: PayloadAction<boolean>) => {
-      state.testStatus = action.payload;
+    setProdByPriceStatus: (state, action: PayloadAction<boolean>) => {
+      state.prodByPriceStatus = action.payload;
     },
   },
 });
@@ -125,6 +125,6 @@ export const {
   setMaxPrice,
   setMinPrice,
   setPrices,
-  setTest,
-  setTestStatus,
+  setProductsByPrice,
+  setProdByPriceStatus,
 } = productsProcessSlice.actions;

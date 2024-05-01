@@ -19,7 +19,7 @@ import {
   setMaxPrice,
   setMinPrice,
   setPrices,
-  setTestStatus,
+  setProdByPriceStatus,
 } from '../../store/product-process/product-process';
 import {
   getDefMaxProdPrice,
@@ -30,9 +30,9 @@ import {
   getFilterTypes,
   getMaxProdPrice,
   getMinProdPrice,
+  getProdByPriceStatus,
   getProducts,
-  getTest,
-  getTestStatus,
+  getProductsByPrice,
 } from '../../store/product-process/selectors';
 import { handleTabKeyDown } from '../../util';
 
@@ -43,12 +43,12 @@ function Filter(): JSX.Element {
   const filterStatus = useAppSelector(getFilterStatus);
 
   const stateProducts = useAppSelector(getProducts);
-  const test = useAppSelector(getTest);
+  const productsByPrice = useAppSelector(getProductsByPrice);
   const minPrice = useAppSelector(getMinProdPrice);
   const maxPrice = useAppSelector(getMaxProdPrice);
   const minDefPrice = useAppSelector(getDefMinProdPrice);
   const maxDefPrice = useAppSelector(getDefMaxProdPrice);
-  const testStatus = useAppSelector(getTestStatus);
+  const prodByPriceStatus = useAppSelector(getProdByPriceStatus);
 
   const filterCategory = useAppSelector(getFilterCategory);
   const filterTypes = useAppSelector(getFilterTypes);
@@ -67,14 +67,14 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
-    dispatch(setTestStatus(true));
+    dispatch(setProdByPriceStatus(true));
     dispatch(setPrices());
     if (
       minPrice &&
         maxPrice !== null &&
         selectedPriceFrom &&
         selectedPriceTo !== null
-        && testStatus
+        && prodByPriceStatus
     ) {
       if (selectedPriceFrom < minPrice && selectedPriceTo > maxPrice) {
         setSelectedPriceFrom(minPrice);
@@ -161,7 +161,7 @@ function Filter(): JSX.Element {
 
   useEffect(() => {
     const updateFilteredProducts = () => {
-      const filteredProducts = test.filter((product) => {
+      const filteredProducts = productsByPrice.filter((product) => {
         if (filterCategory !== null && product.category !== filterCategory) {
           return false;
         }
@@ -174,7 +174,7 @@ function Filter(): JSX.Element {
         return true;
       });
       dispatch(setFiltersStatus(true));
-      dispatch(setTestStatus(true));
+      dispatch(setProdByPriceStatus(true));
       dispatch(setCurrentProducts(filteredProducts));
     };
     updateFilteredProducts();
@@ -183,7 +183,7 @@ function Filter(): JSX.Element {
     filterTypes,
     filterLevels,
     dispatch,
-    test,
+    productsByPrice,
     filterStatus,
   ]);
 
@@ -231,7 +231,7 @@ function Filter(): JSX.Element {
 
   const handlerResetFilters = () => {
     dispatch(setFiltersStatus(false));
-    dispatch(setTestStatus(false));
+    dispatch(setProdByPriceStatus(false));
     dispatch(setCurrentProducts(stateProducts));
     setSelectedPriceFrom(null);
     setSelectedPriceTo(null);

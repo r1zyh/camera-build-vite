@@ -11,7 +11,7 @@ import {
   getProducts,
   getProductsLoadingStatus,
   getPromos,
-  getTestStatus,
+  getProdByPriceStatus,
 } from '../../store/product-process/selectors';
 import { useState } from 'react';
 import Pagination from '../../components/pagination/pagination';
@@ -35,7 +35,7 @@ function Main(): JSX.Element {
   const maxPageCount = 3;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const testStatus = useAppSelector(getTestStatus);
+  const prodByPriceStatus = useAppSelector(getProdByPriceStatus);
 
 
   const handlePageClick = (pageNumber: number) => {
@@ -72,7 +72,7 @@ function Main(): JSX.Element {
                       filterStatus,
                       currentVisibleProducts,
                       stateProducts,
-                      testStatus,
+                      prodByPriceStatus,
                     )}
                   />
                   <div className="pagination">

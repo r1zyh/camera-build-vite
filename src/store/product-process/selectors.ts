@@ -78,6 +78,6 @@ export const getPricesProducts = (
   state: Pick<State, NameSpace.Products>
 ): number[] => state[NameSpace.Products].prices;
 
-export const getTest = (state: Pick<State, NameSpace.Products>): TProducts => state[NameSpace.Products].test;
+export const getProductsByPrice = (state: Pick<State, NameSpace.Products>): TProducts => state[NameSpace.Products].productsByPrice;
 
-export const getTestStatus = (state: Pick<State, NameSpace.Products>): boolean => state[NameSpace.Products].testStatus;
+export const getProdByPriceStatus = (state: Pick<State, NameSpace.Products>): boolean => state[NameSpace.Products].prodByPriceStatus;
