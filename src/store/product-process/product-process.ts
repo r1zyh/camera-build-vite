@@ -1,6 +1,7 @@
+import { TProducts } from './../../types/products';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { CameraTypes, CategoryTypes, LevelTypes, NameSpace } from '../../const';
-import { TProduct, TProducts } from '../../types/products';
+import { TProduct } from '../../types/products';
 import { TPromos } from '../../types/promo';
 
 type ProductProcessType = {
@@ -17,6 +18,11 @@ type ProductProcessType = {
   filterCategory: CategoryTypes | null;
   filterTypes: CameraTypes[];
   filterLevels: LevelTypes[];
+  prices: number[];
+  minPrice: number | null;
+  maxPrice: number | null;
+  productsByPrice: TProducts;
+  prodByPriceStatus: boolean;
 };
 
 const initialState: ProductProcessType = {
@@ -33,6 +39,11 @@ const initialState: ProductProcessType = {
   filterCategory: null,
   filterTypes: [],
   filterLevels: [],
+  prices: [],
+  minPrice: null,
+  maxPrice: null,
+  productsByPrice: [],
+  prodByPriceStatus: false,
 };
 
 export const productsProcessSlice = createSlice({
@@ -78,6 +89,22 @@ export const productsProcessSlice = createSlice({
     setFilterLevels: (state, action: PayloadAction<LevelTypes[]>) => {
       state.filterLevels = action.payload;
     },
+    setPrices: (state) => {
+      const prices = state.products.map((product) => product.price);
+      state.prices = prices;
+    },
+    setMinPrice: (state, action: PayloadAction<number>) => {
+      state.minPrice = action.payload;
+    },
+    setMaxPrice: (state, action: PayloadAction<number>) => {
+      state.maxPrice = action.payload;
+    },
+    setProductsByPrice: (state, action: PayloadAction<TProducts>) => {
+      state.productsByPrice = action.payload;
+    },
+    setProdByPriceStatus: (state, action: PayloadAction<boolean>) => {
+      state.prodByPriceStatus = action.payload;
+    },
   },
 });
 
@@ -95,4 +122,9 @@ export const {
   setFilterCategory,
   setFilterLevels,
   setFilterTypes,
+  setMaxPrice,
+  setMinPrice,
+  setPrices,
+  setProductsByPrice,
+  setProdByPriceStatus,
 } = productsProcessSlice.actions;

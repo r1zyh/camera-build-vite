@@ -55,9 +55,10 @@ export const applyFilters = (
   indexOfLastItem: number,
   filterStatus: boolean,
   currentVisibleProducts: TProducts,
-  stateProducts: TProducts
+  stateProducts: TProducts,
+  testStatus: boolean,
 ): TProducts => {
-  if (filterStatus) {
+  if (filterStatus && testStatus) {
     return currentVisibleProducts.slice(indexOfFirstItem, indexOfLastItem);
   } else {
     return stateProducts.slice(indexOfFirstItem, indexOfLastItem);

@@ -7,12 +7,14 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   setActiveId,
-  setCurrentProducts,
+  setMaxPrice,
+  setMinPrice,
   setProduct,
   setProducts,
   setProductsLoadingStatus,
   setPromos,
   setSimilarProducts,
+  setProductsByPrice,
 } from './product-process/product-process';
 import { TAddReview, TReview, TReviews } from '../types/review';
 import {
@@ -36,6 +38,7 @@ export const fetchProducts = createAsyncThunk<void, undefined, thunkObjType>(
     try {
       const { data } = await api.get<TProducts>(APIRoute.Products);
       dispatch(setProducts(data));
+      dispatch(setProductsByPrice(data));
       dispatch(setProductsLoadingStatus(false));
     } catch (error) {
       dispatch(setProductsLoadingStatus(false));
@@ -132,12 +135,6 @@ export const postReview = createAsyncThunk<
       { dispatch, extra: api }
     ) => {
       dispatch(setReviewPostStatus(true));
-      localStorage.setItem('review', review);
-      localStorage.setItem('rating', String(rating));
-      localStorage.setItem('userName', userName);
-      localStorage.setItem('cameraId', String(cameraId));
-      localStorage.setItem('advantage', advantage);
-      localStorage.setItem('disadvantage', disadvantage);
       try {
         const url = `${APIRoute.Reviews}`;
         const { data } = await api.post<TReview>(url, {
@@ -184,7 +181,9 @@ export const fetchPriceRange = createAsyncThunk<
       const { data } = await api.get<TProducts>(
         `${APIRoute.Products}?${queryParams}`
       );
-      dispatch(setCurrentProducts(data));
+      dispatch(setProductsByPrice(data));
+      dispatch(setMinPrice(options.price_gte));
+      dispatch(setMaxPrice(options.price_lte));
     }
 
     if (options._start !== undefined && options._end !== undefined) {

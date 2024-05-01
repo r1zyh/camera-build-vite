@@ -16,16 +16,23 @@ import {
   setFilterLevels,
   setFilterTypes,
   setFiltersStatus,
+  setMaxPrice,
+  setMinPrice,
+  setPrices,
+  setProdByPriceStatus,
 } from '../../store/product-process/product-process';
 import {
-  getCurrentProducts,
+  getDefMaxProdPrice,
+  getDefMinProdPrice,
   getFilterCategory,
   getFilterLevels,
   getFilterStatus,
   getFilterTypes,
   getMaxProdPrice,
   getMinProdPrice,
+  getProdByPriceStatus,
   getProducts,
+  getProductsByPrice,
 } from '../../store/product-process/selectors';
 import { handleTabKeyDown } from '../../util';
 
@@ -36,19 +43,16 @@ function Filter(): JSX.Element {
   const filterStatus = useAppSelector(getFilterStatus);
 
   const stateProducts = useAppSelector(getProducts);
+  const productsByPrice = useAppSelector(getProductsByPrice);
   const minPrice = useAppSelector(getMinProdPrice);
   const maxPrice = useAppSelector(getMaxProdPrice);
+  const minDefPrice = useAppSelector(getDefMinProdPrice);
+  const maxDefPrice = useAppSelector(getDefMaxProdPrice);
+  const prodByPriceStatus = useAppSelector(getProdByPriceStatus);
 
   const filterCategory = useAppSelector(getFilterCategory);
   const filterTypes = useAppSelector(getFilterTypes);
   const filterLevels = useAppSelector(getFilterLevels);
-
-  const test = useAppSelector(getCurrentProducts);
-
-  console.log(stateProducts);
-  console.log(test);
-  console.log(filterStatus);
-  console.log(filterCategory);
 
   const [filterTypesList, setFilterTypesList] = useState<Set<CameraTypes>>(
     new Set()
@@ -63,13 +67,30 @@ function Filter(): JSX.Element {
   const [selectedPriceTo, setSelectedPriceTo] = useState<number | null>(null);
 
   useEffect(() => {
+    dispatch(setProdByPriceStatus(true));
+    dispatch(setPrices());
+    if (
+      minPrice &&
+        maxPrice !== null &&
+        selectedPriceFrom &&
+        selectedPriceTo !== null
+        && prodByPriceStatus
+    ) {
+      if (selectedPriceFrom < minPrice && selectedPriceTo > maxPrice) {
+        setSelectedPriceFrom(minPrice);
+        setSelectedPriceTo(maxPrice);
+      }
+    }
+
     dispatch(
       fetchPriceRange({
         'price_gte': selectedPriceFrom,
         'price_lte': selectedPriceTo,
       })
     );
-  }, [dispatch, selectedPriceFrom, selectedPriceTo, minPrice, maxPrice]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, selectedPriceFrom, selectedPriceTo]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -91,8 +112,8 @@ function Filter(): JSX.Element {
 
   const handlePriceFromChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceFrom = e.target.value;
-    setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
     dispatch(setFiltersStatus(true));
+    setSelectedPriceFrom(newPriceFrom !== '' ? Number(newPriceFrom) : null);
   };
   const handlePriceFormBlur = () => {
     setSelectedPriceFrom((prev) => {
@@ -115,8 +136,8 @@ function Filter(): JSX.Element {
 
   const handlePriceToChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newPriceTo = e.target.value;
-    setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
     dispatch(setFiltersStatus(true));
+    setSelectedPriceTo(newPriceTo !== '' ? Number(newPriceTo) : null);
   };
 
   const handlePriceToBlur = () => {
@@ -140,7 +161,7 @@ function Filter(): JSX.Element {
 
   useEffect(() => {
     const updateFilteredProducts = () => {
-      const filteredProducts = stateProducts.filter((product) => {
+      const filteredProducts = productsByPrice.filter((product) => {
         if (filterCategory !== null && product.category !== filterCategory) {
           return false;
         }
@@ -153,6 +174,7 @@ function Filter(): JSX.Element {
         return true;
       });
       dispatch(setFiltersStatus(true));
+      dispatch(setProdByPriceStatus(true));
       dispatch(setCurrentProducts(filteredProducts));
     };
     updateFilteredProducts();
@@ -161,7 +183,7 @@ function Filter(): JSX.Element {
     filterTypes,
     filterLevels,
     dispatch,
-    stateProducts,
+    productsByPrice,
     filterStatus,
   ]);
 
@@ -209,12 +231,17 @@ function Filter(): JSX.Element {
 
   const handlerResetFilters = () => {
     dispatch(setFiltersStatus(false));
+    dispatch(setProdByPriceStatus(false));
     dispatch(setCurrentProducts(stateProducts));
     setSelectedPriceFrom(null);
     setSelectedPriceTo(null);
     dispatch(setFilterCategory(null));
     dispatch(setFilterTypes([]));
     dispatch(setFilterLevels([]));
+    if (minDefPrice && maxDefPrice) {
+      dispatch(setMinPrice(minDefPrice));
+      dispatch(setMaxPrice(maxDefPrice));
+    }
   };
 
   return (
@@ -232,7 +259,7 @@ function Filter(): JSX.Element {
                     onBlur={handlePriceFormBlur}
                     type="number"
                     name="price"
-                    placeholder={minPrice !== null ? String(minPrice) : '0'}
+                    placeholder={minPrice !== null ? String(minPrice) : String(minDefPrice)}
                     onChange={handlePriceFromChange}
                     value={selectedPriceFrom !== null ? selectedPriceFrom : ''}
                     data-testid="от"
@@ -245,7 +272,7 @@ function Filter(): JSX.Element {
                     onBlur={handlePriceToBlur}
                     type="number"
                     name="priceUp"
-                    placeholder={maxPrice !== null ? String(maxPrice) : '0'}
+                    placeholder={maxPrice !== null ? String(maxPrice) : String(maxDefPrice)}
                     onChange={handlePriceToChange}
                     value={selectedPriceTo !== null ? selectedPriceTo : ''}
                     data-testid="до"

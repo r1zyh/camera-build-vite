@@ -24,6 +24,11 @@ describe('Products Process Slice', () => {
     filterCategory: null,
     filterTypes: [],
     filterLevels: [],
+    prices: [],
+    minPrice: null,
+    maxPrice: null,
+    productsByPrice: [],
+    prodByPriceStatus: false,
   };
 
   const fakeProduct = makeFakeProduct();

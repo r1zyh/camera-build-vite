@@ -7,6 +7,8 @@ import {
   getActiveId,
   getProductsLoadingStatus,
   getPromos,
+  getProductsByPrice,
+  getProdByPriceStatus,
 } from './selectors';
 
 describe('Product selectors', () => {
@@ -27,6 +29,11 @@ describe('Product selectors', () => {
       filterCategory: null,
       filterTypes: [],
       filterLevels: [],
+      prices: [],
+      minPrice: null,
+      maxPrice: null,
+      productsByPrice: [makeFakeProduct()],
+      prodByPriceStatus: false,
     },
   };
 
@@ -58,5 +65,13 @@ describe('Product selectors', () => {
   test('getPromos selector', () => {
     const promos = getPromos(state);
     expect(promos).toEqual([fakePromo]);
+  });
+  test('getProductsByPrice selector', () => {
+    const prodByPrice = getProductsByPrice(state);
+    expect(prodByPrice).toEqual([fakeProduct]);
+  });
+  test('getProdByPriceStatus selector', () => {
+    const status = getProdByPriceStatus(state);
+    expect(status).toBe(false);
   });
 });
