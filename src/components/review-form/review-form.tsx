@@ -66,18 +66,12 @@ function ReviewForm({
   }, [closeForm]);
 
 
-  const [review, setReview] = useState(localStorage.getItem('review') || '');
-  const [userName, setUserName] = useState(
-    localStorage.getItem('userName') || ''
-  );
-  const [advantage, setAdvantage] = useState(
-    localStorage.getItem('advantage') || ''
-  );
-  const [disadvantage, setDisadvantage] = useState(
-    localStorage.getItem('disadvantage') || ''
-  );
+  const [review, setReview] = useState('');
+  const [userName, setUserName] = useState('');
+  const [advantage, setAdvantage] = useState('');
+  const [disadvantage, setDisadvantage] = useState('');
 
-  const [rating, setRating] = useState(localStorage.getItem('rating') || '');
+  const [rating, setRating] = useState('');
 
   const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 
@@ -126,11 +120,6 @@ function ReviewForm({
     setUserName('');
     setAdvantage('');
     setDisadvantage('');
-    localStorage.removeItem('review');
-    localStorage.removeItem('rating');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('advantage');
-    localStorage.removeItem('disadvantage');
   };
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
