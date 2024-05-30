@@ -14,7 +14,6 @@ function HeaderLayout(): JSX.Element {
   const listRef = useRef<HTMLUListElement | null>(null);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpened, setIsOpened] = useState(false);
   const navigate = useNavigate();
@@ -36,6 +35,15 @@ function HeaderLayout(): JSX.Element {
 
   const handleSelectItem = (productId: number) => {
     navigate(`${AppRoute.Product}/${productId}`);
+    setIsOpened(false);
+    setSearchQuery('');
+  };
+
+  const focusItem = (index: number) => {
+    const element = listRef.current?.children[index] as HTMLLIElement;
+    if (element) {
+      element.focus();
+    }
   };
 
   const handleKeyDown = (
@@ -47,29 +55,30 @@ function HeaderLayout(): JSX.Element {
       handleSelectItem(productId);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex((prevIndex) =>
-        prevIndex !== null
-          ? Math.min(prevIndex + 1, filteredProducts.length - 1)
-          : 0
-      );
-      const nextIndex = Math.min(index + 1, filteredProducts.length - 1);
-      const nextElement = listRef.current?.children[nextIndex] as HTMLLIElement;
-      if (nextElement) {
-        nextElement.focus();
-      }
+      const nextIndex = (index + 1) % filteredProducts.length;
+      setSelectedIndex(nextIndex);
+      focusItem(nextIndex);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex((prevIndex) =>
-        prevIndex !== null ? Math.max(prevIndex - 1, 0) : 0
-      );
-      const prevIndex = Math.max(index - 1, 0);
-      const prevElement = listRef.current?.children[prevIndex] as HTMLLIElement;
-      if (prevElement) {
-        prevElement.focus();
-      }
+      const prevIndex = (index - 1 + filteredProducts.length) % filteredProducts.length;
+      setSelectedIndex(prevIndex);
+      focusItem(prevIndex);
     }
   };
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    handleTabKeyDown(
+      e,
+      firstFocusableElementRef,
+      lastFocusableElementRef
+    );
+
+    if (e.key === 'ArrowDown' && isOpened && filteredProducts.length > 0) {
+      e.preventDefault();
+      setSelectedIndex(0);
+      focusItem(0);
+    }
+  };
 
   return (
     <header className="header" id="header">
@@ -130,12 +139,7 @@ function HeaderLayout(): JSX.Element {
                 placeholder="Поиск по сайту"
                 value={searchQuery}
                 onChange={handleInputChange}
-                onKeyDown={(e) =>
-                  handleTabKeyDown(
-                    e,
-                    firstFocusableElementRef,
-                    lastFocusableElementRef
-                  )}
+                onKeyDown={handleInputKeyDown}
               />
             </label>
             {searchQuery.length >= minQueryLength && (
